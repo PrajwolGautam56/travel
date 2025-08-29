@@ -94,9 +94,12 @@ const PopularPackages = () => {
                     <div className="text-2xl font-bold text-blue-600">{pkg.price}</div>
                     <div className="text-sm text-gray-500 line-through">{pkg.originalPrice}</div>
                   </div>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+                  <Link
+                    to="/packages"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 cursor-pointer"
+                  >
                     Book Now
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

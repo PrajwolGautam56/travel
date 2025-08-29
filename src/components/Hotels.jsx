@@ -114,9 +114,12 @@ const Hotels = () => {
                     <div className="text-2xl font-bold text-blue-600">{hotel.price}</div>
                     <div className="text-sm text-gray-500">{hotel.perNight}</div>
                   </div>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+                  <Link
+                    to="/hotels"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 cursor-pointer"
+                  >
                     Book Now
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
