@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -105,6 +106,33 @@ const Footer = () => {
                   </a>
                 </li>
               ))}
+            </ul>
+          </div>
+
+          {/* Blog */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4 text-blue-400">Blog</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/blog" className="text-gray-300 hover:text-blue-400 transition-colors duration-300">
+                  Travel Tips
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-gray-300 hover:text-blue-400 transition-colors duration-300">
+                  Destination Guides
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-gray-300 hover:text-blue-400 transition-colors duration-300">
+                  Airline News
+                </Link>
+              </li>
+              <li>
+                <Link to="/blog" className="text-gray-300 hover:text-blue-400 transition-colors duration-300">
+                  Hotel Reviews
+                </Link>
+              </li>
             </ul>
           </div>
 

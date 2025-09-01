@@ -37,6 +37,9 @@ const Navbar = () => {
               <Link to="/hotels" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                 Hotels
               </Link>
+              <Link to="/blog" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                Blog
+              </Link>
               <a href="#flights" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                 Flights
               </a>
@@ -109,6 +112,13 @@ const Navbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Hotels
+            </Link>
+            <Link
+              to="/blog"
+              className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Blog
             </Link>
             <a
               href="#flights"

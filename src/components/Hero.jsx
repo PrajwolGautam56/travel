@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     from: '',
     to: '',
@@ -20,6 +22,10 @@ const Hero = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Search form data:', formData);
+    // Navigate to flight search results page
+    navigate('/flight-search', { 
+      state: { searchData: formData }
+    });
   };
 
   const swapLocations = () => {
