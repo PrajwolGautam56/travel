@@ -23,7 +23,7 @@ const Hero = () => {
     e.preventDefault();
     console.log('Search form data:', formData);
     // Navigate to flight search results page
-    navigate('/flight-search', { 
+    navigate('/flight-search', {
       state: { searchData: formData }
     });
   };
@@ -41,9 +41,9 @@ const Hero = () => {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80"
+          src="images\white-clouds-blue-sky-daytime.jpg"
           alt="Airplane flying over clouds"
-          className="w-full h-full object-cover opacity-30"
+          className="w-full h-full object-cover opacity-100"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-900/50 to-blue-900"></div>
       </div>
@@ -54,18 +54,18 @@ const Hero = () => {
           {/* Main Headline */}
           <div className="mb-8">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-4 leading-relaxed tracking-wide">
-              <span className="font-light text-blue-100">See Iconic Cities of</span>
+              <span className="font-light text-blue-100">Book Your Flights</span>
               <br />
-              <span className="font-normal text-white">UK and Germany</span>
+              <span className="font-normal text-white">In Affordable Price</span>
             </h1>
-            <div className="inline-flex items-center bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full shadow-lg">
+            {/* <div className="inline-flex items-center bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full shadow-lg">
               <span className="text-lg font-semibold">Fares starting from ₹55,300</span>
-            </div>
+            </div> */}
           </div>
 
           {/* Search Form */}
           <div className="relative">
-            <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-4xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-8xl mx-auto">
               {/* Flight Type Tabs */}
               <div className="flex flex-wrap gap-4 mb-6 border-b border-gray-200">
                 <button className="flex items-center space-x-2 text-blue-600 border-b-2 border-blue-600 pb-2">
