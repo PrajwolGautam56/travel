@@ -31,21 +31,21 @@ function App() {
               <Navbar />
               <main>
                 <Hero />
-                <PopularFlights />
                 <PopularPackages />
+                <PopularFlights />
                 <Hotels />
                 <WhyChooseUs />
               </main>
               <Footer />
             </>
           } />
-          
+
           {/* Login Route */}
           <Route path="/login" element={<Login />} />
-          
+
           {/* Signup Route */}
           <Route path="/signup" element={<Signup />} />
-          
+
           {/* Hotels Page Route */}
           <Route path="/hotels" element={
             <>
@@ -54,7 +54,7 @@ function App() {
               <Footer />
             </>
           } />
-          
+
           {/* Single Hotel Detail Route */}
           <Route path="/hotels/:id" element={
             <>
@@ -63,7 +63,7 @@ function App() {
               <Footer />
             </>
           } />
-          
+
           {/* Packages Page Route */}
           <Route path="/packages" element={
             <>
@@ -72,7 +72,7 @@ function App() {
               <Footer />
             </>
           } />
-          
+
           {/* Single Package Detail Route */}
           <Route path="/packages/:id" element={
             <>
@@ -81,17 +81,17 @@ function App() {
               <Footer />
             </>
           } />
-          
+
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
-          
+
           {/* Protected Admin Dashboard Route */}
           <Route path="/admin/dashboard" element={
             <ProtectedRoute requireAdmin={true}>
               <AdminDashboard />
             </ProtectedRoute>
           } />
-          
+
           {/* Flight Search Routes */}
           <Route path="/flight-search" element={
             <>
@@ -100,7 +100,7 @@ function App() {
               <Footer />
             </>
           } />
-          
+
           {/* Flight Booking Route */}
           <Route path="/flight-booking/:id" element={
             <>
@@ -109,7 +109,7 @@ function App() {
               <Footer />
             </>
           } />
-          
+
           {/* Blog Route */}
           <Route path="/blog" element={
             <>
