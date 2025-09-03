@@ -37,9 +37,9 @@ const SearchForm = () => {
     };
 
     return (
-        
+
         <>
-            
+
             <div className="relative">
                 <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-8xl mx-auto">
                     {/* Flight Type Tabs */}
