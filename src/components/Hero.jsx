@@ -20,39 +20,28 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col justify-center min-h-screen px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 flex flex-col justify-start pt-10 min-h-screen px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Main Headline Section */}
-          <div className="mb-8 text-left max-w-2xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium text-white mb-4 leading-relaxed tracking-wide">
-              Travel with us this Dashian and Tihar
-            </h1>
-            <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
-              Fly in comfort on our wide-body aircraft, departing from 19 Sep to 28 Nov 2025.
-            </p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-              BOOK NOW
-            </button>
-          </div>
-
-          {/* KrisFlyer Login Banner */}
-          <div className="bg-gray-100 rounded-lg p-4 mb-6 max-w-4xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
-                </svg>
-                <div className="text-sm text-gray-700">
-                  <span>Log in to your KrisFlyer account to unlock personalised fare deals, privileges and more. </span>
-                  <span>Not a KrisFlyer member? </span>
-                  <a href="#" className="text-blue-600 hover:text-blue-700 font-medium">Sign up now</a>
-                </div>
-              </div>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors">
-                LOG IN
+          <div className="mb-8">
+            <div className="text-left max-w-2xl mb-4">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-medium text-white mb-2 leading-tight tracking-wide">
+                Travel with us this
+                <br />
+                <span className="block mt-1">Dashian and Tihar</span>
+              </h1>
+            </div>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 w-full">
+              <p className="text-xl md:text-2xl text-blue-100 leading-relaxed max-w-2xl">
+                Fly in comfort on our wide-body aircraft, departing from 19 Sep to 28 Nov 2025.
+              </p>
+              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg flex-shrink-0">
+                BOOK NOW
               </button>
             </div>
           </div>
+
+
 
           {/* Sub Navigation */}
           <SubNavigation />
