@@ -18,10 +18,10 @@ const Navbar = () => {
             <Link to="/" className="flex items-center space-x-2">
               <img
                 src="images/Logo_Transparent .png"
-                alt="Skyways Logo"
+                alt="Recent and Rhythm Tours and Travels Logo"
                 className="w-30 h-30 object-contain"
               />
-              {/* <span className="text-xl font-bold text-gray-900">Skyways</span> */}
+              {/* <span className="text-xl font-bold text-gray-900">Recent and Rhythm Tours and Travels</span> */}
             </Link>
           </div>
 
@@ -43,12 +43,12 @@ const Navbar = () => {
               <a href="#flights" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                 Flights
               </a>
-              <a href="#about" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+              <Link to="/about" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
                 About
-              </a>
-              <a href="#contact" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
-                Contact
-              </a>
+              </Link>
+              <Link to="/contact" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                Contact Us
+              </Link>
             </div>
           </div>
 
@@ -127,20 +127,20 @@ const Navbar = () => {
             >
               Flights
             </a>
-            <a
-              href="#about"
+            <Link
+              to="/about"
               className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
               onClick={() => setIsMenuOpen(false)}
             >
               About
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              to="/contact"
               className="text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200"
               onClick={() => setIsMenuOpen(false)}
             >
-              Contact
-            </a>
+              Contact Us
+            </Link>
 
             {/* Mobile Auth Buttons */}
             <div className="pt-4 pb-3 border-t border-gray-200">

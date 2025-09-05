@@ -52,11 +52,11 @@ const Footer = () => {
             <div className="mb-6">
               <h2 className="text-2xl font-bold text-blue-400 mb-4">SKYWAYS</h2>
               <p className="text-gray-300 mb-6 max-w-md">
-                Your trusted partner for unforgettable travel experiences. We connect you to the world with 
+                Your trusted partner for unforgettable travel experiences. We connect you to the world with
                 the best deals on flights, hotels, and holiday packages.
               </p>
             </div>
-            
+
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center">
@@ -176,7 +176,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             {/* Copyright */}
             <div className="text-gray-400 text-sm mb-4 md:mb-0">
-              © {currentYear} Skyways Travel. All rights reserved.
+              © {currentYear} Recent and Rhythm Tours and Travels. All rights reserved.
             </div>
 
             {/* Social Links */}
