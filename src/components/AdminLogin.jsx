@@ -36,7 +36,7 @@ const AdminLogin = () => {
     } else {
       setError('Invalid admin credentials. Please try again.');
     }
-    
+
     setIsLoading(false);
   };
 
@@ -63,11 +63,11 @@ const AdminLogin = () => {
             </svg>
           </div>
           <h2 className="text-4xl font-bold text-white mb-3 tracking-tight">Admin Access</h2>
-          <p className="text-blue-100 text-lg">Skyways Travel Management System</p>
+          <p className="text-blue-100 text-lg">Recent and Rhythm Tours and Travels Management System</p>
           <div className="mt-4 flex items-center justify-center space-x-2">
             <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
           </div>
         </div>
 
@@ -188,7 +188,7 @@ const AdminLogin = () => {
 
         {/* Footer */}
         <div className="text-center text-blue-300/60 text-xs">
-          <p>© 2024 Skyways Travel. All rights reserved.</p>
+          <p>© 2024 Recent and Rhythm Tours and Travels. All rights reserved.</p>
           <p className="mt-1">Enterprise-grade travel management system</p>
         </div>
       </div>

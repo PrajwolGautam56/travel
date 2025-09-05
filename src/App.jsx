@@ -19,6 +19,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import FlightSearchResults from './components/FlightSearchResults';
 import FlightBooking from './components/FlightBooking';
 import BlogPage from './components/BlogPage';
+import AboutPage from './components/AboutPage';
+import ContactUs from './components/ContactUs';
 
 function App() {
   return (
@@ -115,6 +117,24 @@ function App() {
             <>
               <Navbar />
               <BlogPage />
+              <Footer />
+            </>
+          } />
+
+          {/* About Route */}
+          <Route path="/about" element={
+            <>
+              <Navbar />
+              <AboutPage />
+              <Footer />
+            </>
+          } />
+
+          {/* Contact Us Route */}
+          <Route path="/contact" element={
+            <>
+              <Navbar />
+              <ContactUs />
               <Footer />
             </>
           } />

@@ -1,4 +1,4 @@
-# Skyways - Flight Booking Website
+# Recent and Rhythm Tours and Travels - Flight Booking Website
 
 A modern, responsive flight booking website built with React and Tailwind CSS, inspired by Qatar Airways design.
 
