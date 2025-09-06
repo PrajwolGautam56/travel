@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PopularFlights from './components/PopularFlights';
@@ -21,15 +21,18 @@ import FlightBooking from './components/FlightBooking';
 import BlogPage from './components/BlogPage';
 import AboutPage from './components/AboutPage';
 import ContactUs from './components/ContactUs';
+import ScrollToTop from './components/ScrollToTop';
+import PageTransition from './components/PageTransition';
 
 function App() {
   return (
     <Router>
       <div className="App">
+        <ScrollToTop />
         <Routes>
           {/* Homepage Route */}
           <Route path="/" element={
-            <>
+            <PageTransition>
               <Navbar />
               <main>
                 <Hero />
@@ -39,104 +42,118 @@ function App() {
                 <WhyChooseUs />
               </main>
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* Login Route */}
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={
+            <PageTransition>
+              <Login />
+            </PageTransition>
+          } />
 
           {/* Signup Route */}
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/signup" element={
+            <PageTransition>
+              <Signup />
+            </PageTransition>
+          } />
 
           {/* Hotels Page Route */}
           <Route path="/hotels" element={
-            <>
+            <PageTransition>
               <Navbar />
               <HotelsPage />
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* Single Hotel Detail Route */}
           <Route path="/hotels/:id" element={
-            <>
+            <PageTransition>
               <Navbar />
               <HotelDetail />
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* Packages Page Route */}
           <Route path="/packages" element={
-            <>
+            <PageTransition>
               <Navbar />
               <PackagesPage />
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* Single Package Detail Route */}
           <Route path="/packages/:id" element={
-            <>
+            <PageTransition>
               <Navbar />
               <PackageDetail />
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* Admin Routes */}
-          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/login" element={
+            <PageTransition>
+              <AdminLogin />
+            </PageTransition>
+          } />
 
           {/* Protected Admin Dashboard Route */}
           <Route path="/admin/dashboard" element={
-            <ProtectedRoute requireAdmin={true}>
-              <AdminDashboard />
-            </ProtectedRoute>
+            <PageTransition>
+              <ProtectedRoute requireAdmin={true}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            </PageTransition>
           } />
 
           {/* Flight Search Routes */}
           <Route path="/flight-search" element={
-            <>
+            <PageTransition>
               <Navbar />
               <FlightSearchResults />
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* Flight Booking Route */}
           <Route path="/flight-booking/:id" element={
-            <>
+            <PageTransition>
               <Navbar />
               <FlightBooking />
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* Blog Route */}
           <Route path="/blog" element={
-            <>
+            <PageTransition>
               <Navbar />
               <BlogPage />
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* About Route */}
           <Route path="/about" element={
-            <>
+            <PageTransition>
               <Navbar />
               <AboutPage />
               <Footer />
-            </>
+            </PageTransition>
           } />
 
           {/* Contact Us Route */}
           <Route path="/contact" element={
-            <>
+            <PageTransition>
               <Navbar />
               <ContactUs />
               <Footer />
-            </>
+            </PageTransition>
           } />
         </Routes>
       </div>

@@ -81,24 +81,26 @@ const AboutPage = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            {/* Hero Section */}
-            <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 py-20">
+            {/* Header */}
+            <div className="relative bg-orange-500 overflow-hidden">
+                {/* Background Image */}
                 <div className="absolute inset-0">
                     <img
                         src="images/white-clouds-blue-sky-daytime.jpg"
-                        alt="About Recent and Rhythm Tours and Travels"
-                        className="w-full h-full object-cover opacity-20"
+                        alt="Airplane flying over clouds"
+                        className="w-full h-full object-cover opacity-100"
                     />
+                    <div className="absolute inset-0 bg-orange-600/80 opacity-40"></div>
                 </div>
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                        About Recent and Rhythm Tours and Travels
-                    </h1>
-                    <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-                        Connecting the world through exceptional travel experiences, one journey at a time
-                    </p>
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold text-white">About Recent and Rhythm Tours and Travels</h1>
+                            <p className="text-orange-100 mt-1">Connecting the world through exceptional travel experiences, one journey at a time</p>
+                        </div>
+                    </div>
                 </div>
-            </section>
+            </div>
 
             {/* Company Story Section */}
             <section className="py-20 bg-white">
@@ -132,9 +134,9 @@ const AboutPage = () => {
                                 alt="Team working together"
                                 className="rounded-2xl shadow-2xl"
                             />
-                            <div className="absolute -bottom-6 -right-6 bg-blue-600 text-white p-6 rounded-xl shadow-lg">
+                            <div className="absolute -bottom-6 -right-6 bg-orange-500 text-white p-6 rounded-xl shadow-lg">
                                 <div className="text-3xl font-bold">10M+</div>
-                                <div className="text-blue-100">Happy Travelers</div>
+                                <div className="text-orange-100">Happy Travelers</div>
                             </div>
                         </div>
                     </div>
@@ -155,8 +157,8 @@ const AboutPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                         <div className="bg-white p-8 rounded-2xl shadow-lg">
-                            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                                <svg className="w-8 h-8 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
                             </div>
@@ -201,8 +203,8 @@ const AboutPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {values.map((value, index) => (
                             <div key={index} className="text-center group">
-                                <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-100 transition-colors duration-300">
-                                    <div className="text-blue-600 group-hover:scale-110 transition-transform duration-300">
+                                <div className="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-orange-100 transition-colors duration-300">
+                                    <div className="text-orange-500 group-hover:scale-110 transition-transform duration-300">
                                         {value.icon}
                                     </div>
                                 </div>
@@ -239,13 +241,13 @@ const AboutPage = () => {
                                         alt={member.name}
                                         className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    <div className="absolute inset-0 bg-orange-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                 </div>
                                 <div className="p-6">
                                     <h3 className="text-xl font-bold text-gray-900 mb-1">
                                         {member.name}
                                     </h3>
-                                    <p className="text-blue-600 font-semibold mb-3">
+                                    <p className="text-orange-500 font-semibold mb-3">
                                         {member.position}
                                     </p>
                                     <p className="text-gray-600 text-sm leading-relaxed">
@@ -271,13 +273,13 @@ const AboutPage = () => {
                     </div>
 
                     <div className="relative">
-                        <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-blue-200"></div>
+                        <div className="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-orange-200"></div>
                         <div className="space-y-12">
                             {milestones.map((milestone, index) => (
                                 <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
                                     <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8 text-left'}`}>
                                         <div className="bg-white p-6 rounded-xl shadow-lg">
-                                            <div className="text-2xl font-bold text-blue-600 mb-2">
+                                            <div className="text-2xl font-bold text-orange-500 mb-2">
                                                 {milestone.year}
                                             </div>
                                             <h3 className="text-xl font-bold text-gray-900 mb-2">
@@ -288,7 +290,7 @@ const AboutPage = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow-lg z-10"></div>
+                                    <div className="w-8 h-8 bg-orange-500 rounded-full border-4 border-white shadow-lg z-10"></div>
                                     <div className="w-1/2"></div>
                                 </div>
                             ))}
@@ -298,20 +300,20 @@ const AboutPage = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+            <section className="py-20 bg-green-500">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
                         Ready to Start Your Journey?
                     </h2>
-                    <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                    <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
                         Join millions of travelers who trust Recent and Rhythm Tours and Travels for their dream vacations.
                         Let us help you create unforgettable memories.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button className="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-colors duration-300 shadow-lg">
+                        <button className="bg-white text-orange-500 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-colors duration-300 shadow-lg">
                             Book Your Trip
                         </button>
-                        <button className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold py-4 px-8 rounded-lg transition-all duration-300">
+                        <button className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-500 font-semibold py-4 px-8 rounded-lg transition-all duration-300">
                             Contact Us
                         </button>
                     </div>

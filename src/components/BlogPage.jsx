@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  CalendarIcon, 
-  UserIcon, 
+import {
+  CalendarIcon,
+  UserIcon,
   ClockIcon,
   MapPinIcon,
   StarIcon,
@@ -135,23 +135,23 @@ const BlogPage = () => {
   const filteredPosts = blogPosts.filter(post => {
     const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
     });
   };
 
   const getCategoryColor = (category) => {
     const colors = {
-      destinations: 'bg-blue-100 text-blue-800',
+      destinations: 'bg-orange-100 text-orange-800',
       'travel-tips': 'bg-green-100 text-green-800',
       'airline-news': 'bg-purple-100 text-purple-800',
       'hotel-reviews': 'bg-yellow-100 text-yellow-800',
@@ -163,14 +163,22 @@ const BlogPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Travel Blog</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Discover travel inspiration, tips, and insights from our travel experts. 
-              From destination guides to airline updates, we've got everything you need for your next adventure.
-            </p>
+      <div className="relative bg-orange-500 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="images/white-clouds-blue-sky-daytime.jpg"
+            alt="Airplane flying over clouds"
+            className="w-full h-full object-cover opacity-100"
+          />
+          <div className="absolute inset-0 bg-orange-600/80 opacity-40"></div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-white">Travel Blog</h1>
+              <p className="text-orange-100 mt-1">Discover travel inspiration, tips, and insights from our travel experts</p>
+            </div>
           </div>
         </div>
       </div>
@@ -186,7 +194,7 @@ const BlogPage = () => {
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
               />
               <svg className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -199,11 +207,10 @@ const BlogPage = () => {
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    selectedCategory === category.id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                  }`}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${selectedCategory === category.id
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                    }`}
                 >
                   {category.name} ({category.count})
                 </button>
@@ -220,8 +227,8 @@ const BlogPage = () => {
               <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden">
                 <div className="md:flex">
                   <div className="md:w-1/2">
-                    <img 
-                      src={post.image} 
+                    <img
+                      src={post.image}
                       alt={post.title}
                       className="w-full h-64 md:h-full object-cover"
                     />
@@ -234,14 +241,14 @@ const BlogPage = () => {
                       <span className="text-gray-500 text-sm">•</span>
                       <span className="text-gray-500 text-sm">{formatDate(post.publishDate)}</span>
                     </div>
-                    
+
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">{post.title}</h3>
                     <p className="text-gray-600 mb-6 leading-relaxed">{post.excerpt}</p>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <img 
-                          src={post.authorAvatar} 
+                        <img
+                          src={post.authorAvatar}
                           alt={post.author}
                           className="w-10 h-10 rounded-full"
                         />
@@ -253,13 +260,13 @@ const BlogPage = () => {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center space-x-4">
                         <button className="flex items-center space-x-2 text-gray-500 hover:text-red-500 transition-colors">
                           <HeartIcon className="w-5 h-5" />
                           <span className="text-sm">{post.likes}</span>
                         </button>
-                        <button className="text-gray-500 hover:text-blue-500 transition-colors">
+                        <button className="text-gray-500 hover:text-orange-500 transition-colors">
                           <ShareIcon className="w-5 h-5" />
                         </button>
                         <button className="text-gray-500 hover:text-yellow-500 transition-colors">
@@ -280,8 +287,8 @@ const BlogPage = () => {
             <article key={post.id} className="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-lg transition-shadow">
               {/* Post Image */}
               <div className="relative">
-                <img 
-                  src={post.image} 
+                <img
+                  src={post.image}
                   alt={post.title}
                   className="w-full h-48 object-cover"
                 />
@@ -313,7 +320,7 @@ const BlogPage = () => {
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {post.tags.slice(0, 3).map((tag, index) => (
-                    <span 
+                    <span
                       key={index}
                       className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded"
                     >
@@ -325,8 +332,8 @@ const BlogPage = () => {
                 {/* Author and Stats */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <img 
-                      src={post.authorAvatar} 
+                    <img
+                      src={post.authorAvatar}
                       alt={post.author}
                       className="w-8 h-8 rounded-full"
                     />
@@ -338,13 +345,13 @@ const BlogPage = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center space-x-3">
                     <button className="flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors">
                       <HeartIcon className="w-4 h-4" />
                       <span className="text-sm">{post.likes}</span>
                     </button>
-                    <button className="text-gray-500 hover:text-blue-500 transition-colors">
+                    <button className="text-gray-500 hover:text-orange-500 transition-colors">
                       <ShareIcon className="w-4 h-4" />
                     </button>
                   </div>
@@ -355,9 +362,9 @@ const BlogPage = () => {
         </div>
 
         {/* Newsletter Signup */}
-        <div className="mt-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
+        <div className="mt-16 bg-green-500 rounded-2xl p-8 text-center text-white">
           <h3 className="text-2xl font-bold mb-4">Stay Updated with Travel Insights</h3>
-          <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+          <p className="text-green-100 mb-6 max-w-2xl mx-auto">
             Get the latest travel tips, destination guides, and exclusive offers delivered to your inbox every week.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
@@ -366,7 +373,7 @@ const BlogPage = () => {
               placeholder="Enter your email address"
               className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:ring-2 focus:ring-white focus:outline-none"
             />
-            <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+            <button className="bg-white text-green-500 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors">
               Subscribe
             </button>
           </div>

@@ -110,24 +110,26 @@ const ContactUs = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            {/* Hero Section */}
-            <section className="relative bg-gradient-to-br from-blue-900 via-blue-800 to-blue-700 py-20">
+            {/* Header */}
+            <div className="relative bg-orange-500 overflow-hidden">
+                {/* Background Image */}
                 <div className="absolute inset-0">
                     <img
                         src="images/white-clouds-blue-sky-daytime.jpg"
-                        alt="Contact Us"
-                        className="w-full h-full object-cover opacity-20"
+                        alt="Airplane flying over clouds"
+                        className="w-full h-full object-cover opacity-100"
                     />
+                    <div className="absolute inset-0 bg-orange-600/80 opacity-40"></div>
                 </div>
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
-                        Contact Us
-                    </h1>
-                    <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-                        Get in touch with us for any questions, support, or travel assistance
-                    </p>
+                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h1 className="text-3xl font-bold text-white">Contact Us</h1>
+                            <p className="text-orange-100 mt-1">Get in touch with us for any questions, support, or travel assistance</p>
+                        </div>
+                    </div>
                 </div>
-            </section>
+            </div>
 
             {/* Contact Info Section */}
             <section className="py-20 bg-white">
@@ -144,8 +146,8 @@ const ContactUs = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {contactInfo.map((info, index) => (
                             <div key={index} className="text-center group">
-                                <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-100 transition-colors duration-300">
-                                    <div className="text-blue-600 group-hover:scale-110 transition-transform duration-300">
+                                <div className="bg-orange-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-orange-100 transition-colors duration-300">
+                                    <div className="text-orange-500 group-hover:scale-110 transition-transform duration-300">
                                         {info.icon}
                                     </div>
                                 </div>
@@ -190,7 +192,7 @@ const ContactUs = () => {
                                             value={formData.name}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors duration-200"
                                             placeholder="Enter your full name"
                                         />
                                     </div>
@@ -205,7 +207,7 @@ const ContactUs = () => {
                                             value={formData.email}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors duration-200"
                                             placeholder="Enter your email"
                                         />
                                     </div>
@@ -222,7 +224,7 @@ const ContactUs = () => {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleInputChange}
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors duration-200"
                                             placeholder="Enter your phone number"
                                         />
                                     </div>
@@ -236,7 +238,7 @@ const ContactUs = () => {
                                             value={formData.subject}
                                             onChange={handleInputChange}
                                             required
-                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors duration-200"
                                         >
                                             <option value="">Select a subject</option>
                                             <option value="general">General Inquiry</option>
@@ -260,7 +262,7 @@ const ContactUs = () => {
                                         onChange={handleInputChange}
                                         required
                                         rows={6}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-colors duration-200 resize-none"
                                         placeholder="Tell us how we can help you..."
                                     />
                                 </div>
@@ -268,7 +270,7 @@ const ContactUs = () => {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold py-4 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center"
+                                    className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-orange-400 text-white font-semibold py-4 px-8 rounded-lg transition-colors duration-300 flex items-center justify-center"
                                 >
                                     {isSubmitting ? (
                                         <>
@@ -312,11 +314,11 @@ const ContactUs = () => {
                             </div>
 
                             {/* Quick Contact */}
-                            <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
+                            <div className="bg-green-500 rounded-2xl p-8 text-white">
                                 <h3 className="text-2xl font-bold mb-4">
                                     Need Immediate Help?
                                 </h3>
-                                <p className="text-blue-100 mb-6">
+                                <p className="text-green-100 mb-6">
                                     For urgent travel assistance or emergency support, call our 24/7 helpline.
                                 </p>
                                 <div className="space-y-3">
@@ -367,19 +369,19 @@ const ContactUs = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+            <section className="py-20 bg-green-500">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
                         Ready to Start Your Journey?
                     </h2>
-                    <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                    <p className="text-xl text-orange-100 mb-8 max-w-2xl mx-auto">
                         Have questions about our services? We're here to help you plan the perfect trip.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button className="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-colors duration-300 shadow-lg">
+                        <button className="bg-white text-orange-500 hover:bg-gray-100 font-semibold py-4 px-8 rounded-lg transition-colors duration-300 shadow-lg">
                             Book Your Trip
                         </button>
-                        <button className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-600 font-semibold py-4 px-8 rounded-lg transition-all duration-300">
+                        <button className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-green-500 font-semibold py-4 px-8 rounded-lg transition-all duration-300">
                             Call Us Now
                         </button>
                     </div>

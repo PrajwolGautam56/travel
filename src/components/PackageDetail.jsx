@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 const PackageDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const [bookingData, setBookingData] = useState({
     departureDate: '',
     guests: 1,
@@ -163,8 +163,17 @@ const PackageDetail = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="relative bg-orange-500 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="images/white-clouds-blue-sky-daytime.jpg"
+            alt="Airplane flying over clouds"
+            className="w-full h-full object-cover opacity-100"
+          />
+          <div className="absolute inset-0 bg-orange-600/80 opacity-40"></div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <button
@@ -207,16 +216,16 @@ const PackageDetail = () => {
             <div className="mb-8">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <img 
-                    src={packageData.gallery[0]} 
+                  <img
+                    src={packageData.gallery[0]}
                     alt={packageData.title}
                     className="w-full h-80 object-cover rounded-xl"
                   />
                 </div>
                 {packageData.gallery.slice(1, 4).map((image, index) => (
                   <div key={index}>
-                    <img 
-                      src={image} 
+                    <img
+                      src={image}
                       alt={`${packageData.title} ${index + 2}`}
                       className="w-full h-40 object-cover rounded-xl"
                     />
@@ -229,7 +238,7 @@ const PackageDetail = () => {
             <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Package</h2>
               <p className="text-gray-700 mb-6">{packageData.description}</p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Highlights</h3>
@@ -244,7 +253,7 @@ const PackageDetail = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Package Type</h3>
                   <div className="space-y-2 text-gray-700">
@@ -273,7 +282,7 @@ const PackageDetail = () => {
                     ))}
                   </ul>
                 </div>
-                
+
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3 text-red-600">What's Not Included</h3>
                   <ul className="space-y-2">
@@ -295,16 +304,16 @@ const PackageDetail = () => {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Detailed Itinerary</h2>
               <div className="space-y-6">
                 {packageData.itinerary.map((day) => (
-                  <div key={day.day} className="border-l-4 border-blue-500 pl-6">
+                  <div key={day.day} className="border-l-4 border-orange-500 pl-6">
                     <div className="flex items-start justify-between mb-3">
                       <h3 className="text-xl font-bold text-gray-900">Day {day.day}: {day.title}</h3>
                       <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
                         {day.accommodation}
                       </span>
                     </div>
-                    
+
                     <p className="text-gray-700 mb-3">{day.description}</p>
-                    
+
                     <div className="mb-3">
                       <h4 className="text-sm font-semibold text-gray-900 mb-2">Activities:</h4>
                       <div className="flex flex-wrap gap-2">
@@ -315,7 +324,7 @@ const PackageDetail = () => {
                         ))}
                       </div>
                     </div>
-                    
+
                     <div className="text-sm text-gray-600">
                       <span className="font-medium">Meals:</span> {day.meals}
                     </div>
@@ -346,10 +355,10 @@ const PackageDetail = () => {
                         <span className="ml-2 text-sm font-medium text-gray-900">{hotel.rating}</span>
                       </div>
                     </div>
-                    
+
                     <p className="text-gray-600 mb-3">{hotel.location}</p>
                     <p className="text-gray-700 mb-3">{hotel.description}</p>
-                    
+
                     <div>
                       <h4 className="text-sm font-semibold text-gray-900 mb-2">Amenities:</h4>
                       <div className="flex flex-wrap gap-2">
@@ -377,7 +386,7 @@ const PackageDetail = () => {
                     <p><span className="font-medium">Age:</span> {packageData.terms.age}</p>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Cancellation & Insurance</h3>
                   <div className="space-y-2 text-gray-700">
@@ -399,9 +408,9 @@ const PackageDetail = () => {
                   {packageData.discount}
                 </div>
               </div>
-              
+
               <h3 className="text-xl font-bold text-gray-900 mb-4">Book This Package</h3>
-              
+
               <form onSubmit={handleBooking} className="space-y-4">
                 {/* Departure Date */}
                 <div>

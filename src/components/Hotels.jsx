@@ -57,8 +57,8 @@ const Hotels = () => {
             <div key={hotel.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-100">
               {/* Hotel Image */}
               <div className="relative h-48">
-                <img 
-                  src={hotel.image} 
+                <img
+                  src={hotel.image}
                   alt={hotel.name}
                   className="w-full h-full object-cover"
                 />
@@ -78,7 +78,7 @@ const Hotels = () => {
               <div className="p-6">
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
                 <p className="text-gray-600 mb-3">{hotel.location}</p>
-                
+
                 {/* Rating and Reviews */}
                 <div className="flex items-center mb-4">
                   <div className="flex items-center">
@@ -111,12 +111,12 @@ const Hotels = () => {
                 {/* Price and Book Button */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">{hotel.price}</div>
+                    <div className="text-2xl font-bold text-orange-500">{hotel.price}</div>
                     <div className="text-sm text-gray-500">{hotel.perNight}</div>
                   </div>
                   <Link
                     to="/hotels"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 cursor-pointer"
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 cursor-pointer"
                   >
                     Book Now
                   </Link>
@@ -130,7 +130,7 @@ const Hotels = () => {
         <div className="text-center">
           <Link
             to="/hotels"
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center px-6 py-3 bg-orange-500 text-white font-semibold rounded-lg hover:bg-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             View All Hotels
             <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

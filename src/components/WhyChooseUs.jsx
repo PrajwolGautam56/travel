@@ -81,8 +81,8 @@ const WhyChooseUs = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature) => (
             <div key={feature.id} className="text-center group">
-              <div className="bg-blue-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-blue-100 transition-colors duration-300">
-                <div className="text-blue-600 group-hover:scale-110 transition-transform duration-300">
+              <div className="bg-orange-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-orange-100 transition-colors duration-300">
+                <div className="text-orange-500 group-hover:scale-110 transition-transform duration-300">
                   {feature.icon}
                 </div>
               </div>
@@ -97,23 +97,23 @@ const WhyChooseUs = () => {
         </div>
 
         {/* Stats Section */}
-        <div className="mt-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 md:p-12">
+        <div className="mt-20 bg-orange-500 rounded-3xl p-8 md:p-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">10M+</div>
-              <div className="text-blue-100">Happy Travelers</div>
+              <div className="text-orange-100">Happy Travelers</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">500+</div>
-              <div className="text-blue-100">Airlines</div>
+              <div className="text-orange-100">Airlines</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">1M+</div>
-              <div className="text-blue-100">Hotels</div>
+              <div className="text-orange-100">Hotels</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">200+</div>
-              <div className="text-blue-100">Countries</div>
+              <div className="text-orange-100">Countries</div>
             </div>
           </div>
         </div>
@@ -127,10 +127,10 @@ const WhyChooseUs = () => {
             Join millions of travelers who trust Recent and Rhythm Tours and Travels for their dream vacations
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300">
+            <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300">
               Book Your Trip
             </button>
-            <button className="bg-transparent border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300">
+            <button className="bg-transparent border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300">
               Contact Us
             </button>
           </div>
