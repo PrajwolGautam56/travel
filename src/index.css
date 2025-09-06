@@ -48,9 +48,75 @@ body {
   background: #a8a8a8;
 }
 
-/* Smooth scrolling */
+/* Smooth scrolling with faster upward scroll */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 0;
+}
+
+/* Faster upward scrolling */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Custom scroll speed for upward movement */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Override for faster upward scrolling */
+  body {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Enhanced scroll performance */
+* {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Faster scroll wheel response */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 0;
+  scroll-snap-type: none;
+}
+
+/* Optimize scroll performance */
+body {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 640px) {
+  /* Ensure text is readable on mobile */
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* Improve touch targets */
+  button,
+  a,
+  input,
+  select {
+    min-height: 44px;
+  }
+
+  /* Prevent horizontal scroll */
+  .overflow-x-hidden {
+    overflow-x: hidden;
+  }
+
+  /* Better spacing for mobile */
+  .mobile-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 
 /* Sub-navigation animations */
@@ -107,5 +173,21 @@ html {
   }
   100% {
     transform: scale(1);
+  }
+}
+
+/* Page transition animations */
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

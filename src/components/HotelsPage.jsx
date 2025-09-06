@@ -16,7 +16,7 @@ const HotelsPage = () => {
   const [viewMode, setViewMode] = useState('grid'); // grid or list
 
   const amenities = [
-    'Free WiFi', 'Pool', 'Spa', 'Gym', 'Restaurant', 'Bar', 'Room Service', 
+    'Free WiFi', 'Pool', 'Spa', 'Gym', 'Restaurant', 'Bar', 'Room Service',
     'Airport Shuttle', 'Parking', 'Pet Friendly', 'Business Center', 'Concierge'
   ];
 
@@ -132,27 +132,36 @@ const HotelsPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
+      <div className="relative bg-orange-500 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="images/white-clouds-blue-sky-daytime.jpg"
+            alt="Airplane flying over clouds"
+            className="w-full h-full object-cover opacity-100"
+          />
+          <div className="absolute inset-0 bg-orange-600/80 opacity-40"></div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Hotels & Resorts</h1>
-              <p className="text-gray-600 mt-1">Find your perfect stay worldwide</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white">Hotels & Resorts</h1>
+              <p className="text-sm sm:text-base text-orange-100 mt-1">Find your perfect stay worldwide</p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-blue-100 text-orange-500' : 'text-gray-400 hover:text-gray-600'}`}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-blue-100 text-orange-500' : 'text-gray-400 hover:text-gray-600'}`}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                 </svg>
               </button>
@@ -161,53 +170,53 @@ const HotelsPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:w-1/4">
-            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
-              
+          <div className="lg:w-1/4 order-2 lg:order-1">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 sticky top-8">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Filters</h3>
+
               {/* Location */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Location</label>
                 <input
                   type="text"
                   placeholder="Where are you going?"
                   value={filters.location}
                   onChange={(e) => handleFilterChange('location', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
 
               {/* Dates */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Check-in</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Check-in</label>
                 <input
                   type="date"
                   value={filters.checkIn}
                   onChange={(e) => handleFilterChange('checkIn', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
 
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Check-out</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Check-out</label>
                 <input
                   type="date"
                   value={filters.checkOut}
                   onChange={(e) => handleFilterChange('checkOut', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
 
               {/* Guests & Rooms */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Guests</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Guests</label>
                 <select
                   value={filters.guests}
                   onChange={(e) => handleFilterChange('guests', parseInt(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 >
                   {[1, 2, 3, 4, 5, 6].map(num => (
                     <option key={num} value={num}>{num} Guest{num > 1 ? 's' : ''}</option>
@@ -215,12 +224,12 @@ const HotelsPage = () => {
                 </select>
               </div>
 
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Rooms</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Rooms</label>
                 <select
                   value={filters.rooms}
                   onChange={(e) => handleFilterChange('rooms', parseInt(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 >
                   {[1, 2, 3, 4, 5].map(num => (
                     <option key={num} value={num}>{num} Room{num > 1 ? 's' : ''}</option>
@@ -229,33 +238,33 @@ const HotelsPage = () => {
               </div>
 
               {/* Price Range */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Price Range (₹)</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Price Range (₹)</label>
                 <div className="flex space-x-2">
                   <input
                     type="number"
                     placeholder="Min"
                     value={filters.priceRange[0]}
                     onChange={(e) => handleFilterChange('priceRange', [parseInt(e.target.value), filters.priceRange[1]])}
-                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-1/2 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                   <input
                     type="number"
                     placeholder="Max"
                     value={filters.priceRange[1]}
                     onChange={(e) => handleFilterChange('priceRange', [filters.priceRange[0], parseInt(e.target.value)])}
-                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-1/2 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Rating */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Rating</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Minimum Rating</label>
                 <select
                   value={filters.rating}
                   onChange={(e) => handleFilterChange('rating', parseInt(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 >
                   <option value={0}>Any rating</option>
                   <option value={4}>4+ stars</option>
@@ -265,8 +274,8 @@ const HotelsPage = () => {
               </div>
 
               {/* Amenities */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Amenities</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Amenities</label>
                 <div className="space-y-2">
                   {amenities.map(amenity => (
                     <label key={amenity} className="flex items-center">
@@ -274,51 +283,51 @@ const HotelsPage = () => {
                         type="checkbox"
                         checked={filters.amenities.includes(amenity)}
                         onChange={() => handleAmenityToggle(amenity)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-300 rounded"
                       />
-                      <span className="ml-2 text-sm text-gray-700">{amenity}</span>
+                      <span className="ml-2 text-xs sm:text-sm text-gray-700">{amenity}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Apply Filters Button */}
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
+              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base">
                 Apply Filters
               </button>
             </div>
           </div>
 
           {/* Hotel Listings */}
-          <div className="lg:w-3/4">
-            <div className="mb-6">
-              <p className="text-gray-600">Showing {hotels.length} hotels</p>
+          <div className="lg:w-3/4 order-1 lg:order-2">
+            <div className="mb-4 sm:mb-6">
+              <p className="text-sm sm:text-base text-gray-600">Showing {hotels.length} hotels</p>
             </div>
 
-            <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-6'}>
+            <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6' : 'space-y-4 sm:space-y-6'}>
               {hotels.map((hotel) => (
                 <div key={hotel.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  <div className={viewMode === 'grid' ? 'block' : 'flex'}>
+                  <div className={viewMode === 'grid' ? 'block' : 'flex flex-col sm:flex-row'}>
                     {/* Hotel Image */}
-                    <div className={viewMode === 'grid' ? 'h-64' : 'w-80 h-64'}>
-                      <img 
-                        src={hotel.image} 
+                    <div className={viewMode === 'grid' ? 'h-48 sm:h-64' : 'w-full sm:w-80 h-48 sm:h-64'}>
+                      <img
+                        src={hotel.image}
                         alt={hotel.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
 
                     {/* Hotel Content */}
-                    <div className="p-6 flex-1">
-                      <div className="flex items-start justify-between mb-3">
+                    <div className="p-4 sm:p-6 flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 space-y-2 sm:space-y-0">
                         <div className="flex-1">
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
-                          <p className="text-gray-600 mb-2">{hotel.location}</p>
-                          <p className="text-gray-700 text-sm mb-4">{hotel.description}</p>
+                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">{hotel.name}</h3>
+                          <p className="text-sm sm:text-base text-gray-600 mb-2">{hotel.location}</p>
+                          <p className="text-xs sm:text-sm text-gray-700 mb-4 hidden sm:block">{hotel.description}</p>
                         </div>
-                        <div className="text-right ml-4">
-                          <div className="text-2xl font-bold text-blue-600">{hotel.price}</div>
-                          <div className="text-sm text-gray-500">{hotel.perNight}</div>
+                        <div className="text-left sm:text-right">
+                          <div className="text-xl sm:text-2xl font-bold text-orange-500">{hotel.price}</div>
+                          <div className="text-xs sm:text-sm text-gray-500">{hotel.perNight}</div>
                           <div className="mt-2">
                             <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                               {hotel.discount}
@@ -328,22 +337,22 @@ const HotelsPage = () => {
                       </div>
 
                       {/* Rating and Stars */}
-                      <div className="flex items-center mb-4">
+                      <div className="flex items-center mb-3 sm:mb-4">
                         <div className="flex items-center">
                           {[...Array(hotel.stars)].map((_, i) => (
-                            <svg key={i} className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <svg key={i} className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                           ))}
                         </div>
-                        <span className="ml-2 text-sm font-medium text-gray-900">{hotel.rating}</span>
-                        <span className="ml-1 text-sm text-gray-500">({hotel.reviews} reviews)</span>
+                        <span className="ml-2 text-xs sm:text-sm font-medium text-gray-900">{hotel.rating}</span>
+                        <span className="ml-1 text-xs sm:text-sm text-gray-500">({hotel.reviews} reviews)</span>
                       </div>
 
                       {/* Highlights */}
-                      <div className="mb-4">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-2">Highlights:</h4>
-                        <div className="flex flex-wrap gap-2">
+                      <div className="mb-3 sm:mb-4">
+                        <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2">Highlights:</h4>
+                        <div className="flex flex-wrap gap-1 sm:gap-2">
                           {hotel.highlights.map((highlight, index) => (
                             <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                               {highlight}
@@ -353,9 +362,9 @@ const HotelsPage = () => {
                       </div>
 
                       {/* Amenities */}
-                      <div className="mb-6">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-2">Amenities:</h4>
-                        <div className="flex flex-wrap gap-2">
+                      <div className="mb-4 sm:mb-6">
+                        <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2">Amenities:</h4>
+                        <div className="flex flex-wrap gap-1 sm:gap-2">
                           {hotel.amenities.map((amenity, index) => (
                             <span key={index} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
                               {amenity}
@@ -367,7 +376,7 @@ const HotelsPage = () => {
                       {/* Book Button */}
                       <Link
                         to={`/hotels/${hotel.id}`}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 inline-block text-center"
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors duration-300 inline-block text-center text-sm sm:text-base"
                       >
                         Book Now
                       </Link>

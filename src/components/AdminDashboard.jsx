@@ -41,77 +41,77 @@ const AdminDashboard = () => {
   const renderOverview = () => (
     <div className="space-y-8">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 rounded-2xl p-8 text-white">
-        <div className="flex items-center justify-between">
+      <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800 rounded-xl sm:rounded-2xl p-4 sm:p-8 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Welcome back, {adminUser?.name}!</h1>
-            <p className="text-blue-100 text-lg">Here's what's happening with Recent and Rhythm Tours and Travels today</p>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Welcome back, {adminUser?.name}!</h1>
+            <p className="text-blue-100 text-sm sm:text-lg">Here's what's happening with Recent and Rhythm Tours and Travels today</p>
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden sm:block">
             <div className="text-right">
-              <p className="text-blue-100 text-sm">Current Time</p>
-              <p className="text-2xl font-bold">{new Date().toLocaleTimeString()}</p>
+              <p className="text-blue-100 text-xs sm:text-sm">Current Time</p>
+              <p className="text-lg sm:text-2xl font-bold">{new Date().toLocaleTimeString()}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Statistics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-blue-500 hover:shadow-2xl transition-all duration-300">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border-l-4 border-blue-500 hover:shadow-2xl transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Total Bookings</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.totalBookings.toLocaleString()}</p>
-              <p className="text-sm text-green-600 font-medium">+12% from last month</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Bookings</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.totalBookings.toLocaleString()}</p>
+              <p className="text-xs sm:text-sm text-green-600 font-medium">+12% from last month</p>
             </div>
-            <div className="p-4 bg-blue-100 rounded-2xl">
-              <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-3 sm:p-4 bg-blue-100 rounded-xl sm:rounded-2xl">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-green-500 hover:shadow-2xl transition-all duration-300">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border-l-4 border-green-500 hover:shadow-2xl transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Total Revenue</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.totalRevenue}</p>
-              <p className="text-sm text-green-600 font-medium">+8% from last month</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Total Revenue</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.totalRevenue}</p>
+              <p className="text-xs sm:text-sm text-green-600 font-medium">+8% from last month</p>
             </div>
-            <div className="p-4 bg-green-100 rounded-2xl">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-3 sm:p-4 bg-green-100 rounded-xl sm:rounded-2xl">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-purple-500 hover:shadow-2xl transition-all duration-300">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border-l-4 border-purple-500 hover:shadow-2xl transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Active Users</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.activeUsers.toLocaleString()}</p>
-              <p className="text-sm text-purple-600 font-medium">+15% from last month</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Active Users</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.activeUsers.toLocaleString()}</p>
+              <p className="text-xs sm:text-sm text-purple-600 font-medium">+15% from last month</p>
             </div>
-            <div className="p-4 bg-purple-100 rounded-2xl">
-              <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-3 sm:p-4 bg-purple-100 rounded-xl sm:rounded-2xl">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-l-4 border-yellow-500 hover:shadow-2xl transition-all duration-300">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border-l-4 border-yellow-500 hover:shadow-2xl transition-all duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600 mb-1">Pending Approvals</p>
-              <p className="text-3xl font-bold text-gray-900">{stats.pendingApprovals}</p>
-              <p className="text-sm text-yellow-600 font-medium">Requires attention</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 mb-1">Pending Approvals</p>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">{stats.pendingApprovals}</p>
+              <p className="text-xs sm:text-sm text-yellow-600 font-medium">Requires attention</p>
             </div>
-            <div className="p-4 bg-yellow-100 rounded-2xl">
-              <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-3 sm:p-4 bg-yellow-100 rounded-xl sm:rounded-2xl">
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -120,38 +120,38 @@ const AdminDashboard = () => {
       </div>
 
       {/* Quick Stats Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-blue-700 mb-1">Flights Today</p>
-              <p className="text-2xl font-bold text-blue-900">{stats.flightsToday}</p>
+              <p className="text-xs sm:text-sm font-medium text-blue-700 mb-1">Flights Today</p>
+              <p className="text-xl sm:text-2xl font-bold text-blue-900">{stats.flightsToday}</p>
             </div>
-            <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2" />
             </svg>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-green-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-700 mb-1">Hotels Occupied</p>
-              <p className="text-2xl font-bold text-green-900">{stats.hotelsOccupied}</p>
+              <p className="text-xs sm:text-sm font-medium text-green-700 mb-1">Hotels Occupied</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-900">{stats.hotelsOccupied}</p>
             </div>
-            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-200">
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-purple-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-purple-700 mb-1">Packages Sold</p>
-              <p className="text-2xl font-bold text-purple-900">{stats.packagesSold}</p>
+              <p className="text-xs sm:text-sm font-medium text-purple-700 mb-1">Packages Sold</p>
+              <p className="text-xl sm:text-2xl font-bold text-purple-900">{stats.packagesSold}</p>
             </div>
-            <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 sm:w-8 sm:h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
           </div>
@@ -159,61 +159,63 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Bookings Table */}
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+      <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden">
+        <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Bookings</h3>
-            <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">View All</button>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900">Recent Bookings</h3>
+            <button className="text-blue-600 hover:text-blue-700 font-medium text-xs sm:text-sm">View All</button>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Service</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Service</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {recentBookings.map((booking) => (
                 <tr key={booking.id} className="hover:bg-gray-50 transition-colors duration-200">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                        <span className="text-white text-sm font-medium">
+                      <div className="h-6 w-6 sm:h-8 sm:w-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white text-xs sm:text-sm font-medium">
                           {booking.customer.split(' ').map(n => n[0]).join('')}
                         </span>
                       </div>
-                      <div className="ml-3">
-                        <p className="text-sm font-medium text-gray-900">{booking.customer}</p>
+                      <div className="ml-2 sm:ml-3">
+                        <p className="text-xs sm:text-sm font-medium text-gray-900">{booking.customer}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{booking.service}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-900">{booking.service}</td>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${booking.type === 'Package' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
                       }`}>
                       {booking.type}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{booking.amount}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full ${booking.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
-                        booking.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-semibold text-gray-900">{booking.amount}</td>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2 sm:px-3 py-1 text-xs font-semibold rounded-full ${booking.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
+                      booking.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
                       }`}>
                       {booking.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{booking.date}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button className="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                    <button className="text-red-600 hover:text-red-900">Delete</button>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">{booking.date}</td>
+                  <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
+                    <div className="flex space-x-1 sm:space-x-2">
+                      <button className="text-blue-600 hover:text-blue-900">Edit</button>
+                      <button className="text-red-600 hover:text-red-900">Delete</button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -462,8 +464,8 @@ const AdminDashboard = () => {
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${activeTab === item.id
-                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                     }`}
                 >
                   <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

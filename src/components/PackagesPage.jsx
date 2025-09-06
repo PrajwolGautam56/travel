@@ -279,27 +279,36 @@ const PackagesPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
+      <div className="relative bg-orange-500 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="images/white-clouds-blue-sky-daytime.jpg"
+            alt="Airplane flying over clouds"
+            className="w-full h-full object-cover opacity-100"
+          />
+          <div className="absolute inset-0 bg-orange-600/80 opacity-40"></div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Holiday Packages</h1>
-              <p className="text-gray-600 mt-1">All-inclusive travel experiences worldwide</p>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white">Holiday Packages</h1>
+              <p className="text-sm sm:text-base text-orange-100 mt-1">All-inclusive travel experiences worldwide</p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-orange-100 text-orange-500' : 'text-gray-400 hover:text-gray-600'}`}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-blue-100 text-blue-600' : 'text-gray-400 hover:text-gray-600'}`}
+                className={`p-2 rounded-lg ${viewMode === 'list' ? 'bg-orange-100 text-orange-500' : 'text-gray-400 hover:text-gray-600'}`}
               >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
                 </svg>
               </button>
@@ -308,32 +317,32 @@ const PackagesPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="flex flex-col lg:flex-row gap-6 sm:gap-8">
           {/* Filters Sidebar */}
-          <div className="lg:w-1/4">
-            <div className="bg-white rounded-xl shadow-lg p-6 sticky top-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
-              
+          <div className="lg:w-1/4 order-2 lg:order-1">
+            <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 sticky top-8">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Filters</h3>
+
               {/* Destination */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Destination</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Destination</label>
                 <input
                   type="text"
                   placeholder="Where do you want to go?"
                   value={filters.destination}
                   onChange={(e) => handleFilterChange('destination', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
 
               {/* Package Type */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Package Type</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Package Type</label>
                 <select
                   value={filters.packageType}
                   onChange={(e) => handleFilterChange('packageType', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 >
                   {packageTypes.map(type => (
                     <option key={type} value={type === 'All Packages' ? 'all' : type.toLowerCase()}>
@@ -344,12 +353,12 @@ const PackagesPage = () => {
               </div>
 
               {/* Duration */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Duration</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Duration</label>
                 <select
                   value={filters.duration}
                   onChange={(e) => handleFilterChange('duration', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 >
                   <option value="">Any duration</option>
                   <option value="3-5">3-5 Days</option>
@@ -360,44 +369,44 @@ const PackagesPage = () => {
               </div>
 
               {/* Departure Date */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Departure Date</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Departure Date</label>
                 <input
                   type="date"
                   value={filters.departureDate}
                   onChange={(e) => handleFilterChange('departureDate', e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 />
               </div>
 
               {/* Price Range */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Price Range (₹)</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Price Range (₹)</label>
                 <div className="flex space-x-2">
                   <input
                     type="number"
                     placeholder="Min"
                     value={filters.priceRange[0]}
                     onChange={(e) => handleFilterChange('priceRange', [parseInt(e.target.value), filters.priceRange[1]])}
-                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-1/2 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                   <input
                     type="number"
                     placeholder="Max"
                     value={filters.priceRange[1]}
                     onChange={(e) => handleFilterChange('priceRange', [filters.priceRange[0], parseInt(e.target.value)])}
-                    className="w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-1/2 px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                   />
                 </div>
               </div>
 
               {/* Rating */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Rating</label>
+              <div className="mb-4 sm:mb-6">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Minimum Rating</label>
                 <select
                   value={filters.rating}
                   onChange={(e) => handleFilterChange('rating', parseInt(e.target.value))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                 >
                   <option value={0}>Any rating</option>
                   <option value={4}>4+ stars</option>
@@ -407,47 +416,47 @@ const PackagesPage = () => {
               </div>
 
               {/* Apply Filters Button */}
-              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200">
+              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 text-sm sm:text-base">
                 Apply Filters
               </button>
             </div>
           </div>
 
           {/* Package Listings */}
-          <div className="lg:w-3/4">
-            <div className="mb-6">
-              <p className="text-gray-600">Showing {packages.length} packages</p>
+          <div className="lg:w-3/4 order-1 lg:order-2">
+            <div className="mb-4 sm:mb-6">
+              <p className="text-sm sm:text-base text-gray-600">Showing {packages.length} packages</p>
             </div>
 
-            <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 gap-6' : 'space-y-6'}>
+            <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6' : 'space-y-4 sm:space-y-6'}>
               {packages.map((pkg) => (
                 <div key={pkg.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                  <div className={viewMode === 'grid' ? 'block' : 'flex'}>
+                  <div className={viewMode === 'grid' ? 'block' : 'flex flex-col sm:flex-row'}>
                     {/* Package Image */}
-                    <div className={viewMode === 'grid' ? 'h-64' : 'w-80 h-64'}>
-                      <img 
-                        src={pkg.image} 
+                    <div className={viewMode === 'grid' ? 'h-48 sm:h-64' : 'w-full sm:w-80 h-48 sm:h-64'}>
+                      <img
+                        src={pkg.image}
                         alt={pkg.title}
                         className="w-full h-full object-cover"
                       />
                     </div>
 
                     {/* Package Content */}
-                    <div className="p-6 flex-1">
-                      <div className="flex items-start justify-between mb-3">
+                    <div className="p-4 sm:p-6 flex-1">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 space-y-2 sm:space-y-0">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                            <span className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
                               {pkg.packageType}
                             </span>
-                            <span className="text-sm text-gray-500">{pkg.destination}</span>
+                            <span className="text-xs sm:text-sm text-gray-500">{pkg.destination}</span>
                           </div>
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
-                          <p className="text-gray-700 text-sm mb-4">{pkg.description}</p>
+                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">{pkg.title}</h3>
+                          <p className="text-xs sm:text-sm text-gray-700 mb-4 hidden sm:block">{pkg.description}</p>
                         </div>
-                        <div className="text-right ml-4">
-                          <div className="text-2xl font-bold text-blue-600">{pkg.price}</div>
-                          <div className="text-sm text-gray-500 line-through">{pkg.originalPrice}</div>
+                        <div className="text-left sm:text-right">
+                          <div className="text-xl sm:text-2xl font-bold text-orange-500">{pkg.price}</div>
+                          <div className="text-xs sm:text-sm text-gray-500 line-through">{pkg.originalPrice}</div>
                           <div className="mt-2">
                             <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                               {pkg.discount}
@@ -457,30 +466,30 @@ const PackagesPage = () => {
                       </div>
 
                       {/* Rating and Duration */}
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 space-y-2 sm:space-y-0">
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
                             <svg
                               key={i}
-                              className={`w-4 h-4 ${i < Math.floor(pkg.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                              className={`w-3 h-3 sm:w-4 sm:h-4 ${i < Math.floor(pkg.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
                               fill="currentColor"
                               viewBox="0 0 20 20"
                             >
                               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                           ))}
-                          <span className="ml-2 text-sm font-medium text-gray-900">{pkg.rating}</span>
-                          <span className="ml-1 text-sm text-gray-500">({pkg.reviews} reviews)</span>
+                          <span className="ml-2 text-xs sm:text-sm font-medium text-gray-900">{pkg.rating}</span>
+                          <span className="ml-1 text-xs sm:text-sm text-gray-500">({pkg.reviews} reviews)</span>
                         </div>
-                        <div className="text-sm text-gray-600">{pkg.duration}</div>
+                        <div className="text-xs sm:text-sm text-gray-600">{pkg.duration}</div>
                       </div>
 
                       {/* Highlights */}
-                      <div className="mb-4">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-2">Highlights:</h4>
-                        <div className="flex flex-wrap gap-2">
+                      <div className="mb-3 sm:mb-4">
+                        <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2">Highlights:</h4>
+                        <div className="flex flex-wrap gap-1 sm:gap-2">
                           {pkg.highlights.slice(0, 4).map((highlight, index) => (
-                            <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                            <span key={index} className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
                               {highlight}
                             </span>
                           ))}
@@ -488,15 +497,15 @@ const PackagesPage = () => {
                       </div>
 
                       {/* What's Included */}
-                      <div className="mb-6">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-2">What's Included:</h4>
-                        <div className="grid grid-cols-2 gap-2">
+                      <div className="mb-4 sm:mb-6">
+                        <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2">What's Included:</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {pkg.includes.slice(0, 4).map((item, index) => (
-                            <div key={index} className="flex items-center text-sm text-gray-600">
-                              <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <div key={index} className="flex items-center text-xs sm:text-sm text-gray-600">
+                              <svg className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
-                              {item}
+                              <span className="truncate">{item}</span>
                             </div>
                           ))}
                         </div>
@@ -505,7 +514,7 @@ const PackagesPage = () => {
                       {/* Book Button */}
                       <Link
                         to={`/packages/${pkg.id}`}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-300 inline-block text-center"
+                        className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors duration-300 inline-block text-center text-sm sm:text-base"
                       >
                         Book Package
                       </Link>

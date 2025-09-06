@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 const HotelDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
+
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [bookingData, setBookingData] = useState({
     checkIn: '',
@@ -34,7 +34,7 @@ const HotelDetail = () => {
     reviews: 2847,
     stars: 5,
     amenities: [
-      'Free WiFi', 'Spa & Wellness Center', 'Fine Dining Restaurant', 'Fitness Center', 
+      'Free WiFi', 'Spa & Wellness Center', 'Fine Dining Restaurant', 'Fitness Center',
       'Concierge Service', 'Room Service 24/7', 'Business Center', 'Valet Parking',
       'Laundry Service', 'Airport Shuttle', 'Pet Friendly', 'Meeting Rooms'
     ],
@@ -147,13 +147,22 @@ const HotelDetail = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="relative bg-orange-500 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="images/white-clouds-blue-sky-daytime.jpg"
+            alt="Airplane flying over clouds"
+            className="w-full h-full object-cover opacity-100"
+          />
+          <div className="absolute inset-0 bg-orange-600/80 opacity-40"></div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <button
                 onClick={() => navigate('/hotels')}
-                className="text-blue-600 hover:text-blue-700 mb-2 flex items-center"
+                className="text-orange-500 hover:text-blue-700 mb-2 flex items-center"
               >
                 <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -186,16 +195,16 @@ const HotelDetail = () => {
             <div className="mb-8">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <img 
-                    src={hotel.gallery[0]} 
+                  <img
+                    src={hotel.gallery[0]}
                     alt={hotel.name}
                     className="w-full h-80 object-cover rounded-xl"
                   />
                 </div>
                 {hotel.gallery.slice(1, 4).map((image, index) => (
                   <div key={index}>
-                    <img 
-                      src={image} 
+                    <img
+                      src={image}
                       alt={`${hotel.name} ${index + 2}`}
                       className="w-full h-40 object-cover rounded-xl"
                     />
@@ -208,7 +217,7 @@ const HotelDetail = () => {
             <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">About {hotel.name}</h2>
               <p className="text-gray-700 mb-6">{hotel.description}</p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Highlights</h3>
@@ -223,13 +232,13 @@ const HotelDetail = () => {
                     ))}
                   </ul>
                 </div>
-                
+
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Amenities</h3>
                   <div className="grid grid-cols-2 gap-2">
                     {hotel.amenities.map((amenity, index) => (
                       <div key={index} className="flex items-center text-gray-700">
-                        <svg className="w-4 h-4 text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-4 h-4 text-orange-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                         {amenity}
@@ -245,35 +254,34 @@ const HotelDetail = () => {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Select Your Room</h2>
               <div className="space-y-6">
                 {hotel.rooms.map((room) => (
-                  <div 
-                    key={room.id} 
-                    className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-200 ${
-                      selectedRoom?.id === room.id 
-                        ? 'border-blue-500 bg-blue-50' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
+                  <div
+                    key={room.id}
+                    className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-200 ${selectedRoom?.id === room.id
+                      ? 'border-orange-500 bg-orange-50'
+                      : 'border-gray-200 hover:border-gray-300'
+                      }`}
                     onClick={() => handleRoomSelection(room)}
                   >
                     <div className="flex flex-col lg:flex-row gap-6">
                       <div className="lg:w-1/3">
-                        <img 
-                          src={room.images[0]} 
+                        <img
+                          src={room.images[0]}
                           alt={room.name}
                           className="w-full h-48 object-cover rounded-lg"
                         />
                       </div>
-                      
+
                       <div className="lg:w-2/3">
                         <div className="flex justify-between items-start mb-3">
                           <h3 className="text-xl font-bold text-gray-900">{room.name}</h3>
                           <div className="text-right">
-                            <div className="text-2xl font-bold text-blue-600">{room.price}</div>
+                            <div className="text-2xl font-bold text-orange-500">{room.price}</div>
                             <div className="text-sm text-gray-500">{room.perNight}</div>
                           </div>
                         </div>
-                        
+
                         <p className="text-gray-700 mb-4">{room.description}</p>
-                        
+
                         <div className="grid grid-cols-2 gap-4 mb-4">
                           <div>
                             <span className="text-sm font-medium text-gray-900">Size:</span>
@@ -288,7 +296,7 @@ const HotelDetail = () => {
                             <span className="text-sm text-gray-600 ml-2">{room.bedType}</span>
                           </div>
                         </div>
-                        
+
                         <div className="flex flex-wrap gap-2">
                           {room.features.map((feature, index) => (
                             <span key={index} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
@@ -314,7 +322,7 @@ const HotelDetail = () => {
                     <p><span className="font-medium">Check-out:</span> {hotel.policies.checkOut}</p>
                   </div>
                 </div>
-                
+
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Other Policies</h3>
                   <div className="space-y-2 text-gray-700">
@@ -332,7 +340,7 @@ const HotelDetail = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-8">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Book Your Stay</h3>
-              
+
               <form onSubmit={handleBooking} className="space-y-4">
                 {/* Check-in Date */}
                 <div>
@@ -395,7 +403,7 @@ const HotelDetail = () => {
                   <div className="bg-blue-50 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-900 mb-2">Selected Room</h4>
                     <p className="text-sm text-gray-700 mb-2">{selectedRoom.name}</p>
-                    <p className="text-lg font-bold text-blue-600">{selectedRoom.price} per night</p>
+                    <p className="text-lg font-bold text-orange-500">{selectedRoom.price} per night</p>
                   </div>
                 )}
 

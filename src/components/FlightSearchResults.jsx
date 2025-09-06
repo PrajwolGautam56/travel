@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
+import {
   MapPinIcon,
   StarIcon,
   CalendarIcon,
@@ -227,10 +227,10 @@ const FlightSearchResults = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
     });
   };
 
@@ -288,31 +288,40 @@ const FlightSearchResults = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
+      <div className="relative bg-orange-500 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="images/white-clouds-blue-sky-daytime.jpg"
+            alt="Airplane flying over clouds"
+            className="w-full h-full object-cover opacity-100"
+          />
+          <div className="absolute inset-0 bg-orange-600/80 opacity-40"></div>
+        </div>
+        <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Flight Search Results</h1>
-              <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+              <h1 className="text-xl sm:text-2xl font-bold text-white">Flight Search Results</h1>
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 mt-2 text-xs sm:text-sm text-orange-100">
                 <div className="flex items-center space-x-2">
-                  <MapPinIcon className="w-4 h-4" />
+                  <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{searchData.from} → {searchData.to}</span>
                 </div>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <div className="flex items-center space-x-2">
-                  <CalendarIcon className="w-4 h-4" />
+                  <CalendarIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{formatDate(searchData.departureDate)}</span>
                 </div>
-                <span>•</span>
+                <span className="hidden sm:inline">•</span>
                 <div className="flex items-center space-x-2">
-                  <UserGroupIcon className="w-4 h-4" />
+                  <UserGroupIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{searchData.passengers} Passenger{searchData.passengers > 1 ? 's' : ''}</span>
                 </div>
               </div>
             </div>
-            <Link 
+            <Link
               to="/"
-              className="text-blue-600 hover:text-blue-700 font-medium flex items-center space-x-2"
+              className="text-orange-500 hover:text-orange-600 font-medium flex items-center space-x-2 text-sm sm:text-base"
             >
               <span>←</span>
               <span>Modify Search</span>
@@ -321,115 +330,115 @@ const FlightSearchResults = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
+
           {/* Left Sidebar - Filters */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border p-6 sticky top-6">
+          <div className="lg:col-span-1 order-2 lg:order-1">
+            <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 sticky top-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
-                <button 
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Filters</h3>
+                <button
                   onClick={() => {
                     setFilterAirline('all');
                     setFilterStops('all');
                     setFilterTime('all');
                     setFilterPrice('all');
                   }}
-                  className="text-sm text-blue-600 hover:text-blue-700"
+                  className="text-xs sm:text-sm text-orange-500 hover:text-orange-600"
                 >
                   Clear All
                 </button>
               </div>
-              
+
               {/* Price Range */}
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-700 mb-3">Price Range</h4>
-                <div className="space-y-2">
+              <div className="mb-4 sm:mb-6">
+                <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Price Range</h4>
+                <div className="space-y-1 sm:space-y-2">
                   {[
                     { value: 'under50k', label: 'Under ₹50,000' },
                     { value: '50k-60k', label: '₹50,000 - ₹60,000' },
                     { value: 'above60k', label: 'Above ₹60,000' }
                   ].map(option => (
                     <label key={option.value} className="flex items-center">
-                      <input 
+                      <input
                         type="radio"
                         name="priceFilter"
                         value={option.value}
                         checked={filterPrice === option.value}
                         onChange={(e) => setFilterPrice(e.target.value)}
-                        className="text-blue-600 focus:ring-blue-500"
+                        className="text-orange-500 focus:ring-orange-500"
                       />
-                      <span className="ml-2 text-sm text-gray-600">{option.label}</span>
+                      <span className="ml-2 text-xs sm:text-sm text-gray-600">{option.label}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Airlines */}
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-700 mb-3">Airlines</h4>
-                <div className="space-y-2">
+              <div className="mb-4 sm:mb-6">
+                <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Airlines</h4>
+                <div className="space-y-1 sm:space-y-2">
                   {['Qatar Airways', 'Emirates', 'British Airways', 'Lufthansa', 'Air India', 'Virgin Atlantic'].map(airline => (
                     <label key={airline} className="flex items-center">
-                      <input 
+                      <input
                         type="radio"
                         name="airlineFilter"
                         value={airline}
                         checked={filterAirline === airline}
                         onChange={(e) => setFilterAirline(e.target.value)}
-                        className="text-blue-600 focus:ring-blue-500"
+                        className="text-orange-500 focus:ring-orange-500"
                       />
-                      <span className="ml-2 text-sm text-gray-600">{airline}</span>
+                      <span className="ml-2 text-xs sm:text-sm text-gray-600">{airline}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               {/* Stops */}
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-700 mb-3">Stops</h4>
-                <div className="space-y-2">
+              <div className="mb-4 sm:mb-6">
+                <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Stops</h4>
+                <div className="space-y-1 sm:space-y-2">
                   <label className="flex items-center">
-                    <input 
+                    <input
                       type="radio"
                       name="stopsFilter"
                       value="all"
                       checked={filterStops === 'all'}
                       onChange={(e) => setFilterStops(e.target.value)}
-                      className="text-blue-600 focus:ring-blue-500"
+                      className="text-orange-500 focus:ring-orange-500"
                     />
-                    <span className="ml-2 text-sm text-gray-600">All</span>
+                    <span className="ml-2 text-xs sm:text-sm text-gray-600">All</span>
                   </label>
                   <label className="flex items-center">
-                    <input 
+                    <input
                       type="radio"
                       name="stopsFilter"
                       value="direct"
                       checked={filterStops === 'direct'}
                       onChange={(e) => setFilterStops(e.target.value)}
-                      className="text-blue-600 focus:ring-blue-500"
+                      className="text-orange-500 focus:ring-orange-500"
                     />
-                    <span className="ml-2 text-sm text-gray-600">Direct</span>
+                    <span className="ml-2 text-xs sm:text-sm text-gray-600">Direct</span>
                   </label>
                   <label className="flex items-center">
-                    <input 
+                    <input
                       type="radio"
                       name="stopsFilter"
                       value="1stop"
                       checked={filterStops === '1stop'}
                       onChange={(e) => setFilterStops(e.target.value)}
-                      className="text-blue-600 focus:ring-blue-500"
+                      className="text-orange-500 focus:ring-orange-500"
                     />
-                    <span className="ml-2 text-sm text-gray-600">1 Stop</span>
+                    <span className="ml-2 text-xs sm:text-sm text-gray-600">1 Stop</span>
                   </label>
                 </div>
               </div>
 
               {/* Departure Time */}
-              <div className="mb-6">
-                <h4 className="font-medium text-gray-700 mb-3">Departure Time</h4>
-                <div className="space-y-2">
+              <div className="mb-4 sm:mb-6">
+                <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Departure Time</h4>
+                <div className="space-y-1 sm:space-y-2">
                   {[
                     { value: 'early', label: 'Early Morning (00:00-06:00)' },
                     { value: 'morning', label: 'Morning (06:00-12:00)' },
@@ -437,11 +446,11 @@ const FlightSearchResults = () => {
                     { value: 'evening', label: 'Evening (18:00-24:00)' }
                   ].map(option => (
                     <label key={option.value} className="flex items-center">
-                      <input 
+                      <input
                         type="checkbox"
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                        className="rounded border-gray-300 text-orange-500 focus:ring-orange-500"
                       />
-                      <span className="ml-2 text-sm text-gray-600">{option.label}</span>
+                      <span className="ml-2 text-xs sm:text-sm text-gray-600">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -450,31 +459,29 @@ const FlightSearchResults = () => {
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-3">
-            
+          <div className="lg:col-span-3 order-1 lg:order-2">
+
             {/* Fare Calendar */}
-            <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Flexible Dates - Fare Calendar</h3>
-              <div className="grid grid-cols-8 gap-2">
+            <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Flexible Dates - Fare Calendar</h3>
+              <div className="grid grid-cols-4 sm:grid-cols-8 gap-1 sm:gap-2">
                 {fareCalendar.map((day, index) => (
-                  <div 
+                  <div
                     key={index}
-                    className={`text-center p-3 rounded-lg border cursor-pointer transition-all ${
-                      day.bestPrice 
-                        ? 'border-green-500 bg-green-50' 
-                        : day.available 
-                          ? 'border-gray-200 hover:border-blue-300 hover:bg-blue-50' 
-                          : 'border-gray-100 bg-gray-50 text-gray-400'
-                    }`}
+                    className={`text-center p-2 sm:p-3 rounded-lg border cursor-pointer transition-all ${day.bestPrice
+                      ? 'border-green-500 bg-green-50'
+                      : day.available
+                        ? 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                        : 'border-gray-100 bg-gray-50 text-gray-400'
+                      }`}
                   >
                     <div className="text-xs text-gray-500 mb-1">{formatDate(day.date)}</div>
-                    <div className={`font-semibold ${
-                      day.bestPrice ? 'text-green-600' : day.available ? 'text-gray-900' : 'text-gray-400'
-                    }`}>
+                    <div className={`font-semibold text-xs sm:text-sm ${day.bestPrice ? 'text-green-600' : day.available ? 'text-gray-900' : 'text-gray-400'
+                      }`}>
                       ₹{day.price.toLocaleString()}
                     </div>
                     {day.bestPrice && (
-                      <div className="text-xs text-green-600 font-medium mt-1">Best Price</div>
+                      <div className="text-xs text-green-600 font-medium mt-1">Best</div>
                     )}
                   </div>
                 ))}
@@ -482,13 +489,13 @@ const FlightSearchResults = () => {
             </div>
 
             {/* Sort and Results Count */}
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-gray-600">{filteredFlights.length} flights found</p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
+              <p className="text-sm sm:text-base text-gray-600">{filteredFlights.length} flights found</p>
               <div className="flex items-center space-x-4">
-                <select 
-                  value={sortBy} 
+                <select
+                  value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full sm:w-auto"
                 >
                   <option value="price">Price: Low to High</option>
                   <option value="duration">Duration: Shortest</option>
@@ -499,26 +506,25 @@ const FlightSearchResults = () => {
             </div>
 
             {/* Flight Results */}
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {filteredFlights.map((flight) => (
-                <div 
+                <div
                   key={flight.id}
-                  className={`bg-white rounded-xl shadow-sm border p-6 cursor-pointer transition-all hover:shadow-md ${
-                    selectedFlight?.id === flight.id ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-200'
-                  }`}
+                  className={`bg-white rounded-xl shadow-sm border p-4 sm:p-6 cursor-pointer transition-all hover:shadow-md ${selectedFlight?.id === flight.id ? 'ring-2 ring-blue-500 border-blue-500' : 'border-gray-200'
+                    }`}
                   onClick={() => handleFlightSelect(flight)}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                     {/* Airline Info */}
-                    <div className="flex items-center space-x-4">
-                      <img src={flight.logo} alt={flight.airline} className="w-20 h-10 object-contain" />
+                    <div className="flex items-center space-x-3 sm:space-x-4">
+                      <img src={flight.logo} alt={flight.airline} className="w-16 h-8 sm:w-20 sm:h-10 object-contain" />
                       <div>
-                        <h3 className="font-semibold text-gray-900">{flight.airline}</h3>
-                        <div className="flex items-center space-x-2 text-sm text-gray-500">
+                        <h3 className="font-semibold text-gray-900 text-sm sm:text-base">{flight.airline}</h3>
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 text-xs sm:text-sm text-gray-500">
                           <span>{flight.aircraft}</span>
-                          <span>•</span>
+                          <span className="hidden sm:inline">•</span>
                           <div className="flex items-center space-x-1">
-                            <StarIcon className="w-4 h-4 text-yellow-400 fill-current" />
+                            <StarIcon className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400 fill-current" />
                             <span>{flight.rating}</span>
                             <span>({flight.reviews})</span>
                           </div>
@@ -527,43 +533,43 @@ const FlightSearchResults = () => {
                     </div>
 
                     {/* Flight Route */}
-                    <div className="flex items-center space-x-8">
+                    <div className="flex items-center justify-between lg:space-x-8">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-gray-900">{flight.departureTime}</div>
-                        <div className="text-sm text-gray-500">{flight.departure}</div>
+                        <div className="text-lg sm:text-2xl font-bold text-gray-900">{flight.departureTime}</div>
+                        <div className="text-xs sm:text-sm text-gray-500">{flight.departure}</div>
                         <div className="text-xs text-gray-400">{flight.departureTerminal}</div>
-                        <div className="text-xs text-gray-400">{flight.departureAirport}</div>
+                        <div className="text-xs text-gray-400 hidden sm:block">{flight.departureAirport}</div>
                       </div>
-                      
-                      <div className="text-center">
-                        <div className="text-sm text-gray-500 mb-1">{flight.duration}</div>
+
+                      <div className="text-center flex-1 mx-2 sm:mx-4">
+                        <div className="text-xs sm:text-sm text-gray-500 mb-1">{flight.duration}</div>
                         <div className="flex items-center">
-                          <div className="w-20 h-px bg-gray-300"></div>
-                          <div className="w-3 h-3 bg-blue-500 rounded-full mx-1"></div>
-                          <div className="w-20 h-px bg-gray-300"></div>
+                          <div className="flex-1 h-px bg-gray-300"></div>
+                          <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full mx-1"></div>
+                          <div className="flex-1 h-px bg-gray-300"></div>
                         </div>
                         <div className="text-xs text-gray-400 mt-1">
                           {flight.stops === 0 ? 'Direct' : flight.stopDetails}
                         </div>
                       </div>
-                      
+
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-gray-900">{flight.arrivalTime}</div>
-                        <div className="text-sm text-gray-500">{flight.arrival}</div>
+                        <div className="text-lg sm:text-2xl font-bold text-gray-900">{flight.arrivalTime}</div>
+                        <div className="text-xs sm:text-sm text-gray-500">{flight.arrival}</div>
                         <div className="text-xs text-gray-400">{flight.arrivalTerminal}</div>
-                        <div className="text-xs text-gray-400">{flight.arrivalAirport}</div>
+                        <div className="text-xs text-gray-400 hidden sm:block">{flight.arrivalAirport}</div>
                       </div>
                     </div>
 
                     {/* Price and Actions */}
-                    <div className="text-right">
-                      <div className="text-3xl font-bold text-blue-600">{formatPrice(flight.price)}</div>
+                    <div className="text-center lg:text-right">
+                      <div className="text-xl sm:text-3xl font-bold text-blue-600">{formatPrice(flight.price)}</div>
                       {flight.originalPrice > flight.price && (
-                        <div className="text-sm text-gray-500 line-through">{formatPrice(flight.originalPrice)}</div>
+                        <div className="text-xs sm:text-sm text-gray-500 line-through">{formatPrice(flight.originalPrice)}</div>
                       )}
                       <div className="text-xs text-gray-500 mt-1">{flight.fareType} Fare</div>
-                      
-                      <button className="mt-3 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+
+                      <button className="mt-3 bg-blue-600 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto">
                         Select
                       </button>
                     </div>
@@ -571,8 +577,8 @@ const FlightSearchResults = () => {
 
                   {/* Flight Features */}
                   <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                      <div className="flex flex-wrap items-center gap-2">
                         {flight.features.map((feature, index) => (
                           <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
                             {feature}
@@ -590,25 +596,25 @@ const FlightSearchResults = () => {
 
             {/* Selected Flight Summary */}
             {selectedFlight && (
-              <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-blue-900 mb-4">Selected Flight</h3>
-                <div className="flex items-center justify-between">
+              <div className="mt-4 sm:mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold text-blue-900 mb-3 sm:mb-4">Selected Flight</h3>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                   <div>
-                    <p className="text-blue-900 font-medium">
+                    <p className="text-blue-900 font-medium text-sm sm:text-base">
                       {selectedFlight.airline} • {selectedFlight.departure} → {selectedFlight.arrival}
                     </p>
-                    <p className="text-blue-700 text-sm">
+                    <p className="text-blue-700 text-xs sm:text-sm">
                       {selectedFlight.departureTime} - {selectedFlight.arrivalTime} • {selectedFlight.duration}
                     </p>
-                    <p className="text-blue-600 text-sm">
+                    <p className="text-blue-600 text-xs sm:text-sm">
                       {selectedFlight.departureTerminal} → {selectedFlight.arrivalTerminal}
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-blue-900">{formatPrice(selectedFlight.price)}</p>
-                    <Link 
+                  <div className="text-center sm:text-right">
+                    <p className="text-xl sm:text-2xl font-bold text-blue-900">{formatPrice(selectedFlight.price)}</p>
+                    <Link
                       to={`/flight-booking/${selectedFlight.id}`}
-                      className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                      className="inline-block bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto"
                     >
                       Continue to Booking
                     </Link>

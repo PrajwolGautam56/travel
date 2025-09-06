@@ -39,50 +39,50 @@ const PopularPackages = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-12 sm:py-16 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
             Popular Holiday Packages
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
             Discover our handpicked travel experiences with flights, hotels, and guided tours included
           </p>
         </div>
 
         {/* Packages Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
           {packages.map((pkg) => (
             <div key={pkg.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
               {/* Package Image */}
-              <div className="relative h-48">
-                <img 
-                  src={pkg.image} 
+              <div className="relative h-40 sm:h-48">
+                <img
+                  src={pkg.image}
                   alt={pkg.title}
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-4 right-4">
-                  <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
+                  <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
                     {pkg.discount}
                   </span>
                 </div>
               </div>
 
               {/* Package Content */}
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-blue-600 font-medium">{pkg.destination}</span>
-                  <span className="text-sm text-gray-500">{pkg.duration}</span>
+                  <span className="text-xs sm:text-sm text-orange-500 font-medium">{pkg.destination}</span>
+                  <span className="text-xs sm:text-sm text-gray-500">{pkg.duration}</span>
                 </div>
-                
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{pkg.title}</h3>
-                
+
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3">{pkg.title}</h3>
+
                 <div className="mb-4">
-                  <h4 className="text-sm font-semibold text-gray-900 mb-2">Highlights:</h4>
-                  <div className="flex flex-wrap gap-2">
+                  <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2">Highlights:</h4>
+                  <div className="flex flex-wrap gap-1 sm:gap-2">
                     {pkg.highlights.map((highlight, index) => (
-                      <span key={index} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                      <span key={index} className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
                         {highlight}
                       </span>
                     ))}
@@ -91,12 +91,12 @@ const PopularPackages = () => {
 
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">{pkg.price}</div>
-                    <div className="text-sm text-gray-500 line-through">{pkg.originalPrice}</div>
+                    <div className="text-xl sm:text-2xl font-bold text-orange-500">{pkg.price}</div>
+                    <div className="text-xs sm:text-sm text-gray-500 line-through">{pkg.originalPrice}</div>
                   </div>
                   <Link
                     to="/packages"
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 cursor-pointer"
+                    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-colors duration-300 cursor-pointer text-sm sm:text-base"
                   >
                     Book Now
                   </Link>
@@ -110,10 +110,10 @@ const PopularPackages = () => {
         <div className="text-center">
           <Link
             to="/packages"
-            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+            className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors duration-300 text-sm sm:text-base"
           >
             View All Packages
-            <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="ml-2 w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </Link>
