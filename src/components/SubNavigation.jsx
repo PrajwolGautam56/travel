@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BookTripTab from './BookTripTab';
 import ManageBookingTab from './ManageBookingTab';
-import CheckInTab from './CheckInTab';
+import StopoverTab from './StopoverTab';
 import FlightStatusTab from './FlightStatusTab';
 import FlightScheduleTab from './FlightScheduleTab';
 
@@ -41,13 +41,13 @@ const SubNavigation = () => {
             case 'BOOK TRIP':
                 navigate('/flight-search', { state: { searchData: formData } });
                 break;
+            case 'STOPOVER':
+                // Handle stopover search
+                console.log('Searching stopover flights...');
+                break;
             case 'MANAGE BOOKING':
                 // Handle manage booking
                 console.log('Managing booking...');
-                break;
-            case 'CHECK IN':
-                // Handle check in
-                console.log('Checking in...');
                 break;
             case 'FLIGHT STATUS':
                 // Handle flight status
@@ -64,8 +64,8 @@ const SubNavigation = () => {
 
     const navigationItems = [
         'BOOK TRIP',
+        'STOPOVER',
         'MANAGE BOOKING',
-        'CHECK IN',
         'FLIGHT STATUS',
         'FLIGHT SCHEDULE'
     ];
@@ -74,10 +74,10 @@ const SubNavigation = () => {
         switch (activeTab) {
             case 'BOOK TRIP':
                 return <BookTripTab formData={formData} onChange={handleInputChange} />;
+            case 'STOPOVER':
+                return <StopoverTab formData={formData} onChange={handleInputChange} />;
             case 'MANAGE BOOKING':
                 return <ManageBookingTab formData={formData} onChange={handleInputChange} />;
-            case 'CHECK IN':
-                return <CheckInTab formData={formData} onChange={handleInputChange} />;
             case 'FLIGHT STATUS':
                 return <FlightStatusTab formData={formData} onChange={handleInputChange} />;
             case 'FLIGHT SCHEDULE':

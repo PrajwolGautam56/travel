@@ -1,6 +1,67 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const BookTripTab = ({ formData, onChange }) => {
+    const [passengerCounts, setPassengerCounts] = useState({
+        adults: 1,
+        children: 0,
+        infants: 0
+    });
+    const [isPassengerDropdownOpen, setIsPassengerDropdownOpen] = useState(false);
+    const passengerDropdownRef = useRef(null);
+
+    // Handle click outside to close passenger dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (passengerDropdownRef.current && !passengerDropdownRef.current.contains(event.target)) {
+                setIsPassengerDropdownOpen(false);
+            }
+        };
+
+        if (isPassengerDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isPassengerDropdownOpen]);
+
+    const handlePassengerChange = (type, action) => {
+        setPassengerCounts(prev => {
+            const newCounts = { ...prev };
+            if (action === 'increase') {
+                if (type === 'adults' && newCounts.adults < 9) {
+                    newCounts.adults += 1;
+                } else if (type === 'children' && newCounts.children < 8) {
+                    newCounts.children += 1;
+                } else if (type === 'infants' && newCounts.infants < 8) {
+                    newCounts.infants += 1;
+                }
+            } else if (action === 'decrease') {
+                if (type === 'adults' && newCounts.adults > 1) {
+                    newCounts.adults -= 1;
+                } else if (type === 'children' && newCounts.children > 0) {
+                    newCounts.children -= 1;
+                } else if (type === 'infants' && newCounts.infants > 0) {
+                    newCounts.infants -= 1;
+                }
+            }
+            return newCounts;
+        });
+    };
+
+    const getPassengerDisplayText = () => {
+        const { adults, children, infants } = passengerCounts;
+        let text = `${adults} Adult${adults > 1 ? 's' : ''}`;
+        if (children > 0) {
+            text += `, ${children} Child${children > 1 ? 'ren' : ''}`;
+        }
+        if (infants > 0) {
+            text += `, ${infants} Infant${infants > 1 ? 's' : ''}`;
+        }
+        return text;
+    };
+
     return (
         <div className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
@@ -114,21 +175,126 @@ const BookTripTab = ({ formData, onChange }) => {
                         </select>
                     </div>
 
-                    <div>
+                    <div className="relative" ref={passengerDropdownRef}>
                         <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">PASSENGERS</label>
-                        <select
-                            name="passengers"
-                            value={formData.passengers}
-                            onChange={onChange}
-                            className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent form-input text-sm sm:text-base"
+                        <button
+                            type="button"
+                            onClick={() => setIsPassengerDropdownOpen(!isPassengerDropdownOpen)}
+                            className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-left text-sm sm:text-base bg-white flex items-center justify-between"
                         >
-                            <option value="1 Adult">1 Adult</option>
-                            <option value="2 Adults">2 Adults</option>
-                            <option value="3 Adults">3 Adults</option>
-                            <option value="4 Adults">4 Adults</option>
-                            <option value="1 Adult, 1 Child">1 Adult, 1 Child</option>
-                            <option value="2 Adults, 1 Child">2 Adults, 1 Child</option>
-                        </select>
+                            <span>{getPassengerDisplayText()}</span>
+                            <svg
+                                className={`w-4 h-4 transition-transform ${isPassengerDropdownOpen ? 'rotate-180' : ''}`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        {isPassengerDropdownOpen && (
+                            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 p-4">
+                                {/* Adults */}
+                                <div className="flex items-center justify-between mb-4">
+                                    <div>
+                                        <div className="font-medium text-sm">Adults</div>
+                                        <div className="text-xs text-gray-500">12 years and above</div>
+                                    </div>
+                                    <div className="flex items-center space-x-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => handlePassengerChange('adults', 'decrease')}
+                                            disabled={passengerCounts.adults <= 1}
+                                            className={`w-8 h-8 rounded-full border flex items-center justify-center ${passengerCounts.adults <= 1
+                                                ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                                                : 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                                                }`}
+                                        >
+                                            <span className="text-sm">-</span>
+                                        </button>
+                                        <span className="w-8 text-center text-sm font-medium">{passengerCounts.adults}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handlePassengerChange('adults', 'increase')}
+                                            disabled={passengerCounts.adults >= 9}
+                                            className={`w-8 h-8 rounded-full border flex items-center justify-center ${passengerCounts.adults >= 9
+                                                ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                                                : 'border-blue-500 text-blue-500 hover:bg-blue-50'
+                                                }`}
+                                        >
+                                            <span className="text-sm">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Children */}
+                                <div className="flex items-center justify-between mb-4">
+                                    <div>
+                                        <div className="font-medium text-sm">Children</div>
+                                        <div className="text-xs text-gray-500">2-11 years at time of travel</div>
+                                    </div>
+                                    <div className="flex items-center space-x-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => handlePassengerChange('children', 'decrease')}
+                                            disabled={passengerCounts.children <= 0}
+                                            className={`w-8 h-8 rounded-full border flex items-center justify-center ${passengerCounts.children <= 0
+                                                ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                                                : 'border-blue-500 text-blue-500 hover:bg-blue-50'
+                                                }`}
+                                        >
+                                            <span className="text-sm">-</span>
+                                        </button>
+                                        <span className="w-8 text-center text-sm font-medium">{passengerCounts.children}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handlePassengerChange('children', 'increase')}
+                                            disabled={passengerCounts.children >= 8}
+                                            className={`w-8 h-8 rounded-full border flex items-center justify-center ${passengerCounts.children >= 8
+                                                ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                                                : 'border-blue-500 text-blue-500 hover:bg-blue-50'
+                                                }`}
+                                        >
+                                            <span className="text-sm">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Infants */}
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <div className="font-medium text-sm">Infants</div>
+                                        <div className="text-xs text-gray-500">0-23 months at time of travel</div>
+                                    </div>
+                                    <div className="flex items-center space-x-3">
+                                        <button
+                                            type="button"
+                                            onClick={() => handlePassengerChange('infants', 'decrease')}
+                                            disabled={passengerCounts.infants <= 0}
+                                            className={`w-8 h-8 rounded-full border flex items-center justify-center ${passengerCounts.infants <= 0
+                                                ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                                                : 'border-blue-500 text-blue-500 hover:bg-blue-50'
+                                                }`}
+                                        >
+                                            <span className="text-sm">-</span>
+                                        </button>
+                                        <span className="w-8 text-center text-sm font-medium">{passengerCounts.infants}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handlePassengerChange('infants', 'increase')}
+                                            disabled={passengerCounts.infants >= 8}
+                                            className={`w-8 h-8 rounded-full border flex items-center justify-center ${passengerCounts.infants >= 8
+                                                ? 'border-gray-200 text-gray-300 cursor-not-allowed'
+                                                : 'border-blue-500 text-blue-500 hover:bg-blue-50'
+                                                }`}
+                                        >
+                                            <span className="text-sm">+</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex items-end">
