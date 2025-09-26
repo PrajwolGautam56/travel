@@ -5,10 +5,56 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
   const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  // Check login status on component mount
+  useEffect(() => {
+    const loggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const name = localStorage.getItem('userName') || '';
+    setIsLoggedIn(loggedIn);
+    setUserName(name);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    setIsLoggedIn(false);
+    setUserName('');
+    navigate('/');
+  };
+
+  const handleLogoClick = () => {
+    // Add custom scroll behavior with 0.1s duration
+    const startTime = performance.now();
+    const startScrollTop = window.pageYOffset;
+    const duration = 100; // 0.1 seconds in milliseconds
+
+    const animateScroll = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Easing function for smooth animation
+      const easeInOutCubic = progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      window.scrollTo(0, startScrollTop * (1 - easeInOutCubic));
+
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
   };
 
   // Handle navbar visibility on scroll
@@ -56,11 +102,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2" onClick={handleLogoClick}>
               <img
                 src="images/Logo_Transparent .png"
                 alt="Recent and Rhythm Tours and Travels Logo"
-                className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 object-contain"
+                className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 object-contain cursor-pointer"
               />
               {/* <span className="text-xl font-bold text-gray-900">Recent and Rhythm Tours and Travels</span> */}
             </Link>
@@ -72,18 +118,57 @@ const Navbar = () => {
               <Link to="/" className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
                 Home
               </Link>
-              <Link to="/packages" className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
-                Packages
-              </Link>
-              <Link to="/hotels" className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
-                Hotels
-              </Link>
+
+              {/* Services Dropdown */}
+              <div className="relative">
+                <button
+                  onMouseEnter={() => setIsServicesOpen(true)}
+                  onMouseLeave={() => setIsServicesOpen(false)}
+                  className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 flex items-center"
+                >
+                  Services
+                  <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {isServicesOpen && (
+                  <div
+                    className="absolute top-full left-0 mt-1 w-48 bg-white rounded-md shadow-lg py-1 z-50"
+                    onMouseEnter={() => setIsServicesOpen(true)}
+                    onMouseLeave={() => setIsServicesOpen(false)}
+                  >
+                    <Link
+                      to="/hotels"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                    >
+                      Hotels
+                    </Link>
+                    <Link
+                      to="/packages"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                    >
+                      Packages
+                    </Link>
+                    <Link
+                      to="/rentals"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                    >
+                      Rentals
+                    </Link>
+                    <Link
+                      to="/flights"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                    >
+                      Flights
+                    </Link>
+                  </div>
+                )}
+              </div>
+
               <Link to="/blog" className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
                 Blog
               </Link>
-              <a href="#flights" className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
-                Flights
-              </a>
               <Link to="/about" className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
                 About
               </Link>
@@ -95,18 +180,45 @@ const Navbar = () => {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <button
-              onClick={() => navigate('/login')}
-              className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-            >
-              Login
-            </button>
-            <button
-              onClick={() => navigate('/signup')}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-            >
-              Sign Up
-            </button>
+            {isLoggedIn ? (
+              <>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                    <span className="text-orange-600 font-semibold text-sm">
+                      {userName.split(' ').map(n => n[0]).join('')}
+                    </span>
+                  </div>
+                  <span className="text-gray-700 font-medium">Hi, {userName.split(' ')[0]}</span>
+                </div>
+                <Link
+                  to="/profile"
+                  className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-gray-700 hover:text-red-500 hover:bg-red-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => navigate('/login')}
+                  className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => navigate('/signup')}
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
             <Link
               to="/admin/login"
               className="text-gray-500 hover:text-green-600 hover:bg-green-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 border border-gray-300 hover:border-green-300"
@@ -140,20 +252,65 @@ const Navbar = () => {
             >
               Home
             </Link>
-            <Link
-              to="/packages"
-              className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Packages
-            </Link>
-            <Link
-              to="/hotels"
-              className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Hotels
-            </Link>
+
+            {/* Mobile Services Dropdown */}
+            <div>
+              <button
+                onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
+                className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 w-full text-left px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 flex items-center justify-between"
+              >
+                Services
+                <svg className={`h-4 w-4 transition-transform ${isMobileServicesOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {isMobileServicesOpen && (
+                <div className="ml-4 mt-1 space-y-1">
+                  <Link
+                    to="/hotels"
+                    className="text-gray-600 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsMobileServicesOpen(false);
+                    }}
+                  >
+                    Hotels
+                  </Link>
+                  <Link
+                    to="/packages"
+                    className="text-gray-600 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsMobileServicesOpen(false);
+                    }}
+                  >
+                    Packages
+                  </Link>
+                  <Link
+                    to="/rentals"
+                    className="text-gray-600 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsMobileServicesOpen(false);
+                    }}
+                  >
+                    Rentals
+                  </Link>
+                  <Link
+                    to="/flights"
+                    className="text-gray-600 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      setIsMobileServicesOpen(false);
+                    }}
+                  >
+                    Flights
+                  </Link>
+                </div>
+              )}
+            </div>
+
             <Link
               to="/blog"
               className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
@@ -161,13 +318,6 @@ const Navbar = () => {
             >
               Blog
             </Link>
-            <a
-              href="#flights"
-              className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Flights
-            </a>
             <Link
               to="/about"
               className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
@@ -185,24 +335,58 @@ const Navbar = () => {
 
             {/* Mobile Auth Buttons */}
             <div className="pt-4 pb-3 border-t border-gray-200">
-              <button
-                onClick={() => {
-                  navigate('/login');
-                  setIsMenuOpen(false);
-                }}
-                className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 w-full text-left"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => {
-                  navigate('/signup');
-                  setIsMenuOpen(false);
-                }}
-                className="bg-orange-500 hover:bg-orange-600 text-white block px-3 py-2 rounded-lg text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl w-full text-center mt-2"
-              >
-                Sign Up
-              </button>
+              {isLoggedIn ? (
+                <>
+                  <div className="flex items-center space-x-3 px-3 py-2 mb-3">
+                    <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                      <span className="text-orange-600 font-semibold">
+                        {userName.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-gray-900 font-medium">Hi, {userName.split(' ')[0]}</p>
+                      <p className="text-sm text-gray-600">{localStorage.getItem('userEmail')}</p>
+                    </div>
+                  </div>
+                  <Link
+                    to="/profile"
+                    className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 w-full text-left"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-red-600 hover:text-red-700 hover:bg-red-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 w-full text-left mt-2"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => {
+                      navigate('/login');
+                      setIsMenuOpen(false);
+                    }}
+                    className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 w-full text-left"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => {
+                      navigate('/signup');
+                      setIsMenuOpen(false);
+                    }}
+                    className="bg-orange-500 hover:bg-orange-600 text-white block px-3 py-2 rounded-lg text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl w-full text-center mt-2"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
               <Link
                 to="/admin/login"
                 className="text-gray-500 hover:text-green-600 hover:bg-green-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 w-full text-center mt-2 border border-gray-300 hover:border-green-300"

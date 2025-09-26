@@ -24,9 +24,9 @@ const HotelsPage = () => {
     {
       id: 1,
       name: 'The Ritz London',
-      location: 'London, UK',
+      location: 'Kathmandu, Nepal',
       image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹25,000',
+      price: 'Rs.25,000',
       perNight: 'per night',
       rating: 4.9,
       reviews: 2847,
@@ -39,9 +39,9 @@ const HotelsPage = () => {
     {
       id: 2,
       name: 'Burj Al Arab',
-      location: 'Dubai, UAE',
+      location: 'Pokhara, Nepal',
       image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹45,000',
+      price: 'Rs.45,000',
       perNight: 'per night',
       rating: 4.8,
       reviews: 1923,
@@ -54,9 +54,9 @@ const HotelsPage = () => {
     {
       id: 3,
       name: 'Marina Bay Sands',
-      location: 'Singapore',
+      location: 'Chitwan, Nepal',
       image: 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹35,000',
+      price: 'Rs.35,000',
       perNight: 'per night',
       rating: 4.7,
       reviews: 3156,
@@ -71,7 +71,7 @@ const HotelsPage = () => {
       name: 'Hotel Plaza Athénée',
       location: 'Paris, France',
       image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹38,000',
+      price: 'Rs.38,000',
       perNight: 'per night',
       rating: 4.9,
       reviews: 1678,
@@ -86,7 +86,7 @@ const HotelsPage = () => {
       name: 'The Peninsula Tokyo',
       location: 'Tokyo, Japan',
       image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹42,000',
+      price: 'Rs.42,000',
       perNight: 'per night',
       rating: 4.8,
       reviews: 2341,
@@ -101,7 +101,7 @@ const HotelsPage = () => {
       name: 'Aman Venice',
       location: 'Venice, Italy',
       image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹55,000',
+      price: 'Rs.55,000',
       perNight: 'per night',
       rating: 4.9,
       reviews: 892,
@@ -239,7 +239,7 @@ const HotelsPage = () => {
 
               {/* Price Range */}
               <div className="mb-4 sm:mb-6">
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Price Range (₹)</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Price Range (Rs.)</label>
                 <div className="flex space-x-2">
                   <input
                     type="number"

@@ -353,7 +353,7 @@ const FlightBooking = () => {
       <div className="bg-white rounded-xl border p-4 sm:p-6">
         <div className="text-center mb-4 sm:mb-6">
           <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Boeing 777 - Economy Class</h4>
-          <p className="text-xs sm:text-sm text-gray-600">Select your preferred seats for ₹1,500 per seat</p>
+          <p className="text-xs sm:text-sm text-gray-600">Select your preferred seats for Rs.1,500 per seat</p>
         </div>
 
         {/* Simplified seat map */}
@@ -442,7 +442,7 @@ const FlightBooking = () => {
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">{meal.name}</span>
-                  <span className="text-orange-500 font-semibold text-sm sm:text-base">₹{meal.price}</span>
+                  <span className="text-orange-500 font-semibold text-sm sm:text-base">Rs.{meal.price}</span>
                 </div>
                 <p className="text-xs sm:text-sm text-gray-600 mt-1">{meal.description}</p>
               </div>
@@ -469,7 +469,7 @@ const FlightBooking = () => {
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-900 text-sm sm:text-base">{baggage.name}</span>
-                  <span className="text-orange-500 font-semibold text-sm sm:text-base">₹{baggage.price}</span>
+                  <span className="text-orange-500 font-semibold text-sm sm:text-base">Rs.{baggage.price}</span>
                 </div>
                 <p className="text-xs sm:text-sm text-gray-600 mt-1">{baggage.description}</p>
               </div>
@@ -491,7 +491,7 @@ const FlightBooking = () => {
           <div className="flex-1">
             <div className="flex items-center justify-between">
               <span className="font-medium text-gray-900 text-sm sm:text-base">Comprehensive Travel Insurance</span>
-              <span className="text-orange-500 font-semibold text-sm sm:text-base">₹1,200 per passenger</span>
+              <span className="text-orange-500 font-semibold text-sm sm:text-base">Rs.1,200 per passenger</span>
             </div>
             <p className="text-xs sm:text-sm text-gray-600 mt-1">
               Covers trip cancellation, medical expenses, lost baggage, and flight delays
@@ -739,30 +739,30 @@ const FlightBooking = () => {
               <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                 <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-gray-600">Base Fare ({passengerCount} passengers)</span>
-                  <span className="text-gray-900">₹{(flight.price * passengerCount).toLocaleString()}</span>
+                  <span className="text-gray-900">Rs.{(flight.price * passengerCount).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-gray-600">Seat Selection</span>
-                  <span className="text-gray-900">₹{bookingData.seats.length * 1500}</span>
+                  <span className="text-gray-900">Rs.{bookingData.seats.length * 1500}</span>
                 </div>
                 <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-gray-600">Meals</span>
-                  <span className="text-gray-900">₹{bookingData.meals.length * 800}</span>
+                  <span className="text-gray-900">Rs.{bookingData.meals.length * 800}</span>
                 </div>
                 <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-gray-600">Baggage</span>
-                  <span className="text-gray-900">₹{bookingData.baggage.length * 2000}</span>
+                  <span className="text-gray-900">Rs.{bookingData.baggage.length * 2000}</span>
                 </div>
                 {bookingData.insurance && (
                   <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-gray-600">Insurance</span>
-                    <span className="text-gray-900">₹{passengerCount * 1200}</span>
+                    <span className="text-gray-900">Rs.{passengerCount * 1200}</span>
                   </div>
                 )}
                 <div className="border-t border-gray-200 pt-2 sm:pt-3">
                   <div className="flex justify-between font-semibold text-base sm:text-lg">
                     <span>Total</span>
-                    <span className="text-orange-500">₹{totalPrice.toLocaleString()}</span>
+                    <span className="text-orange-500">Rs.{totalPrice.toLocaleString()}</span>
                   </div>
                 </div>
               </div>

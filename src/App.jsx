@@ -21,6 +21,9 @@ import FlightBooking from './components/FlightBooking';
 import BlogPage from './components/BlogPage';
 import AboutPage from './components/AboutPage';
 import ContactUs from './components/ContactUs';
+import RentalsPage from './components/RentalsPage';
+import FlightsPage from './components/FlightsPage';
+import UserProfile from './components/UserProfile';
 import ScrollToTop from './components/ScrollToTop';
 import PageTransition from './components/PageTransition';
 
@@ -152,6 +155,33 @@ function App() {
             <PageTransition>
               <Navbar />
               <ContactUs />
+              <Footer />
+            </PageTransition>
+          } />
+
+          {/* Rentals Route */}
+          <Route path="/rentals" element={
+            <PageTransition>
+              <Navbar />
+              <RentalsPage />
+              <Footer />
+            </PageTransition>
+          } />
+
+          {/* Flights Route */}
+          <Route path="/flights" element={
+            <PageTransition>
+              <Navbar />
+              <FlightsPage />
+              <Footer />
+            </PageTransition>
+          } />
+
+          {/* User Profile Route */}
+          <Route path="/profile" element={
+            <PageTransition>
+              <Navbar />
+              <UserProfile />
               <Footer />
             </PageTransition>
           } />

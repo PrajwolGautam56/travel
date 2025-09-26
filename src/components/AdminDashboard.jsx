@@ -23,7 +23,7 @@ const AdminDashboard = () => {
   // Enhanced mock data
   const stats = {
     totalBookings: 1247,
-    totalRevenue: '₹2,45,67,890',
+    totalRevenue: 'Rs.2,45,67,890',
     activeUsers: 892,
     pendingApprovals: 23,
     flightsToday: 47,
@@ -32,10 +32,10 @@ const AdminDashboard = () => {
   };
 
   const recentBookings = [
-    { id: 1, customer: 'John Doe', service: 'London & Paris Adventure', amount: '₹89,999', status: 'Confirmed', date: '2024-12-15', type: 'Package' },
-    { id: 2, customer: 'Jane Smith', service: 'The Ritz London', amount: '₹75,000', status: 'Pending', date: '2024-12-14', type: 'Hotel' },
-    { id: 3, customer: 'Mike Johnson', service: 'Dubai Luxury Escape', amount: '₹65,500', status: 'Confirmed', date: '2024-12-13', type: 'Package' },
-    { id: 4, customer: 'Sarah Wilson', service: 'Marina Bay Sands', amount: '₹45,000', status: 'Cancelled', date: '2024-12-12', type: 'Hotel' }
+    { id: 1, customer: 'John Doe', service: 'London & Paris Adventure', amount: 'Rs.89,999', status: 'Confirmed', date: '2024-12-15', type: 'Package' },
+    { id: 2, customer: 'Jane Smith', service: 'The Ritz London', amount: 'Rs.75,000', status: 'Pending', date: '2024-12-14', type: 'Hotel' },
+    { id: 3, customer: 'Mike Johnson', service: 'Dubai Luxury Escape', amount: 'Rs.65,500', status: 'Confirmed', date: '2024-12-13', type: 'Package' },
+    { id: 4, customer: 'Sarah Wilson', service: 'Marina Bay Sands', amount: 'Rs.45,000', status: 'Cancelled', date: '2024-12-12', type: 'Hotel' }
   ];
 
   const renderOverview = () => (
@@ -319,7 +319,7 @@ const AdminDashboard = () => {
             <label className="block text-sm font-semibold text-gray-700 mb-2">Admin Email</label>
             <input
               type="email"
-              defaultValue="admin@skyways.com"
+              defaultValue="rhythmtours@gmail.com"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
             />
           </div>
@@ -335,7 +335,7 @@ const AdminDashboard = () => {
             <label className="block text-sm font-semibold text-gray-700 mb-2">Support Phone</label>
             <input
               type="tel"
-              defaultValue="+91 98765 43210"
+              defaultValue="+977 01 4001078"
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
             />
           </div>
@@ -345,7 +345,7 @@ const AdminDashboard = () => {
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Currency</label>
             <select className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200">
-              <option>Indian Rupee (₹)</option>
+              <option>Indian Rupee (Rs.)</option>
               <option>US Dollar ($)</option>
               <option>Euro (€)</option>
               <option>British Pound (£)</option>

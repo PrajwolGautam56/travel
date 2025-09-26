@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const StopoverTab = ({ formData, onChange }) => {
     const [tripType, setTripType] = useState('multi-city');
-    const [stopoverDuration, setStopoverDuration] = useState(1);
     const [passengerCounts, setPassengerCounts] = useState({
         adults: 1,
         children: 0,
         infants: 0
     });
     const [isPassengerDropdownOpen, setIsPassengerDropdownOpen] = useState(false);
+    const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
+    const [promoCode, setPromoCode] = useState('');
     const passengerDropdownRef = useRef(null);
 
     // Handle click outside to close passenger dropdown
@@ -28,26 +29,26 @@ const StopoverTab = ({ formData, onChange }) => {
         };
     }, [isPassengerDropdownOpen]);
 
-    // Reset passenger counts when trip type changes
+    // Reset passenger counts and promo code state when trip type changes
     useEffect(() => {
         setPassengerCounts({
             adults: 1,
             children: 0,
             infants: 0
         });
+        // Reset promo code state when trip type changes
+        setIsPromoModalOpen(false);
+        setPromoCode('');
     }, [tripType]);
 
     const handleTripTypeChange = (e) => {
-        setTripType(e.target.value);
+        const newTripType = e.target.value;
+        setTripType(newTripType);
+        // Reset promo code state when trip type changes
+        setIsPromoModalOpen(false);
+        setPromoCode('');
     };
 
-    const handleStopoverDurationChange = (type) => {
-        if (type === 'decrease' && stopoverDuration > 1) {
-            setStopoverDuration(stopoverDuration - 1);
-        } else if (type === 'increase' && stopoverDuration < 30) {
-            setStopoverDuration(stopoverDuration + 1);
-        }
-    };
 
     const handlePassengerChange = (type, action) => {
         setPassengerCounts(prev => {
@@ -83,6 +84,26 @@ const StopoverTab = ({ formData, onChange }) => {
             text += `, ${infants} Infant${infants > 1 ? 's' : ''}`;
         }
         return text;
+    };
+
+    const handlePromoCodeChange = (e) => {
+        setPromoCode(e.target.value);
+    };
+
+    const handleApplyPromoCode = () => {
+        if (promoCode.trim()) {
+            console.log('Applied promo code:', promoCode);
+            // Here you would typically validate and apply the promo code
+            alert(`Promo code "${promoCode}" applied successfully!`);
+            setPromoCode('');
+            setIsPromoModalOpen(false);
+        }
+    };
+
+    const handlePromoModalToggle = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsPromoModalOpen(!isPromoModalOpen);
     };
 
     return (
@@ -366,68 +387,49 @@ const StopoverTab = ({ formData, onChange }) => {
                 )}
             </div>
 
-            {/* Stopover Options */}
-            <div className="space-y-4">
-                <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-3">When would you like to add a stop in Doha during your journey?</h4>
-                    <div className="flex space-x-4">
-                        <label className="flex items-center space-x-2">
-                            <input
-                                type="radio"
-                                name="stopoverTiming"
-                                value="departure"
-                                defaultChecked
-                                className="text-orange-500"
-                            />
-                            <span className="text-sm text-gray-700">Departure</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input
-                                type="radio"
-                                name="stopoverTiming"
-                                value="return"
-                                className="text-orange-500"
-                            />
-                            <span className="text-sm text-gray-700">Return</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 className="text-sm font-medium text-gray-700 mb-3">How many days would you like to stay in Qatar?</h4>
-                    <div className="flex items-center space-x-3">
-                        <button
-                            type="button"
-                            onClick={() => handleStopoverDurationChange('decrease')}
-                            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-                        >
-                            <span className="text-gray-600">-</span>
-                        </button>
-                        <input
-                            type="number"
-                            value={stopoverDuration}
-                            readOnly
-                            className="w-16 text-center border border-gray-300 rounded-lg py-2"
-                        />
-                        <button
-                            type="button"
-                            onClick={() => handleStopoverDurationChange('increase')}
-                            className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-                        >
-                            <span className="text-gray-600">+</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                <button
-                    type="button"
-                    className="text-orange-500 hover:text-orange-600 text-sm font-medium"
-                >
-                    + Add promo code
-                </button>
+                <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-1 sm:space-y-0">
+                    {!isPromoModalOpen ? (
+                        <button
+                            type="button"
+                            onClick={handlePromoModalToggle}
+                            className="text-orange-500 hover:text-orange-600 text-xs sm:text-sm cursor-pointer font-bold"
+                        >
+                            + Add promo code
+                        </button>
+                    ) : (
+                        <div className="flex items-center space-x-2">
+                            <input
+                                type="text"
+                                value={promoCode}
+                                onChange={handlePromoCodeChange}
+                                placeholder="Enter promo code"
+                                className="px-3 py-1 border border-gray-300 rounded text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                autoFocus
+                            />
+                            <button
+                                type="button"
+                                onClick={handleApplyPromoCode}
+                                disabled={!promoCode.trim()}
+                                className="bg-orange-500 text-white px-3 py-1 rounded text-xs sm:text-sm hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                            >
+                                Apply
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setIsPromoModalOpen(false);
+                                    setPromoCode('');
+                                }}
+                                className="text-gray-500 hover:text-gray-700 text-xs sm:text-sm"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    )}
+                </div>
                 <button
                     type="submit"
                     className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 w-full sm:w-auto"
