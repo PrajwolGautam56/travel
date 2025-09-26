@@ -26,8 +26,8 @@ const PackageDetail = () => {
       'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
     ],
     duration: '7 Days / 6 Nights',
-    price: '₹89,999',
-    originalPrice: '₹1,25,000',
+    price: 'Rs.89,999',
+    originalPrice: 'Rs.1,25,000',
     discount: '28% OFF',
     rating: 4.8,
     reviews: 1247,

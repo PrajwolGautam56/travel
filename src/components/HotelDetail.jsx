@@ -20,7 +20,7 @@ const HotelDetail = () => {
     location: 'London, UK',
     address: '150 Piccadilly, St. James\'s, London W1J 9BR, United Kingdom',
     phone: '+44 20 7493 8181',
-    email: 'reservations@theritzlondon.com',
+    email: 'rhythmtours@gmail.com',
     website: 'www.theritzlondon.com',
     description: 'Experience luxury at its finest in the heart of London. The Ritz offers world-class service, elegant rooms, and Michelin-starred dining. This historic landmark has been welcoming guests since 1906, offering an unparalleled blend of classic British elegance and modern luxury.',
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
@@ -54,7 +54,7 @@ const HotelDetail = () => {
         size: '35 sqm',
         occupancy: '2 Adults + 1 Child',
         bedType: 'King Bed',
-        price: '₹25,000',
+        price: 'Rs.25,000',
         perNight: 'per night',
         features: ['City View', 'En-suite Bathroom', 'Mini Bar', 'Room Service', 'Free WiFi'],
         images: [
@@ -69,7 +69,7 @@ const HotelDetail = () => {
         size: '55 sqm',
         occupancy: '2 Adults + 2 Children',
         bedType: 'King Bed + Sofa Bed',
-        price: '₹45,000',
+        price: 'Rs.45,000',
         perNight: 'per night',
         features: ['Park View', 'Separate Living Room', 'Premium Mini Bar', 'Butler Service', 'Free WiFi'],
         images: [
@@ -84,7 +84,7 @@ const HotelDetail = () => {
         size: '120 sqm',
         occupancy: '4 Adults',
         bedType: '2 King Beds',
-        price: '₹85,000',
+        price: 'Rs.85,000',
         perNight: 'per night',
         features: ['Panoramic City Views', 'Private Terrace', 'Dedicated Butler', 'Private Dining', 'Free WiFi'],
         images: [
@@ -427,7 +427,7 @@ const HotelDetail = () => {
                       <hr className="my-2" />
                       <div className="flex justify-between font-semibold text-lg">
                         <span>Total:</span>
-                        <span>₹{calculateTotalPrice().toLocaleString()}</span>
+                        <span>Rs.{calculateTotalPrice().toLocaleString()}</span>
                       </div>
                     </div>
                   </div>

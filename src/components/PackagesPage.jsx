@@ -21,12 +21,12 @@ const PackagesPage = () => {
     {
       id: 1,
       title: 'London & Paris Adventure',
-      destination: 'UK & France',
+      destination: 'Nepal & India',
       description: 'Explore two iconic European cities with flights and 4-star hotels. Experience the best of British and French culture, cuisine, and landmarks.',
       image: 'https://images.unsplash.com/photo-1513634489774-f96762e6f3b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       duration: '7 Days / 6 Nights',
-      price: '₹89,999',
-      originalPrice: '₹1,25,000',
+      price: 'Rs.89,999',
+      originalPrice: 'Rs.1,25,000',
       discount: '28% OFF',
       rating: 4.8,
       reviews: 1247,
@@ -63,12 +63,12 @@ const PackagesPage = () => {
     {
       id: 2,
       title: 'Dubai Luxury Escape',
-      destination: 'UAE',
+      destination: 'Nepal',
       description: 'Experience the magic of Dubai with premium accommodations, desert adventures, and iconic landmarks. Perfect for luxury seekers and adventure lovers.',
       image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       duration: '5 Days / 4 Nights',
-      price: '₹65,500',
-      originalPrice: '₹89,000',
+      price: 'Rs.65,500',
+      originalPrice: 'Rs.89,000',
       discount: '26% OFF',
       rating: 4.9,
       reviews: 892,
@@ -107,8 +107,8 @@ const PackagesPage = () => {
       description: 'Discover the best of Southeast Asia with guided tours, cultural experiences, and modern city life. Perfect blend of urban and natural attractions.',
       image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       duration: '6 Days / 5 Nights',
-      price: '₹52,800',
-      originalPrice: '₹72,000',
+      price: 'Rs.52,800',
+      originalPrice: 'Rs.72,000',
       discount: '27% OFF',
       rating: 4.7,
       reviews: 1563,
@@ -148,8 +148,8 @@ const PackagesPage = () => {
       description: 'Mountain adventures with scenic train journeys, cozy alpine stays, and breathtaking views. Perfect for nature lovers and adventure seekers.',
       image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       duration: '8 Days / 7 Nights',
-      price: '₹1,15,000',
-      originalPrice: '₹1,45,000',
+      price: 'Rs.1,15,000',
+      originalPrice: 'Rs.1,45,000',
       discount: '21% OFF',
       rating: 4.9,
       reviews: 734,
@@ -191,8 +191,8 @@ const PackagesPage = () => {
       description: 'Romantic getaway to Bali with private villas, beachfront dining, and cultural experiences. Perfect for newlyweds and couples.',
       image: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       duration: '6 Days / 5 Nights',
-      price: '₹78,500',
-      originalPrice: '₹95,000',
+      price: 'Rs.78,500',
+      originalPrice: 'Rs.95,000',
       discount: '17% OFF',
       rating: 4.8,
       reviews: 1123,
@@ -232,8 +232,8 @@ const PackagesPage = () => {
       description: 'Experience Japan during cherry blossom season with traditional culture, modern cities, and natural beauty. Limited time seasonal package.',
       image: 'https://images.unsplash.com/photo-1545569341-9eb8b30979d9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
       duration: '7 Days / 6 Nights',
-      price: '₹95,000',
-      originalPrice: '₹1,20,000',
+      price: 'Rs.95,000',
+      originalPrice: 'Rs.1,20,000',
       discount: '21% OFF',
       rating: 4.9,
       reviews: 567,
@@ -381,7 +381,7 @@ const PackagesPage = () => {
 
               {/* Price Range */}
               <div className="mb-4 sm:mb-6">
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Price Range (₹)</label>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Price Range (Rs.)</label>
                 <div className="flex space-x-2">
                   <input
                     type="number"

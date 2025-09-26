@@ -356,9 +356,9 @@ const FlightSearchResults = () => {
                 <h4 className="font-medium text-gray-700 mb-2 sm:mb-3 text-sm sm:text-base">Price Range</h4>
                 <div className="space-y-1 sm:space-y-2">
                   {[
-                    { value: 'under50k', label: 'Under ₹50,000' },
-                    { value: '50k-60k', label: '₹50,000 - ₹60,000' },
-                    { value: 'above60k', label: 'Above ₹60,000' }
+                    { value: 'under50k', label: 'Under Rs.50,000' },
+                    { value: '50k-60k', label: 'Rs.50,000 - Rs.60,000' },
+                    { value: 'above60k', label: 'Above Rs.60,000' }
                   ].map(option => (
                     <label key={option.value} className="flex items-center">
                       <input
@@ -478,7 +478,7 @@ const FlightSearchResults = () => {
                     <div className="text-xs text-gray-500 mb-1">{formatDate(day.date)}</div>
                     <div className={`font-semibold text-xs sm:text-sm ${day.bestPrice ? 'text-green-600' : day.available ? 'text-gray-900' : 'text-gray-400'
                       }`}>
-                      ₹{day.price.toLocaleString()}
+                      Rs.{day.price.toLocaleString()}
                     </div>
                     {day.bestPrice && (
                       <div className="text-xs text-green-600 font-medium mt-1">Best</div>

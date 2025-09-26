@@ -21,9 +21,25 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Login data:', formData);
-    // TODO: Integrate with authentication API
-    // After successful login, redirect to home
-    navigate('/');
+
+    // Dummy credentials for testing
+    const dummyCredentials = {
+      email: 'rhythmtours@gmail.com',
+      password: 'password123'
+    };
+
+    // Check if credentials match dummy data
+    if (formData.email === dummyCredentials.email && formData.password === dummyCredentials.password) {
+      // Store login state in localStorage
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userEmail', formData.email);
+      localStorage.setItem('userName', 'Rhythm Tours');
+
+      // Redirect to profile page
+      navigate('/profile');
+    } else {
+      alert('Invalid credentials. Use: rhythmtours@gmail.com / password123');
+    }
   };
 
   return (
@@ -38,6 +54,13 @@ const Login = () => {
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h2>
           <p className="text-gray-600">Sign in to your Recent and Rhythm Tours and Travels account</p>
+
+          {/* Demo Credentials */}
+          <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-800 font-medium mb-2">Demo Credentials:</p>
+            <p className="text-sm text-blue-700">Email: rhythmtours@gmail.com</p>
+            <p className="text-sm text-blue-700">Password: password123</p>
+          </div>
         </div>
 
         {/* Login Form */}

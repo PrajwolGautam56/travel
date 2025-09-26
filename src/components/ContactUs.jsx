@@ -45,7 +45,7 @@ const ContactUs = () => {
                 </svg>
             ),
             title: 'Phone',
-            details: ['+91 1800-123-4567', '+91 98765-43210'],
+            details: ['+977 01 4001078', '+977 01 4001079'],
             description: 'Call us for immediate assistance'
         },
         {
@@ -55,7 +55,7 @@ const ContactUs = () => {
                 </svg>
             ),
             title: 'Email',
-            details: ['support@recentrhythm.com', 'info@recentrhythm.com'],
+            details: ['rhythmtours@gmail.com', 'info@rhythmtours.com'],
             description: 'Send us an email anytime'
         },
         {
@@ -66,7 +66,7 @@ const ContactUs = () => {
                 </svg>
             ),
             title: 'Address',
-            details: ['123 Business District', 'Mumbai, Maharashtra 400001', 'India'],
+            details: ['Uttar Dhoka', 'Kathmandu, Nepal'],
             description: 'Visit our office'
         },
         {
@@ -301,13 +301,13 @@ const ContactUs = () => {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                         <p className="text-gray-500 font-medium">Interactive Map</p>
-                                        <p className="text-sm text-gray-400">123 Business District, Mumbai</p>
+                                        <p className="text-sm text-gray-400">Uttar Dhoka, Kathmandu</p>
                                     </div>
                                 </div>
                                 <div className="mt-6">
                                     <h4 className="font-semibold text-gray-900 mb-2">Office Location</h4>
                                     <p className="text-gray-600 text-sm">
-                                        Our office is conveniently located in the heart of Mumbai's business district,
+                                        Our office is conveniently located in Uttar Dhoka, Kathmandu,
                                         easily accessible by public transport and with ample parking facilities.
                                     </p>
                                 </div>

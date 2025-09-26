@@ -6,10 +6,10 @@ const PopularPackages = () => {
     {
       id: 1,
       title: 'London & Paris Adventure',
-      destination: 'UK & France',
+      destination: 'Nepal & India',
       image: 'https://images.unsplash.com/photo-1513634489774-f96762e6f3b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹89,999',
-      originalPrice: '₹1,25,000',
+      price: 'Rs.89,999',
+      originalPrice: 'Rs.1,25,000',
       discount: '28% OFF',
       duration: '7 Days / 6 Nights',
       highlights: ['Big Ben', 'Eiffel Tower', 'Louvre Museum', 'Buckingham Palace']
@@ -17,10 +17,10 @@ const PopularPackages = () => {
     {
       id: 2,
       title: 'Dubai Luxury Escape',
-      destination: 'UAE',
+      destination: 'Nepal',
       image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹65,500',
-      originalPrice: '₹89,000',
+      price: 'Rs.65,500',
+      originalPrice: 'Rs.89,000',
       discount: '26% OFF',
       duration: '5 Days / 4 Nights',
       highlights: ['Burj Khalifa', 'Desert Safari', 'Palm Jumeirah', 'Dubai Mall']
@@ -28,10 +28,10 @@ const PopularPackages = () => {
     {
       id: 3,
       title: 'Singapore & Malaysia',
-      destination: 'Southeast Asia',
+      destination: 'Nepal',
       image: 'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-      price: '₹52,800',
-      originalPrice: '₹72,000',
+      price: 'Rs.52,800',
+      originalPrice: 'Rs.72,000',
       discount: '27% OFF',
       duration: '6 Days / 5 Nights',
       highlights: ['Marina Bay Sands', 'Sentosa Island', 'Petronas Towers', 'Singapore Flyer']

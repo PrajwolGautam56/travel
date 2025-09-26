@@ -33,6 +33,14 @@ const SubNavigation = () => {
         }));
     };
 
+    const handleTabClick = (tabName) => {
+        console.log('Tab clicked:', tabName);
+        setActiveTab(tabName);
+        // Close any open dropdowns when switching tabs
+        const event = new CustomEvent('closeDropdowns');
+        document.dispatchEvent(event);
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Form data:', formData);
@@ -91,12 +99,17 @@ const SubNavigation = () => {
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl p-3 sm:p-4 md:p-6 w-full max-w-7xl mx-auto">
 
             {/* Main Navigation Tabs */}
-            <div className="flex flex-wrap gap-1 mb-3 sm:mb-4 overflow-x-auto scrollbar-hide">
+            <div className="flex flex-wrap gap-1 mb-3 sm:mb-4 overflow-x-auto scrollbar-hide relative z-10">
                 {navigationItems.map((item) => (
                     <button
                         key={item}
-                        onClick={() => setActiveTab(item)}
-                        className={`sub-nav-tab px-2 sm:px-3 md:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all duration-200 whitespace-nowrap flex-shrink-0 ${activeTab === item
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleTabClick(item);
+                        }}
+                        onMouseEnter={() => console.log('Mouse enter:', item)}
+                        className={`sub-nav-tab px-2 sm:px-3 md:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-medium rounded-t-lg transition-all duration-200 whitespace-nowrap flex-shrink-0 cursor-pointer relative z-20 ${activeTab === item
                             ? 'active bg-white text-gray-800 border-b-2 border-orange-500'
                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
@@ -109,7 +122,7 @@ const SubNavigation = () => {
             {/* Dynamic Content Area */}
             <div className="min-h-[200px] sm:min-h-[240px]">
                 <form onSubmit={handleSubmit}>
-                    <div key={activeTab} className="sub-nav-content">
+                    <div className="sub-nav-content">
                         {renderContentSlim()}
                     </div>
                 </form>
