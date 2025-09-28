@@ -1,6 +1,24 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const WhyChooseUs = () => {
+  const navigate = useNavigate();
+
+  const handleBookTrip = () => {
+    // Scroll to hero section
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection) {
+      heroSection.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // Fallback: scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleContactUs = () => {
+    navigate('/contact');
+  };
+
   const features = [
     {
       id: 1,
@@ -127,10 +145,16 @@ const WhyChooseUs = () => {
             Join millions of travelers who trust Recent and Rhythm Tours and Travels for their dream vacations
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300">
+            <button
+              onClick={handleBookTrip}
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-300"
+            >
               Book Your Trip
             </button>
-            <button className="bg-transparent border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300">
+            <button
+              onClick={handleContactUs}
+              className="bg-transparent border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300"
+            >
               Contact Us
             </button>
           </div>

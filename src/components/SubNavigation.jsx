@@ -47,6 +47,7 @@ const SubNavigation = () => {
 
         switch (activeTab) {
             case 'BOOK TRIP':
+                // Navigate to flight search page with form data
                 navigate('/flight-search', { state: { searchData: formData } });
                 break;
             case 'STOPOVER':

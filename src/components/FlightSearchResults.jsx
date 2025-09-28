@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   MapPinIcon,
   StarIcon,
@@ -9,6 +9,7 @@ import {
 
 const FlightSearchResults = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const searchData = location.state?.searchData || {
     from: 'DEL',
     to: 'LHR',
@@ -17,7 +18,6 @@ const FlightSearchResults = () => {
     passengers: 1
   };
 
-  const [selectedFlight, setSelectedFlight] = useState(null);
   const [expandedFlight, setExpandedFlight] = useState(null);
   const [hoveredFlight, setHoveredFlight] = useState(null);
   const [sortBy, setSortBy] = useState('price');
@@ -433,7 +433,8 @@ const FlightSearchResults = () => {
   };
 
   const handleFlightSelect = (flight) => {
-    setSelectedFlight(flight);
+    // Navigate directly to flight booking page
+    navigate(`/flight-booking/${flight.id}`);
   };
 
   const handleFlightExpand = (flightId) => {
@@ -720,11 +721,9 @@ const FlightSearchResults = () => {
               {filteredFlights.map((flight) => (
                 <div
                   key={flight.id}
-                  className={`bg-white rounded-2xl shadow-sm border transition-all duration-300 ${selectedFlight?.id === flight.id
-                    ? 'ring-2 ring-blue-500 border-blue-500 shadow-lg'
-                    : hoveredFlight === flight.id
-                      ? 'shadow-lg border-blue-300'
-                      : 'border-gray-200 hover:shadow-md'
+                  className={`bg-white rounded-2xl shadow-sm border transition-all duration-300 ${hoveredFlight === flight.id
+                    ? 'shadow-lg border-blue-300'
+                    : 'border-gray-200 hover:shadow-md'
                     }`}
                   onMouseEnter={() => handleFlightHover(flight.id)}
                   onMouseLeave={handleFlightLeave}
@@ -960,34 +959,6 @@ const FlightSearchResults = () => {
               ))}
             </div>
 
-            {/* Selected Flight Summary */}
-            {selectedFlight && (
-              <div className="mt-4 sm:mt-6 bg-blue-50 border border-blue-200 rounded-xl p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-semibold text-blue-900 mb-3 sm:mb-4">Selected Flight</h3>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-                  <div>
-                    <p className="text-blue-900 font-medium text-sm sm:text-base">
-                      {selectedFlight.airline} • {selectedFlight.departure} → {selectedFlight.arrival}
-                    </p>
-                    <p className="text-blue-700 text-xs sm:text-sm">
-                      {selectedFlight.departureTime} - {selectedFlight.arrivalTime} • {selectedFlight.duration}
-                    </p>
-                    <p className="text-blue-600 text-xs sm:text-sm">
-                      {selectedFlight.departureTerminal} → {selectedFlight.arrivalTerminal}
-                    </p>
-                  </div>
-                  <div className="text-center sm:text-right">
-                    <p className="text-xl sm:text-2xl font-bold text-blue-900">{formatPrice(selectedFlight.price)}</p>
-                    <Link
-                      to={`/flight-booking/${selectedFlight.id}`}
-                      className="inline-block bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm sm:text-base w-full sm:w-auto"
-                    >
-                      Continue to Booking
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
