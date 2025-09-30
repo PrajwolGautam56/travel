@@ -36,7 +36,7 @@ const FlightStatusTab = ({ formData, onChange }) => {
                         type="submit"
                         className="bg-orange-500 text-white font-bold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg hover:bg-orange-600 transition-colors text-sm sm:text-base"
                     >
-                        CHECK STATUS
+                        Check Status
                     </button>
                 </div>
             </div>

@@ -188,7 +188,7 @@ const StopoverTab = ({ formData, onChange }) => {
                         />
                     </div>
                     <div className="relative" ref={passengerDropdownRef}>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">PASSENGERS</label>
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">Passengers</label>
                         <button
                             type="button"
                             onClick={() => setIsPassengerDropdownOpen(!isPassengerDropdownOpen)}
