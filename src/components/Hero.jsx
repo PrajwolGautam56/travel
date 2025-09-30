@@ -8,7 +8,7 @@ const Hero = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="relative min-h-screen bg-orange-500 overflow-hidden">
+    <section className="hero-section relative min-h-screen bg-orange-500 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
@@ -35,7 +35,10 @@ const Hero = () => {
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-orange-100 leading-relaxed max-w-2xl">
                 Fly in comfort on our wide-body aircraft, departing from 19 Sep to 28 Nov 2025.
               </p>
-              <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 sm:py-3 md:py-4 px-4 sm:px-6 md:px-8 rounded-lg text-sm sm:text-base md:text-lg transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl flex-shrink-0 w-full sm:w-auto">
+              <button
+                onClick={() => navigate('/packages')}
+                className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 sm:py-3 md:py-4 px-4 sm:px-6 md:px-8 rounded-lg text-sm sm:text-base md:text-lg transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl flex-shrink-0 w-full sm:w-auto"
+              >
                 BOOK NOW
               </button>
             </div>

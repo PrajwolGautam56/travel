@@ -27,7 +27,7 @@ const Footer = () => {
       { name: 'Beach Holidays', href: '#' }
     ],
     support: [
-      { name: 'Contact Us', href: '#' },
+      { name: 'Contact Us', href: '/contact' },
       { name: 'Help Center', href: '#' },
       { name: 'Travel Insurance', href: '#' },
       { name: 'Cancellation Policy', href: '#' },
@@ -142,9 +142,15 @@ const Footer = () => {
             <ul className="space-y-1 sm:space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-xs sm:text-sm text-gray-300 hover:text-orange-400 transition-colors duration-300">
-                    {link.name}
-                  </a>
+                  {link.name === 'Contact Us' ? (
+                    <Link to={link.href} className="text-xs sm:text-sm text-gray-300 hover:text-orange-400 transition-colors duration-300">
+                      {link.name}
+                    </Link>
+                  ) : (
+                    <a href={link.href} className="text-xs sm:text-sm text-gray-300 hover:text-orange-400 transition-colors duration-300">
+                      {link.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>

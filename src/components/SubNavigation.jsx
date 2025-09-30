@@ -8,7 +8,7 @@ import FlightScheduleTab from './FlightScheduleTab';
 
 const SubNavigation = () => {
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState('BOOK TRIP');
+    const [activeTab, setActiveTab] = useState('Book Trip');
     const [formData, setFormData] = useState({
         from: 'Kathmandu',
         to: '',
@@ -46,22 +46,23 @@ const SubNavigation = () => {
         console.log('Form data:', formData);
 
         switch (activeTab) {
-            case 'BOOK TRIP':
+            case 'Book Trip':
+                // Navigate to flight search page with form data
                 navigate('/flight-search', { state: { searchData: formData } });
                 break;
-            case 'STOPOVER':
+            case 'Stopover':
                 // Handle stopover search
                 console.log('Searching stopover flights...');
                 break;
-            case 'MANAGE BOOKING':
+            case 'Manage Booking':
                 // Handle manage booking
                 console.log('Managing booking...');
                 break;
-            case 'FLIGHT STATUS':
+            case 'Flight Status':
                 // Handle flight status
                 console.log('Checking flight status...');
                 break;
-            case 'FLIGHT SCHEDULE':
+            case 'Flight Schedule':
                 // Handle flight schedule
                 console.log('Viewing flight schedule...');
                 break;
@@ -71,24 +72,24 @@ const SubNavigation = () => {
     };
 
     const navigationItems = [
-        'BOOK TRIP',
-        'STOPOVER',
-        'MANAGE BOOKING',
-        'FLIGHT STATUS',
-        'FLIGHT SCHEDULE'
+        'Book Trip',
+        'Stopover',
+        'Manage Booking',
+        'Flight Status',
+        'Flight Schedule'
     ];
 
     const renderContentSlim = () => {
         switch (activeTab) {
-            case 'BOOK TRIP':
+            case 'Book Trip':
                 return <BookTripTab formData={formData} onChange={handleInputChange} />;
-            case 'STOPOVER':
+            case 'Stopover':
                 return <StopoverTab formData={formData} onChange={handleInputChange} />;
-            case 'MANAGE BOOKING':
+            case 'Manage Booking':
                 return <ManageBookingTab formData={formData} onChange={handleInputChange} />;
-            case 'FLIGHT STATUS':
+            case 'Flight Status':
                 return <FlightStatusTab formData={formData} onChange={handleInputChange} />;
-            case 'FLIGHT SCHEDULE':
+            case 'Flight Schedule':
                 return <FlightScheduleTab formData={formData} onChange={handleInputChange} />;
             default:
                 return null;
