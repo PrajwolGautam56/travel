@@ -234,49 +234,6 @@ const BookTripTab = ({ formData, onChange }) => {
                         </label>
                     </div>
 
-                    <div className="flex items-center">
-                        {!isPromoModalOpen ? (
-                            <button
-                                type="button"
-                                onClick={handlePromoModalToggle}
-                                className="flex items-center space-x-2 text-orange-500 hover:text-orange-600 text-xs sm:text-sm cursor-pointer font-bold transition-colors"
-                            >
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
-                                <span>Add promo code</span>
-                            </button>
-                        ) : (
-                            <div className="flex items-center space-x-2">
-                                <input
-                                    type="text"
-                                    value={promoCode}
-                                    onChange={handlePromoCodeChange}
-                                    placeholder="Enter promo code"
-                                    className="px-3 py-1 border border-gray-300 rounded text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                                    autoFocus
-                                />
-                                <button
-                                    type="button"
-                                    onClick={handleApplyPromoCode}
-                                    disabled={!promoCode.trim()}
-                                    className="bg-orange-500 text-white px-3 py-1 rounded text-xs sm:text-sm hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-                                >
-                                    Apply
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsPromoModalOpen(false);
-                                        setPromoCode('');
-                                    }}
-                                    className="text-gray-500 hover:text-gray-700 text-xs sm:text-sm"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        )}
-                    </div>
                 </div>
 
                 <div className="space-y-2 sm:space-y-3">
@@ -749,6 +706,51 @@ const BookTripTab = ({ formData, onChange }) => {
                                 </div>
                             </div>
 
+                        </div>
+
+                        {/* Promo Code Section - Next Row */}
+                        <div className="flex items-center justify-center sm:justify-start pt-2">
+                            {!isPromoModalOpen ? (
+                                <button
+                                    type="button"
+                                    onClick={handlePromoModalToggle}
+                                    className="flex items-center space-x-2 text-orange-500 hover:text-orange-600 text-xs sm:text-sm cursor-pointer font-bold transition-colors"
+                                >
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    <span>Add promo code</span>
+                                </button>
+                            ) : (
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="text"
+                                        value={promoCode}
+                                        onChange={handlePromoCodeChange}
+                                        placeholder="Enter promo code"
+                                        className="px-3 py-1 border border-gray-300 rounded text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        autoFocus
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleApplyPromoCode}
+                                        disabled={!promoCode.trim()}
+                                        className="bg-orange-500 text-white px-3 py-1 rounded text-xs sm:text-sm hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Apply
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsPromoModalOpen(false);
+                                            setPromoCode('');
+                                        }}
+                                        className="text-gray-500 hover:text-gray-700 text-xs sm:text-sm"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex justify-center sm:justify-end">
