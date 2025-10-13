@@ -125,6 +125,19 @@ const BookTripTab = ({ formData, onChange }) => {
         setTripType(type);
     };
 
+    const handleSwapLocations = () => {
+        onChange({ target: { name: 'from', value: formData.to } });
+        onChange({ target: { name: 'to', value: formData.from } });
+    };
+
+    const handleMulticitySwap = (index) => {
+        const newFlights = [...multicityFlights];
+        const tempFrom = newFlights[index].from;
+        newFlights[index].from = newFlights[index].to;
+        newFlights[index].to = tempFrom;
+        setMulticityFlights(newFlights);
+    };
+
     const handleMulticityChange = (index, field, value) => {
         const newFlights = [...multicityFlights];
         newFlights[index][field] = value;
@@ -240,7 +253,7 @@ const BookTripTab = ({ formData, onChange }) => {
                 <div className="space-y-2 sm:space-y-3">
                     {/* Return Trip Form */}
                     {tripType === 'return' && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-[1fr_auto_1fr_1fr_1fr] gap-3 sm:gap-2">
                             <div>
                                 <div className="relative">
                                     <input
@@ -268,6 +281,20 @@ const BookTripTab = ({ formData, onChange }) => {
                                         )}
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Swap Button - Between From and To */}
+                            <div className="flex items-center justify-center">
+                                <button
+                                    type="button"
+                                    onClick={handleSwapLocations}
+                                    className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                                    title="Swap locations"
+                                >
+                                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                    </svg>
+                                </button>
                             </div>
 
                             <div>
@@ -349,7 +376,7 @@ const BookTripTab = ({ formData, onChange }) => {
 
                     {/* One Way Trip Form */}
                     {tripType === 'oneway' && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-[1fr_auto_1fr_1fr] gap-3 sm:gap-2">
                             <div>
                                 <div className="relative">
                                     <input
@@ -375,9 +402,22 @@ const BookTripTab = ({ formData, onChange }) => {
                                                 </svg>
                                             </button>
                                         )}
-                                        <span className="bg-black text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">KTM</span>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Swap Button - Between From and To */}
+                            <div className="flex items-center justify-center">
+                                <button
+                                    type="button"
+                                    onClick={handleSwapLocations}
+                                    className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                                    title="Swap locations"
+                                >
+                                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                    </svg>
+                                </button>
                             </div>
 
                             <div>
@@ -403,6 +443,7 @@ const BookTripTab = ({ formData, onChange }) => {
                                     </div>
                                 </div>
                             </div>
+
 
                             <div>
                                 <div className="relative">
@@ -433,7 +474,7 @@ const BookTripTab = ({ formData, onChange }) => {
                     {tripType === 'multicity' && (
                         <div className="space-y-3">
                             {multicityFlights.map((flight, index) => (
-                                <div key={index} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                                <div key={index} className="relative grid grid-cols-[1fr_auto_1fr_1fr] gap-3 sm:gap-2">
                                     <div>
                                         <div className="relative">
                                             <input
@@ -458,9 +499,22 @@ const BookTripTab = ({ formData, onChange }) => {
                                                         </svg>
                                                     </button>
                                                 )}
-                                                <span className="bg-black text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">KTM</span>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    {/* Swap Button for Multicity - Between From and To */}
+                                    <div className="flex items-center justify-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleMulticitySwap(index)}
+                                            className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                                            title="Swap locations"
+                                        >
+                                            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                            </svg>
+                                        </button>
                                     </div>
 
                                     <div>
