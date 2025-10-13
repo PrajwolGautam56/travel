@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const BookTripTab = ({ formData, onChange }) => {
-    const [tripType, setTripType] = useState('return');
+    const [tripType, setTripType] = useState('oneway');
     const [passengerCounts, setPassengerCounts] = useState({
         adults: 1,
         children: 0,
@@ -10,6 +10,7 @@ const BookTripTab = ({ formData, onChange }) => {
     const [isPassengerDropdownOpen, setIsPassengerDropdownOpen] = useState(false);
     const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
     const [promoCode, setPromoCode] = useState('');
+    const [currency, setCurrency] = useState('NPR');
     const [multicityFlights, setMulticityFlights] = useState([
         { from: '', to: '', date: '' },
         { from: '', to: '', date: '' }
@@ -124,6 +125,19 @@ const BookTripTab = ({ formData, onChange }) => {
         setTripType(type);
     };
 
+    const handleSwapLocations = () => {
+        onChange({ target: { name: 'from', value: formData.to } });
+        onChange({ target: { name: 'to', value: formData.from } });
+    };
+
+    const handleMulticitySwap = (index) => {
+        const newFlights = [...multicityFlights];
+        const tempFrom = newFlights[index].from;
+        newFlights[index].from = newFlights[index].to;
+        newFlights[index].to = tempFrom;
+        setMulticityFlights(newFlights);
+    };
+
     const handleMulticityChange = (index, field, value) => {
         const newFlights = [...multicityFlights];
         newFlights[index][field] = value;
@@ -203,17 +217,6 @@ const BookTripTab = ({ formData, onChange }) => {
                             <input
                                 type="radio"
                                 name="tripType"
-                                value="return"
-                                checked={tripType === 'return'}
-                                onChange={() => handleTripTypeChange('return')}
-                                className="text-orange-500"
-                            />
-                            <span className="text-xs sm:text-sm text-gray-700">Return</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input
-                                type="radio"
-                                name="tripType"
                                 value="oneway"
                                 checked={tripType === 'oneway'}
                                 onChange={() => handleTripTypeChange('oneway')}
@@ -225,64 +228,32 @@ const BookTripTab = ({ formData, onChange }) => {
                             <input
                                 type="radio"
                                 name="tripType"
+                                value="return"
+                                checked={tripType === 'return'}
+                                onChange={() => handleTripTypeChange('return')}
+                                className="text-orange-500"
+                            />
+                            <span className="text-xs sm:text-sm text-gray-700">Return</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                name="tripType"
                                 value="multicity"
                                 checked={tripType === 'multicity'}
                                 onChange={() => handleTripTypeChange('multicity')}
                                 className="text-orange-500"
                             />
-                            <span className="text-xs sm:text-sm text-gray-700">Multicity</span>
+                            <span className="text-xs sm:text-sm text-gray-700">Multicity/Stopover</span>
                         </label>
                     </div>
 
-                    <div className="flex items-center">
-                        {!isPromoModalOpen ? (
-                            <button
-                                type="button"
-                                onClick={handlePromoModalToggle}
-                                className="flex items-center space-x-2 text-orange-500 hover:text-orange-600 text-xs sm:text-sm cursor-pointer font-bold transition-colors"
-                            >
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                </svg>
-                                <span>Add promo code</span>
-                            </button>
-                        ) : (
-                            <div className="flex items-center space-x-2">
-                                <input
-                                    type="text"
-                                    value={promoCode}
-                                    onChange={handlePromoCodeChange}
-                                    placeholder="Enter promo code"
-                                    className="px-3 py-1 border border-gray-300 rounded text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                                    autoFocus
-                                />
-                                <button
-                                    type="button"
-                                    onClick={handleApplyPromoCode}
-                                    disabled={!promoCode.trim()}
-                                    className="bg-orange-500 text-white px-3 py-1 rounded text-xs sm:text-sm hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-                                >
-                                    Apply
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsPromoModalOpen(false);
-                                        setPromoCode('');
-                                    }}
-                                    className="text-gray-500 hover:text-gray-700 text-xs sm:text-sm"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        )}
-                    </div>
                 </div>
 
                 <div className="space-y-2 sm:space-y-3">
                     {/* Return Trip Form */}
                     {tripType === 'return' && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-[1fr_auto_1fr_1fr_1fr] gap-3 sm:gap-2">
                             <div>
                                 <div className="relative">
                                     <input
@@ -310,6 +281,20 @@ const BookTripTab = ({ formData, onChange }) => {
                                         )}
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Swap Button - Between From and To */}
+                            <div className="flex items-center justify-center">
+                                <button
+                                    type="button"
+                                    onClick={handleSwapLocations}
+                                    className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                                    title="Swap locations"
+                                >
+                                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                    </svg>
+                                </button>
                             </div>
 
                             <div>
@@ -391,7 +376,7 @@ const BookTripTab = ({ formData, onChange }) => {
 
                     {/* One Way Trip Form */}
                     {tripType === 'oneway' && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-[1fr_auto_1fr_1fr] gap-3 sm:gap-2">
                             <div>
                                 <div className="relative">
                                     <input
@@ -417,9 +402,22 @@ const BookTripTab = ({ formData, onChange }) => {
                                                 </svg>
                                             </button>
                                         )}
-                                        <span className="bg-black text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">KTM</span>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Swap Button - Between From and To */}
+                            <div className="flex items-center justify-center">
+                                <button
+                                    type="button"
+                                    onClick={handleSwapLocations}
+                                    className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                                    title="Swap locations"
+                                >
+                                    <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                    </svg>
+                                </button>
                             </div>
 
                             <div>
@@ -445,6 +443,7 @@ const BookTripTab = ({ formData, onChange }) => {
                                     </div>
                                 </div>
                             </div>
+
 
                             <div>
                                 <div className="relative">
@@ -475,7 +474,7 @@ const BookTripTab = ({ formData, onChange }) => {
                     {tripType === 'multicity' && (
                         <div className="space-y-3">
                             {multicityFlights.map((flight, index) => (
-                                <div key={index} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                                <div key={index} className="relative grid grid-cols-[1fr_auto_1fr_1fr] gap-3 sm:gap-2">
                                     <div>
                                         <div className="relative">
                                             <input
@@ -500,9 +499,22 @@ const BookTripTab = ({ formData, onChange }) => {
                                                         </svg>
                                                     </button>
                                                 )}
-                                                <span className="bg-black text-white text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded">KTM</span>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    {/* Swap Button for Multicity - Between From and To */}
+                                    <div className="flex items-center justify-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleMulticitySwap(index)}
+                                            className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                                            title="Swap locations"
+                                        >
+                                            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                            </svg>
+                                        </button>
                                     </div>
 
                                     <div>
@@ -594,8 +606,8 @@ const BookTripTab = ({ formData, onChange }) => {
                     )}
 
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-2 sm:pt-3 gap-2">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                            {/* Class and Passenger Boxes - Leftmost */}
+                        <div className="flex flex-col gap-3 sm:gap-4">
+                            {/* Class and Passenger Boxes */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full sm:w-auto">
                                 <div className="w-68">
                                     <div className="relative">
@@ -751,6 +763,51 @@ const BookTripTab = ({ formData, onChange }) => {
 
                         </div>
 
+                        {/* Promo Code Section - Next Row */}
+                        <div className="flex items-center justify-center sm:justify-start pt-2">
+                            {!isPromoModalOpen ? (
+                                <button
+                                    type="button"
+                                    onClick={handlePromoModalToggle}
+                                    className="flex items-center space-x-2 text-orange-500 hover:text-orange-600 text-xs sm:text-sm cursor-pointer font-bold transition-colors"
+                                >
+                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    <span>Add promo code</span>
+                                </button>
+                            ) : (
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="text"
+                                        value={promoCode}
+                                        onChange={handlePromoCodeChange}
+                                        placeholder="Enter promo code"
+                                        className="px-3 py-1 border border-gray-300 rounded text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                                        autoFocus
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleApplyPromoCode}
+                                        disabled={!promoCode.trim()}
+                                        className="bg-orange-500 text-white px-3 py-1 rounded text-xs sm:text-sm hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Apply
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsPromoModalOpen(false);
+                                            setPromoCode('');
+                                        }}
+                                        className="text-gray-500 hover:text-gray-700 text-xs sm:text-sm"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
                         <div className="flex justify-center sm:justify-end">
                             <button
                                 type="submit"
@@ -759,6 +816,20 @@ const BookTripTab = ({ formData, onChange }) => {
                                 Search Flights
                             </button>
                         </div>
+                    </div>
+
+                    {/* Currency Option - Next Row */}
+                    <div className="flex items-center space-x-2 pt-2">
+                        <span className="text-sm text-gray-700">Currency</span>
+                        <select
+                            name="currency"
+                            value={currency}
+                            onChange={(e) => setCurrency(e.target.value)}
+                            className="border border-blue-500 rounded px-2 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="NPR">NPR</option>
+                            <option value="USD">USD</option>
+                        </select>
                     </div>
                 </div>
 
