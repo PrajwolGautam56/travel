@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const BookTripTab = ({ formData, onChange }) => {
-    const [tripType, setTripType] = useState('return');
+    const [tripType, setTripType] = useState('oneway');
     const [passengerCounts, setPassengerCounts] = useState({
         adults: 1,
         children: 0,
@@ -10,6 +10,7 @@ const BookTripTab = ({ formData, onChange }) => {
     const [isPassengerDropdownOpen, setIsPassengerDropdownOpen] = useState(false);
     const [isPromoModalOpen, setIsPromoModalOpen] = useState(false);
     const [promoCode, setPromoCode] = useState('');
+    const [currency, setCurrency] = useState('NPR');
     const [multicityFlights, setMulticityFlights] = useState([
         { from: '', to: '', date: '' },
         { from: '', to: '', date: '' }
@@ -203,17 +204,6 @@ const BookTripTab = ({ formData, onChange }) => {
                             <input
                                 type="radio"
                                 name="tripType"
-                                value="return"
-                                checked={tripType === 'return'}
-                                onChange={() => handleTripTypeChange('return')}
-                                className="text-orange-500"
-                            />
-                            <span className="text-xs sm:text-sm text-gray-700">Return</span>
-                        </label>
-                        <label className="flex items-center space-x-2">
-                            <input
-                                type="radio"
-                                name="tripType"
                                 value="oneway"
                                 checked={tripType === 'oneway'}
                                 onChange={() => handleTripTypeChange('oneway')}
@@ -225,12 +215,23 @@ const BookTripTab = ({ formData, onChange }) => {
                             <input
                                 type="radio"
                                 name="tripType"
+                                value="return"
+                                checked={tripType === 'return'}
+                                onChange={() => handleTripTypeChange('return')}
+                                className="text-orange-500"
+                            />
+                            <span className="text-xs sm:text-sm text-gray-700">Return</span>
+                        </label>
+                        <label className="flex items-center space-x-2">
+                            <input
+                                type="radio"
+                                name="tripType"
                                 value="multicity"
                                 checked={tripType === 'multicity'}
                                 onChange={() => handleTripTypeChange('multicity')}
                                 className="text-orange-500"
                             />
-                            <span className="text-xs sm:text-sm text-gray-700">Multicity</span>
+                            <span className="text-xs sm:text-sm text-gray-700">Multicity/Stopover</span>
                         </label>
                     </div>
 
@@ -551,8 +552,8 @@ const BookTripTab = ({ formData, onChange }) => {
                     )}
 
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-2 sm:pt-3 gap-2">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                            {/* Class and Passenger Boxes - Leftmost */}
+                        <div className="flex flex-col gap-3 sm:gap-4">
+                            {/* Class and Passenger Boxes */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full sm:w-auto">
                                 <div className="w-68">
                                     <div className="relative">
@@ -761,6 +762,20 @@ const BookTripTab = ({ formData, onChange }) => {
                                 Search Flights
                             </button>
                         </div>
+                    </div>
+
+                    {/* Currency Option - Next Row */}
+                    <div className="flex items-center space-x-2 pt-2">
+                        <span className="text-sm text-gray-700">Currency</span>
+                        <select
+                            name="currency"
+                            value={currency}
+                            onChange={(e) => setCurrency(e.target.value)}
+                            className="border border-blue-500 rounded px-2 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="NPR">NPR</option>
+                            <option value="USD">USD</option>
+                        </select>
                     </div>
                 </div>
 
