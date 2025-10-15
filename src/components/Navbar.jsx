@@ -7,6 +7,7 @@ const Navbar = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [isMobileServicesOpen, setIsMobileServicesOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
   const navigate = useNavigate();
@@ -23,38 +24,37 @@ const Navbar = () => {
     setUserName(name);
   }, []);
 
+  // Handle click outside to close profile dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isProfileOpen && !event.target.closest('.profile-dropdown')) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    if (isProfileOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProfileOpen]);
+
   const handleLogout = () => {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
     setIsLoggedIn(false);
     setUserName('');
+    setIsProfileOpen(false);
     navigate('/');
   };
 
-  const handleLogoClick = () => {
-    // Add custom scroll behavior with 0.1s duration
-    const startTime = performance.now();
-    const startScrollTop = window.pageYOffset;
-    const duration = 100; // 0.1 seconds in milliseconds
-
-    const animateScroll = (currentTime) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-
-      // Easing function for smooth animation
-      const easeInOutCubic = progress < 0.5
-        ? 4 * progress * progress * progress
-        : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-
-      window.scrollTo(0, startScrollTop * (1 - easeInOutCubic));
-
-      if (progress < 1) {
-        requestAnimationFrame(animateScroll);
-      }
-    };
-
-    requestAnimationFrame(animateScroll);
+  const handleLogoClick = (e) => {
+    e.preventDefault();
+    // Refresh the page and navigate to home
+    window.location.href = '/';
   };
 
   // Handle navbar visibility on scroll
@@ -182,26 +182,35 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-4">
             {isLoggedIn ? (
               <>
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                {/* Profile Dropdown */}
+                <div className="relative profile-dropdown">
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center justify-center w-10 h-10 bg-orange-100 rounded-full hover:bg-orange-200 transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                  >
                     <span className="text-orange-600 font-semibold text-sm">
                       {userName.split(' ').map(n => n[0]).join('')}
                     </span>
-                  </div>
-                  <span className="text-gray-700 font-medium">Hi, {userName.split(' ')[0]}</span>
+                  </button>
+
+                  {isProfileOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
+                      <Link
+                        to="/profile"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-500 transition-colors"
+                      >
+                        Profile
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <Link
-                  to="/profile"
-                  className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                >
-                  Profile
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-gray-700 hover:text-red-500 hover:bg-red-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                >
-                  Logout
-                </button>
               </>
             ) : (
               <>

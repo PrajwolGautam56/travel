@@ -33,7 +33,7 @@ const FlightSearchResults = () => {
       id: 1,
       airline: 'Singapore Airlines',
       airlineCode: 'SQ',
-      logo: 'https://via.placeholder.com/80x40/0052CC/FFFFFF?text=SQ',
+      logo: 'images/Airline Logo.png',
       departure: 'KTM',
       arrival: 'GVA',
       departureTime: '22:50',
@@ -46,7 +46,6 @@ const FlightSearchResults = () => {
       aircraft: 'Boeing 737-800',
       departureDate: '2024-10-21',
       returnDate: '2024-10-22',
-      features: ['Meal Included', 'Entertainment', 'WiFi', 'Power Outlet'],
       fareType: 'Flexi',
       baggage: '30kg',
       refundable: true,
@@ -63,15 +62,19 @@ const FlightSearchResults = () => {
           airline: 'Singapore Airlines',
           flightNumber: 'SQ 441',
           departure: 'KTM',
+          departureCity: 'Kathmandu',
           arrival: 'SIN',
+          arrivalCity: 'Singapore',
           departureTime: '22:50',
           arrivalTime: '06:15',
           duration: '4h 25m',
-          aircraft: 'Boeing 737-800 NG',
+          aircraft: 'Boeing 787-10',
           departureDate: '2024-10-21',
           arrivalDate: '2024-10-22',
           departureTerminal: 'Terminal Intl',
-          arrivalTerminal: 'Changi',
+          arrivalTerminal: 'Terminal 3',
+          departureAirport: 'Tribhuvan Intl',
+          arrivalAirport: 'Changi',
           layover: null
         },
         {
@@ -79,7 +82,9 @@ const FlightSearchResults = () => {
           airline: 'Singapore Airlines',
           flightNumber: 'SQ 326',
           departure: 'SIN',
+          departureCity: 'Singapore',
           arrival: 'FRA',
+          arrivalCity: 'Frankfurt',
           departureTime: '10:55',
           arrivalTime: '18:00',
           duration: '12h 5m',
@@ -88,6 +93,8 @@ const FlightSearchResults = () => {
           arrivalDate: '2024-10-22',
           departureTerminal: 'Terminal 3',
           arrivalTerminal: 'Terminal 1',
+          departureAirport: 'Changi',
+          arrivalAirport: 'Rhein Main',
           layover: '4h 40m'
         },
         {
@@ -95,15 +102,19 @@ const FlightSearchResults = () => {
           airline: 'Swiss International Air Lines',
           flightNumber: 'SQ 2903',
           departure: 'FRA',
+          departureCity: 'Frankfurt',
           arrival: 'GVA',
+          arrivalCity: 'Geneva',
           departureTime: '21:10',
           arrivalTime: '22:25',
           duration: '1h 15m',
-          aircraft: 'Airbus A220-300',
+          aircraft: 'Airbus A220-100',
           departureDate: '2024-10-22',
           arrivalDate: '2024-10-22',
           departureTerminal: 'Terminal 1',
           arrivalTerminal: 'Terminal 1',
+          departureAirport: 'Rhein Main',
+          arrivalAirport: 'Cointrin',
           layover: '3h 10m',
           operatedBy: 'Swiss International Air Lines'
         }
@@ -122,7 +133,7 @@ const FlightSearchResults = () => {
       id: 2,
       airline: 'Singapore Airlines',
       airlineCode: 'SQ',
-      logo: 'https://via.placeholder.com/80x40/D71920/FFFFFF?text=SQ',
+      logo: 'images/Airline Logo.png',
       departure: 'KTM',
       arrival: 'GVA',
       departureTime: '22:50',
@@ -135,7 +146,6 @@ const FlightSearchResults = () => {
       aircraft: 'Boeing 737-800',
       departureDate: '2024-10-21',
       returnDate: '2024-10-23',
-      features: ['Meal Included', 'Entertainment', 'WiFi', 'Power Outlet'],
       fareType: 'Flexi',
       baggage: '30kg',
       refundable: true,
@@ -152,15 +162,19 @@ const FlightSearchResults = () => {
           airline: 'Singapore Airlines',
           flightNumber: 'SQ 441',
           departure: 'KTM',
+          departureCity: 'Kathmandu',
           arrival: 'SIN',
+          arrivalCity: 'Singapore',
           departureTime: '22:50',
           arrivalTime: '06:15',
           duration: '4h 25m',
-          aircraft: 'Boeing 737-800 NG',
+          aircraft: 'Boeing 787-10',
           departureDate: '2024-10-21',
           arrivalDate: '2024-10-22',
           departureTerminal: 'Terminal Intl',
-          arrivalTerminal: 'Changi',
+          arrivalTerminal: 'Terminal 3',
+          departureAirport: 'Tribhuvan Intl',
+          arrivalAirport: 'Changi',
           layover: null
         },
         {
@@ -168,7 +182,9 @@ const FlightSearchResults = () => {
           airline: 'Singapore Airlines',
           flightNumber: 'SQ 26',
           departure: 'SIN',
+          departureCity: 'Singapore',
           arrival: 'FRA',
+          arrivalCity: 'Frankfurt',
           departureTime: '10:55',
           arrivalTime: '18:00',
           duration: '12h 5m',
@@ -177,6 +193,8 @@ const FlightSearchResults = () => {
           arrivalDate: '2024-10-22',
           departureTerminal: 'Terminal 3',
           arrivalTerminal: 'Terminal 1',
+          departureAirport: 'Changi',
+          arrivalAirport: 'Rhein Main',
           layover: '17h 40m'
         },
         {
@@ -184,15 +202,19 @@ const FlightSearchResults = () => {
           airline: 'Swiss International Air Lines',
           flightNumber: 'SQ 2951',
           departure: 'FRA',
+          departureCity: 'Frankfurt',
           arrival: 'GVA',
+          arrivalCity: 'Geneva',
           departureTime: '21:10',
           arrivalTime: '09:25',
           duration: '1h 15m',
-          aircraft: 'Airbus A220-300',
+          aircraft: 'Airbus A220-100',
           departureDate: '2024-10-22',
           arrivalDate: '2024-10-23',
           departureTerminal: 'Terminal 1',
           arrivalTerminal: 'Terminal 1',
+          departureAirport: 'Rhein Main',
+          arrivalAirport: 'Cointrin',
           layover: '1h 5m',
           operatedBy: 'Swiss International Air Lines'
         }
@@ -211,7 +233,7 @@ const FlightSearchResults = () => {
       id: 3,
       airline: 'British Airways',
       airlineCode: 'BA',
-      logo: 'https://via.placeholder.com/80x40/0750B8/FFFFFF?text=BA',
+      logo: 'images/Airline Logo.png',
       departure: 'DEL',
       arrival: 'LHR',
       departureTime: '01:45',
@@ -224,7 +246,6 @@ const FlightSearchResults = () => {
       aircraft: 'Boeing 787-9 Dreamliner',
       departureDate: '2024-01-15',
       returnDate: '2024-01-22',
-      features: ['Meal Included', 'Entertainment', 'WiFi'],
       fareType: 'Basic',
       baggage: '23kg',
       refundable: false,
@@ -241,7 +262,9 @@ const FlightSearchResults = () => {
           airline: 'British Airways',
           flightNumber: 'BA 142',
           departure: 'DEL',
+          departureCity: 'Delhi',
           arrival: 'LHR',
+          arrivalCity: 'London',
           departureTime: '01:45',
           arrivalTime: '06:55',
           duration: '8h 10m',
@@ -250,6 +273,8 @@ const FlightSearchResults = () => {
           arrivalDate: '2024-01-15',
           departureTerminal: 'Terminal 3',
           arrivalTerminal: 'Terminal 5',
+          departureAirport: 'Indira Gandhi Intl',
+          arrivalAirport: 'Heathrow',
           layover: null
         }
       ],
@@ -267,7 +292,7 @@ const FlightSearchResults = () => {
       id: 4,
       airline: 'Lufthansa',
       airlineCode: 'LH',
-      logo: 'https://via.placeholder.com/80x40/05164D/FFFFFF?text=LH',
+      logo: 'images/Airline Logo.png',
       departure: 'DEL',
       arrival: 'LHR',
       departureTime: '03:20',
@@ -281,7 +306,6 @@ const FlightSearchResults = () => {
       aircraft: 'Airbus A350-900',
       departureDate: '2024-01-15',
       returnDate: '2024-01-22',
-      features: ['Meal Included', 'Entertainment', 'WiFi', 'Power Outlet'],
       fareType: 'Saver',
       baggage: '23kg',
       refundable: false,
@@ -291,13 +315,55 @@ const FlightSearchResults = () => {
       departureTerminal: 'T3',
       arrivalTerminal: 'T2',
       departureAirport: 'Indira Gandhi International Airport',
-      arrivalAirport: 'Heathrow Airport'
+      arrivalAirport: 'Heathrow Airport',
+      segments: [
+        {
+          id: 1,
+          airline: 'Lufthansa',
+          flightNumber: 'LH 761',
+          departure: 'DEL',
+          departureCity: 'Delhi',
+          arrival: 'FRA',
+          arrivalCity: 'Frankfurt',
+          departureTime: '03:20',
+          arrivalTime: '08:05',
+          duration: '6h 45m',
+          aircraft: 'Airbus A350-900',
+          departureDate: '2024-01-15',
+          arrivalDate: '2024-01-15',
+          departureTerminal: 'Terminal 3',
+          arrivalTerminal: 'Terminal 1',
+          departureAirport: 'Indira Gandhi Intl',
+          arrivalAirport: 'Rhein Main',
+          layover: '1h 45m'
+        },
+        {
+          id: 2,
+          airline: 'Lufthansa',
+          flightNumber: 'LH 440',
+          departure: 'FRA',
+          departureCity: 'Frankfurt',
+          arrival: 'LHR',
+          arrivalCity: 'London',
+          departureTime: '09:50',
+          arrivalTime: '10:15',
+          duration: '1h 25m',
+          aircraft: 'Airbus A320',
+          departureDate: '2024-01-15',
+          arrivalDate: '2024-01-15',
+          departureTerminal: 'Terminal 1',
+          arrivalTerminal: 'Terminal 2',
+          departureAirport: 'Rhein Main',
+          arrivalAirport: 'Heathrow',
+          layover: null
+        }
+      ]
     },
     {
       id: 5,
       airline: 'Air India',
       airlineCode: 'AI',
-      logo: 'https://via.placeholder.com/80x40/FF6B35/FFFFFF?text=AI',
+      logo: 'images/Airline Logo.png',
       departure: 'DEL',
       arrival: 'LHR',
       departureTime: '06:30',
@@ -310,7 +376,6 @@ const FlightSearchResults = () => {
       aircraft: 'Boeing 787-8 Dreamliner',
       departureDate: '2024-01-15',
       returnDate: '2024-01-22',
-      features: ['Meal Included', 'Entertainment'],
       fareType: 'Basic',
       baggage: '25kg',
       refundable: false,
@@ -327,7 +392,9 @@ const FlightSearchResults = () => {
           airline: 'Air India',
           flightNumber: 'AI 161',
           departure: 'DEL',
+          departureCity: 'Delhi',
           arrival: 'LHR',
+          arrivalCity: 'London',
           departureTime: '06:30',
           arrivalTime: '11:45',
           duration: '8h 15m',
@@ -336,6 +403,8 @@ const FlightSearchResults = () => {
           arrivalDate: '2024-01-15',
           departureTerminal: 'Terminal 3',
           arrivalTerminal: 'Terminal 2',
+          departureAirport: 'Indira Gandhi Intl',
+          arrivalAirport: 'Heathrow',
           layover: null
         }
       ],
@@ -353,7 +422,7 @@ const FlightSearchResults = () => {
       id: 6,
       airline: 'Virgin Atlantic',
       airlineCode: 'VS',
-      logo: 'https://via.placeholder.com/80x40/DA291C/FFFFFF?text=VS',
+      logo: 'images/Airline Logo.png',
       departure: 'DEL',
       arrival: 'LHR',
       departureTime: '08:45',
@@ -366,7 +435,6 @@ const FlightSearchResults = () => {
       aircraft: 'Boeing 787-9 Dreamliner',
       departureDate: '2024-01-15',
       returnDate: '2024-01-22',
-      features: ['Meal Included', 'Entertainment', 'WiFi', 'Premium Service'],
       fareType: 'Premium',
       baggage: '30kg',
       refundable: true,
@@ -383,7 +451,9 @@ const FlightSearchResults = () => {
           airline: 'Virgin Atlantic',
           flightNumber: 'VS 301',
           departure: 'DEL',
+          departureCity: 'Delhi',
           arrival: 'LHR',
+          arrivalCity: 'London',
           departureTime: '08:45',
           arrivalTime: '14:00',
           duration: '8h 15m',
@@ -392,6 +462,8 @@ const FlightSearchResults = () => {
           arrivalDate: '2024-01-15',
           departureTerminal: 'Terminal 3',
           arrivalTerminal: 'Terminal 3',
+          departureAirport: 'Indira Gandhi Intl',
+          arrivalAirport: 'Heathrow',
           layover: null
         }
       ],
@@ -430,6 +502,14 @@ const FlightSearchResults = () => {
       month: 'short',
       day: 'numeric'
     });
+  };
+
+  const formatSegmentDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'short' });
+    return `${day} ${month} (${dayOfWeek})`;
   };
 
   const handleFlightSelect = (flight) => {
@@ -743,7 +823,7 @@ const FlightSearchResults = () => {
                       </div>
 
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-blue-600">{formatPrice(flight.price)}</div>
+                        <div className="text-lg font-semibold text-blue-600">{formatPrice(flight.price)}</div>
                       </div>
                     </div>
 
@@ -751,8 +831,8 @@ const FlightSearchResults = () => {
                     <div className="flex items-center justify-between mb-8">
                       {/* Departure */}
                       <div className="text-center flex-1">
-                        <div className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">{flight.departureTime}</div>
-                        <div className="text-lg font-semibold text-gray-700 mb-1">{flight.departure}</div>
+                        <div className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">{flight.departureTime}</div>
+                        <div className="text-base font-medium text-gray-700 mb-1">{flight.departure}</div>
                         <div className="text-sm text-gray-500">{flight.departureTerminal}</div>
                         <div className="text-xs text-gray-400 mt-1">{flight.departureAirport}</div>
                       </div>
@@ -760,31 +840,32 @@ const FlightSearchResults = () => {
                       {/* Flight Path with Stopovers */}
                       <div className="flex-1 mx-8">
                         <div className="text-center mb-4">
-                          <div className="text-lg font-semibold text-gray-700 mb-1">
+                          <div className="text-base font-medium text-gray-700 mb-1">
                             {flight.stops === 0 ? 'Direct Flight' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`}
                           </div>
-                          <div className="text-2xl font-bold text-gray-900">{flight.duration}</div>
+                          <div className="text-lg font-semibold text-gray-900">{flight.duration}</div>
                         </div>
 
                         {/* Visual Timeline */}
                         <div className="flex items-center justify-center">
-                          <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
-                          <div className="w-4 h-4 bg-blue-500 rounded-full mx-2 shadow-lg"></div>
+                          <div className="flex-1 h-0.5 bg-gray-300 rounded-full"></div>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full mx-2"></div>
                           {flight.stops > 0 && (
                             <>
-                              <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
-                              <div className="w-4 h-4 bg-orange-400 rounded-full mx-2 shadow-lg"></div>
-                              {flight.stops > 1 && (
-                                <>
-                                  <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
-                                  <div className="w-4 h-4 bg-orange-400 rounded-full mx-2 shadow-lg"></div>
-                                </>
-                              )}
-                              <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
+                              <div className="flex-1 h-0.5 bg-gray-300 rounded-full"></div>
+                              {Array.from({ length: flight.stops }, (_, index) => (
+                                <React.Fragment key={index}>
+                                  <div className="w-2 h-2 bg-orange-400 rounded-full mx-2"></div>
+                                  {index < flight.stops - 1 && (
+                                    <div className="flex-1 h-0.5 bg-gray-300 rounded-full"></div>
+                                  )}
+                                </React.Fragment>
+                              ))}
+                              <div className="flex-1 h-0.5 bg-gray-300 rounded-full"></div>
                             </>
                           )}
-                          <div className="w-4 h-4 bg-green-500 rounded-full mx-2 shadow-lg"></div>
-                          <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
+                          <div className="w-2 h-2 bg-green-500 rounded-full mx-2"></div>
+                          <div className="flex-1 h-0.5 bg-gray-300 rounded-full"></div>
                         </div>
 
                         {/* Stopover Details */}
@@ -801,50 +882,42 @@ const FlightSearchResults = () => {
 
                       {/* Arrival */}
                       <div className="text-center flex-1">
-                        <div className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">{flight.arrivalTime}</div>
-                        <div className="text-lg font-semibold text-gray-700 mb-1">{flight.arrival}</div>
+                        <div className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">{flight.arrivalTime}</div>
+                        <div className="text-base font-medium text-gray-700 mb-1">{flight.arrival}</div>
                         <div className="text-sm text-gray-500">{flight.arrivalTerminal}</div>
                         <div className="text-xs text-gray-400 mt-1">{flight.arrivalAirport}</div>
                       </div>
                     </div>
 
-                    {/* Flight Features - Simplified */}
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-6">
-                      <div className="flex flex-wrap items-center gap-3">
-                        {flight.features.slice(0, 4).map((feature, index) => (
-                          <span key={index} className="text-sm bg-blue-50 text-blue-700 px-3 py-1 rounded-full font-medium">
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
+                    {/* Flight Information and Action Buttons */}
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                       <div className="text-sm text-gray-600 font-medium">
                         Baggage: {flight.baggage} • {flight.refundable ? 'Refundable' : 'Non-refundable'}
                       </div>
-                    </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <button
-                        className="bg-blue-600 text-white px-8 py-2.5 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-base"
-                        onClick={() => handleFlightSelect(flight)}
-                      >
-                        Select Flight
-                      </button>
-
-                      <button
-                        onClick={() => handleFlightExpand(flight.id)}
-                        className="flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors px-6 py-2.5 border border-blue-200 rounded-lg hover:bg-blue-50"
-                      >
-                        <span className="font-medium text-sm">More details</span>
-                        <svg
-                          className={`w-4 h-4 transition-transform ${expandedFlight === flight.id ? 'rotate-180' : ''}`}
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                          className="bg-blue-600 text-white px-8 py-2.5 rounded-lg hover:bg-blue-700 transition-colors font-semibold text-base"
+                          onClick={() => handleFlightSelect(flight)}
                         >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
+                          Select Flight
+                        </button>
+
+                        <button
+                          onClick={() => handleFlightExpand(flight.id)}
+                          className="flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors px-6 py-2.5 border border-blue-200 rounded-lg hover:bg-blue-50"
+                        >
+                          <span className="font-medium text-sm">More details</span>
+                          <svg
+                            className={`w-4 h-4 transition-transform ${expandedFlight === flight.id ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -854,15 +927,50 @@ const FlightSearchResults = () => {
                       {/* Detailed Flight Segments */}
                       <div className="mb-8">
                         <h4 className="text-xl font-semibold text-gray-900 mb-6">Flight Details</h4>
-                        <div className="space-y-6">
+                        <div className="space-y-4">
                           {flight.segments?.map((segment, index) => (
                             <div key={segment.id} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                              <div className="flex items-center justify-between mb-3">
+                              {/* Flight Path Row */}
+                              <div className="flex items-center justify-between mb-4">
+                                {/* Departure Section */}
+                                <div className="flex-1">
+                                  <div className="text-lg font-semibold text-blue-900 mb-1">{segment.departure} {segment.departureTime}</div>
+                                  <div className="text-base font-medium text-gray-800 mb-1">{segment.departureCity}</div>
+                                  <div className="text-sm text-gray-600">{formatSegmentDate(segment.departureDate)}</div>
+                                  <div className="text-sm text-gray-500">{segment.departureAirport}</div>
+                                  <div className="text-xs text-gray-400">{segment.departureTerminal}</div>
+                                </div>
+
+                                {/* Flight Path with Airplane Icon */}
+                                <div className="flex-1 mx-8 relative">
+                                  <div className="flex items-center justify-center">
+                                    <div className="flex-1 h-0.5 bg-gray-300"></div>
+                                    <div className="mx-3">
+                                      <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" />
+                                      </svg>
+                                    </div>
+                                    <div className="flex-1 h-0.5 bg-gray-300"></div>
+                                  </div>
+                                  <div className="text-center text-xs text-gray-600 mt-2">{segment.duration}</div>
+                                </div>
+
+                                {/* Arrival Section */}
+                                <div className="flex-1 text-right">
+                                  <div className="text-lg font-semibold text-blue-900 mb-1">{segment.arrival} {segment.arrivalTime}</div>
+                                  <div className="text-base font-medium text-gray-800 mb-1">{segment.arrivalCity}</div>
+                                  <div className="text-sm text-gray-600">{formatSegmentDate(segment.arrivalDate)}</div>
+                                  <div className="text-sm text-gray-500">{segment.arrivalAirport}</div>
+                                  <div className="text-xs text-gray-400">{segment.arrivalTerminal}</div>
+                                </div>
+                              </div>
+
+                              {/* Airline Information */}
+                              <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                                 <div className="flex items-center space-x-3">
                                   <img src={flight.logo} alt={segment.airline} className="w-8 h-4 object-contain" />
                                   <div>
-                                    <div className="font-medium text-gray-900">{segment.flightNumber}</div>
-                                    <div className="text-sm text-gray-500">{segment.airline}</div>
+                                    <div className="font-medium text-gray-900">{segment.airline} • {segment.flightNumber}</div>
                                     {segment.operatedBy && (
                                       <div className="text-xs text-gray-400">Operated by {segment.operatedBy}</div>
                                     )}
@@ -870,38 +978,32 @@ const FlightSearchResults = () => {
                                 </div>
                                 <div className="text-right">
                                   <div className="text-sm font-medium text-gray-900">{segment.aircraft}</div>
-                                  <div className="text-xs text-gray-500">Class: Economy</div>
                                 </div>
                               </div>
 
-                              <div className="flex items-center justify-between">
-                                <div className="text-center">
-                                  <div className="text-lg font-bold text-gray-900">{segment.departureTime}</div>
-                                  <div className="text-sm text-gray-600">{segment.departure}</div>
-                                  <div className="text-xs text-gray-500">{segment.departureTerminal}</div>
-                                </div>
-
-                                <div className="flex-1 mx-4">
-                                  <div className="flex items-center">
-                                    <div className="flex-1 h-px bg-gray-300"></div>
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full mx-1"></div>
-                                    <div className="flex-1 h-px bg-gray-300"></div>
-                                  </div>
-                                  <div className="text-center text-xs text-gray-500 mt-1">{segment.duration}</div>
-                                </div>
-
-                                <div className="text-center">
-                                  <div className="text-lg font-bold text-gray-900">{segment.arrivalTime}</div>
-                                  <div className="text-sm text-gray-600">{segment.arrival}</div>
-                                  <div className="text-xs text-gray-500">{segment.arrivalTerminal}</div>
-                                </div>
-                              </div>
-
+                              {/* Layover Information */}
                               {segment.layover && (
-                                <div className="mt-3 pt-3 border-t border-gray-200">
-                                  <div className="text-center text-sm text-orange-600 font-medium">
-                                    Layover: {segment.layover} in {segment.arrival}
+                                <div className="mt-4 pt-4 border-t border-gray-200">
+                                  <div className="flex items-center justify-center space-x-2">
+                                    <svg className="w-4 h-4 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                                    </svg>
+                                    <span className="text-sm text-orange-600 font-medium">
+                                      Layover time: {segment.layover}
+                                    </span>
                                   </div>
+                                </div>
+                              )}
+
+                              {/* Less details link for last segment */}
+                              {index === flight.segments.length - 1 && (
+                                <div className="mt-4 pt-4 border-t border-gray-200 text-center">
+                                  <button
+                                    onClick={() => handleFlightExpand(flight.id)}
+                                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                  >
+                                    &gt; Less details
+                                  </button>
                                 </div>
                               )}
                             </div>
