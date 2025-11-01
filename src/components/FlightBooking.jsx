@@ -13,10 +13,6 @@ const FlightBooking = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [bookingData, setBookingData] = useState({
     passengers: [],
-    seats: [],
-    meals: [],
-    baggage: [],
-    insurance: false,
     payment: {}
   });
 
@@ -39,12 +35,35 @@ const FlightBooking = () => {
 
   const [passengerCount, setPassengerCount] = useState(1);
   const [totalPrice, setTotalPrice] = useState(flight.price);
+  const [isSeatSelectionOpen, setIsSeatSelectionOpen] = useState(false);
+  const [selectedPassengerForSeat, setSelectedPassengerForSeat] = useState(null);
+  const [currentFlightSegment, setCurrentFlightSegment] = useState(0); // For multicity flights
+  const [isSeatPanelAnimating, setIsSeatPanelAnimating] = useState(false);
+
+  // Blur Navbar and Footer and prevent background scroll when seat selection is open
+  useEffect(() => {
+    if (isSeatSelectionOpen) {
+      document.body.classList.add('seat-selection-open');
+      // Prevent background scroll
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.classList.remove('seat-selection-open');
+      // Restore background scroll
+      document.body.style.overflow = '';
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('seat-selection-open');
+      document.body.style.overflow = '';
+    };
+  }, [isSeatSelectionOpen]);
 
   useEffect(() => {
-    // Initialize passengers array
+    // Initialize passengers array with per-passenger data
     const initialPassengers = Array.from({ length: passengerCount }, (_, index) => ({
       id: index + 1,
-      type: index === 0 ? 'Adult' : 'Adult',
+      type: 'Adult',
       title: '',
       firstName: '',
       lastName: '',
@@ -54,10 +73,23 @@ const FlightBooking = () => {
       nationality: '',
       email: '',
       phone: '',
-      frequentFlyer: '',
+      frequentFlyerProgram: '',
+      frequentFlyerNumber: '',
+      ticketEmail: '',
+      document: '',
+      documentExpiry: '',
+      placeOfIssue: '',
+      gender: '',
+      ktnId: '',
+      ktnCountry: '',
+      // Per-passenger add-ons
+      selectedSeat: null,
+      selectedMeals: [],
+      selectedBaggage: [],
+      selectedAddOnBundle: null, // 'Value Pack' or 'Premium Flex'
+      insurance: false,
       specialAssistance: false,
-      mealPreference: 'Standard',
-      seatPreference: 'Window'
+      specialAssistanceDetails: ''
     }));
 
     setBookingData(prev => ({
@@ -70,19 +102,30 @@ const FlightBooking = () => {
     let basePrice = flight.price * passengerCount;
     let extras = 0;
 
-    // Add seat selection costs
-    extras += bookingData.seats.length * 1500;
+    // Calculate per-passenger add-ons
+    bookingData.passengers.forEach(passenger => {
+      // Seat selection cost
+      if (passenger.selectedSeat) {
+        extras += 1500;
+      }
 
-    // Add meal costs
-    extras += bookingData.meals.length * 800;
+      // Meal costs (up to 2 meals per passenger per flight)
+      extras += passenger.selectedMeals.length * 800;
 
-    // Add baggage costs
-    extras += bookingData.baggage.length * 2000;
+      // Baggage costs
+      extras += passenger.selectedBaggage.length * 2000;
 
-    // Add insurance
-    if (bookingData.insurance) {
-      extras += passengerCount * 1200;
-    }
+      // Add-on bundle (Value Pack or Premium Flex may reduce costs)
+      if (passenger.selectedAddOnBundle) {
+        // Bundle pricing logic can be added here
+        // For now, assuming bundles are included in base or have separate pricing
+      }
+
+      // Insurance per passenger
+      if (passenger.insurance) {
+        extras += 376.90; // NPR 376.90 per passenger as shown in UI
+      }
+    });
 
     setTotalPrice(basePrice + extras);
   };
@@ -126,7 +169,7 @@ const FlightBooking = () => {
   const steps = [
     { number: 1, title: 'Passenger Details', icon: UserIcon },
     { number: 2, title: 'Seat Selection', icon: MapPinIcon },
-    { number: 3, title: 'Extras & Preferences', icon: CheckCircleIcon },
+    { number: 3, title: 'Add Ons', icon: CheckCircleIcon },
     { number: 4, title: 'Payment', icon: CreditCardIcon }
   ];
 
@@ -160,189 +203,117 @@ const FlightBooking = () => {
     </div>
   );
 
+  // Sections always shown, not collapsible
   const renderPassengerDetails = () => (
-    <div className="space-y-4 sm:space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
-        <h3 className="text-base sm:text-lg font-semibold text-gray-900">Passenger Information</h3>
-        <div className="flex items-center space-x-2 sm:space-x-4">
-          <label className="text-xs sm:text-sm text-gray-600">Number of Passengers:</label>
-          <select
-            value={passengerCount}
-            onChange={(e) => setPassengerCount(parseInt(e.target.value))}
-            className="border border-gray-300 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-          >
-            {[1, 2, 3, 4, 5, 6].map(num => (
-              <option key={num} value={num}>{num}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
+    <div className="space-y-8">
       {bookingData.passengers.map((passenger, index) => (
-        <div key={passenger.id} className="bg-white rounded-xl border p-4 sm:p-6">
-          <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">
-            Passenger {index + 1} - {passenger.type}
-          </h4>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+      <div key={passenger.id} className="bg-white rounded-xl border p-6 sm:p-8 mb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900">Adult {index + 1} <span className="font-normal">| Adult must be 12 years and above</span></h3>
+          <div className="flex items-center gap-6 mt-2 sm:mt-0">
+            <label className="inline-flex items-center text-sm sm:text-base font-medium cursor-pointer">
+              <input type="checkbox" className="accent-orange-500 mr-2" /> Save Passenger
+            </label>
+            <label className="inline-flex items-center text-sm sm:text-base font-medium cursor-pointer">
+              <input type="checkbox" className="accent-orange-500 mr-2" /> I do not have a first/given name in my passport
+            </label>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
+            <select value={passenger.title} onChange={e => handlePassengerChange(index, 'title', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500">
+              <option value="">Select</option>
+              <option value="Mr">Mr</option>
+              <option value="Mrs">Mrs</option>
+              <option value="Ms">Ms</option>
+              <option value="Dr">Dr</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">First/Given Name<span className="text-orange-500">*</span></label>
+            <input type="text" value={passenger.firstName} onChange={e => handlePassengerChange(index, 'firstName', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500" placeholder="First/Given Name" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Last/Family Name<span className="text-orange-500">*</span></label>
+            <input type="text" value={passenger.lastName} onChange={e => handlePassengerChange(index, 'lastName', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500" placeholder="Last/Family Name" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+            <input type="date" value={passenger.dateOfBirth} onChange={e => handlePassengerChange(index, 'dateOfBirth', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Frequent Flyer Programme (Optional)</label>
+            <input type="text" value={passenger.frequentFlyerProgram || ''} onChange={e => handlePassengerChange(index, 'frequentFlyerProgram', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500" placeholder="Programme Name" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Frequent Flyer Number (Optional)</label>
+            <input type="text" value={passenger.frequentFlyerNumber || ''} onChange={e => handlePassengerChange(index, 'frequentFlyerNumber', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500" placeholder="Number" />
+          </div>
+          <div className="col-span-3 grid grid-cols-6 gap-4 items-end mt-4">
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Primary Contact Number<span className="text-orange-500">*</span></label>
+              <div className="flex gap-3">
+                <select className="w-2/5 border border-gray-300 rounded-lg px-3 py-3 text-sm bg-white"><option>AGENCY</option></select>
+                <input type="text" value={passenger.phone} onChange={e => handlePassengerChange(index, 'phone', e.target.value)} className="w-3/5 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500" placeholder="Mobile No." />
+              </div>
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Passenger Email Address</label>
+              <input type="email" value={passenger.email} onChange={e => handlePassengerChange(index, 'email', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500" placeholder="For schedule change notice" />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">E-ticket/Refund/Notices Email</label>
+              <input type="email" value={passenger.ticketEmail || ''} onChange={e => handlePassengerChange(index, 'ticketEmail', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500" placeholder="For receipt/Refund/Notices" />
+            </div>
+          </div>
+        </div>
+        {/* Document Information (Optional) */}
+        <div className="mt-10">
+          <div className="text-lg font-bold mb-4 text-orange-600 border-l-4 border-orange-400 pl-3">Document Information (Optional)</div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Title</label>
-              <select
-                value={passenger.title}
-                onChange={(e) => handlePassengerChange(index, 'title', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              >
-                <option value="">Select Title</option>
-                <option value="Mr">Mr</option>
-                <option value="Mrs">Mrs</option>
-                <option value="Ms">Ms</option>
-                <option value="Dr">Dr</option>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Document</label>
+              <input type="text" value={passenger.document || ''} onChange={e => handlePassengerChange(index, 'document', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Document Expiry Date</label>
+              <input type="date" value={passenger.documentExpiry || ''} onChange={e => handlePassengerChange(index, 'documentExpiry', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nationality</label>
+              <input type="text" value={passenger.nationality} onChange={e => handlePassengerChange(index, 'nationality', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Place of Issue</label>
+              <input type="text" value={passenger.placeOfIssue || ''} onChange={e => handlePassengerChange(index, 'placeOfIssue', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+              <select value={passenger.gender || ''} onChange={e => handlePassengerChange(index, 'gender', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm">
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
               </select>
             </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">First Name</label>
-              <input
-                type="text"
-                value={passenger.firstName}
-                onChange={(e) => handlePassengerChange(index, 'firstName', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="First Name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Last Name</label>
-              <input
-                type="text"
-                value={passenger.lastName}
-                onChange={(e) => handlePassengerChange(index, 'lastName', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Last Name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
-              <input
-                type="date"
-                value={passenger.dateOfBirth}
-                onChange={(e) => handlePassengerChange(index, 'dateOfBirth', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Passport Number</label>
-              <input
-                type="text"
-                value={passenger.passportNumber}
-                onChange={(e) => handlePassengerChange(index, 'passportNumber', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Passport Number"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Passport Expiry</label>
-              <input
-                type="date"
-                value={passenger.passportExpiry}
-                onChange={(e) => handlePassengerChange(index, 'passportExpiry', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nationality</label>
-              <input
-                type="text"
-                value={passenger.nationality}
-                onChange={(e) => handlePassengerChange(index, 'nationality', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Nationality"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input
-                type="email"
-                value={passenger.email}
-                onChange={(e) => handlePassengerChange(index, 'email', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Email"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input
-                type="tel"
-                value={passenger.phone}
-                onChange={(e) => handlePassengerChange(index, 'phone', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                placeholder="Phone"
-              />
-            </div>
           </div>
-
-          <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Frequent Flyer Number</label>
-                <input
-                  type="text"
-                  value={passenger.frequentFlyer}
-                  onChange={(e) => handlePassengerChange(index, 'frequentFlyer', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                  placeholder="Frequent Flyer Number"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Meal Preference</label>
-                <select
-                  value={passenger.mealPreference}
-                  onChange={(e) => handlePassengerChange(index, 'mealPreference', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                >
-                  <option value="Standard">Standard</option>
-                  <option value="Vegetarian">Vegetarian</option>
-                  <option value="Vegan">Vegan</option>
-                  <option value="Halal">Halal</option>
-                  <option value="Kosher">Kosher</option>
-                  <option value="Gluten-Free">Gluten-Free</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Seat Preference</label>
-                <select
-                  value={passenger.seatPreference}
-                  onChange={(e) => handlePassengerChange(index, 'seatPreference', e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg px-2 sm:px-3 py-2 text-xs sm:text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                >
-                  <option value="Window">Window</option>
-                  <option value="Aisle">Aisle</option>
-                  <option value="Middle">Middle</option>
-                </select>
-              </div>
+        </div>
+        {/* KTN Information (Optional) */}
+        <div className="mt-10">
+          <div className="text-lg font-bold mb-4 text-orange-600 border-l-4 border-orange-400 pl-3">KTN Information (Optional)</div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">KTN ID</label>
+              <input type="text" value={passenger.ktnId || ''} onChange={e => handlePassengerChange(index, 'ktnId', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm" placeholder="KTN ID" />
             </div>
-
-            <div className="mt-3 sm:mt-4">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={passenger.specialAssistance}
-                  onChange={(e) => handlePassengerChange(index, 'specialAssistance', e.target.checked)}
-                  className="rounded border-gray-300 text-orange-500 focus:ring-orange-500"
-                />
-                <span className="ml-2 text-xs sm:text-sm text-gray-700">Require special assistance</span>
-              </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
+              <input type="text" value={passenger.ktnCountry || ''} onChange={e => handlePassengerChange(index, 'ktnCountry', e.target.value)} className="w-full border border-gray-300 rounded-lg px-4 py-3 text-sm" placeholder="Country" />
             </div>
           </div>
         </div>
+      </div>
       ))}
     </div>
   );
@@ -420,85 +391,282 @@ const FlightBooking = () => {
     </div>
   );
 
+  const handlePassengerAddOnChange = (passengerIndex, addOnType, value) => {
+    const updatedPassengers = [...bookingData.passengers];
+    
+    switch(addOnType) {
+      case 'addOnBundle':
+        updatedPassengers[passengerIndex].selectedAddOnBundle = value;
+        break;
+      case 'seat':
+        updatedPassengers[passengerIndex].selectedSeat = value;
+        break;
+      case 'meal':
+        const mealIndex = updatedPassengers[passengerIndex].selectedMeals.indexOf(value);
+        if (mealIndex > -1) {
+          updatedPassengers[passengerIndex].selectedMeals.splice(mealIndex, 1);
+        } else if (updatedPassengers[passengerIndex].selectedMeals.length < 2) {
+          updatedPassengers[passengerIndex].selectedMeals.push(value);
+        }
+        break;
+      case 'baggage':
+        const baggageIndex = updatedPassengers[passengerIndex].selectedBaggage.indexOf(value);
+        if (baggageIndex > -1) {
+          updatedPassengers[passengerIndex].selectedBaggage.splice(baggageIndex, 1);
+        } else {
+          updatedPassengers[passengerIndex].selectedBaggage.push(value);
+        }
+        break;
+      case 'insurance':
+        updatedPassengers[passengerIndex].insurance = value;
+        break;
+      case 'specialAssistance':
+        updatedPassengers[passengerIndex].specialAssistance = value;
+        break;
+    }
+    
+    setBookingData(prev => ({
+      ...prev,
+      passengers: updatedPassengers
+    }));
+  };
+
   const renderExtras = () => (
     <div className="space-y-4 sm:space-y-6">
-      <h3 className="text-base sm:text-lg font-semibold text-gray-900">Extras & Preferences</h3>
+      <h3 className="text-base sm:text-lg font-semibold text-gray-900">Add-ons</h3>
+      
+      {bookingData.passengers.map((passenger, passengerIndex) => (
+        <div key={passenger.id} className="space-y-4 sm:space-y-6 border-b border-gray-200 pb-6 last:border-b-0">
+          <h4 className="text-base font-semibold text-gray-700">Passenger {passengerIndex + 1}: {passenger.firstName || `Adult ${passengerIndex + 1}`}</h4>
 
-      {/* Meal Options */}
-      <div className="bg-white rounded-xl border p-4 sm:p-6">
-        <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Meal Options</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          {[
-            { name: 'Premium Meal', price: 800, description: 'Gourmet meal with wine pairing' },
-            { name: 'Special Dietary Meal', price: 600, description: 'Customized dietary requirements' },
-            { name: 'Kids Meal', price: 500, description: 'Child-friendly meal options' },
-            { name: 'Celebration Cake', price: 300, description: 'Birthday or anniversary cake' }
-          ].map((meal, index) => (
-            <label key={index} className="flex items-start space-x-2 sm:space-x-3 p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input
-                type="checkbox"
-                className="mt-1 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
-              />
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-900 text-sm sm:text-base">{meal.name}</span>
-                  <span className="text-orange-500 font-semibold text-sm sm:text-base">Rs.{meal.price}</span>
+          {/* Add-on Bundles */}
+          <div className="bg-white rounded-xl border p-4 sm:p-6">
+            <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-2 sm:mb-3">Add-on bundles</h4>
+            <p className="text-xs sm:text-sm text-gray-600 mb-4">Save more on add-on bundles than buying them individually.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              {/* Value Pack */}
+              <div 
+                onClick={() => handlePassengerAddOnChange(passengerIndex, 'addOnBundle', passenger.selectedAddOnBundle === 'Value Pack' ? null : 'Value Pack')}
+                className={`border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden ${passenger.selectedAddOnBundle === 'Value Pack' ? 'border-orange-500 ring-2 ring-orange-500' : 'border-gray-200'}`}
+              >
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-500"></div>
+                <div className="flex-1 pl-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <h5 className="font-semibold text-gray-900 text-sm sm:text-base">Value Pack</h5>
+                    {passenger.selectedAddOnBundle === 'Value Pack' && (
+                      <svg className="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <p className="text-xs sm:text-sm text-orange-500 font-medium mb-2">Save up to 30%</p>
+                  <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <span>Each guest gets: 7kg carry-on baggage</span>
+                  </div>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">{meal.description}</p>
               </div>
-            </label>
-          ))}
-        </div>
-      </div>
 
-      {/* Baggage Options */}
-      <div className="bg-white rounded-xl border p-4 sm:p-6">
-        <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Baggage Options</h4>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-          {[
-            { name: 'Extra Checked Baggage', price: 2000, description: '+15kg additional checked baggage' },
-            { name: 'Sports Equipment', price: 2500, description: 'Golf clubs, skis, bicycles' },
-            { name: 'Musical Instruments', price: 3000, description: 'Fragile instrument handling' },
-            { name: 'Pet Travel', price: 5000, description: 'Pet in cabin or cargo hold' }
-          ].map((baggage, index) => (
-            <label key={index} className="flex items-start space-x-2 sm:space-x-3 p-2 sm:p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-              <input
-                type="checkbox"
-                className="mt-1 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
-              />
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-900 text-sm sm:text-base">{baggage.name}</span>
-                  <span className="text-orange-500 font-semibold text-sm sm:text-base">Rs.{baggage.price}</span>
+              {/* Premium Flex */}
+              <div 
+                onClick={() => handlePassengerAddOnChange(passengerIndex, 'addOnBundle', passenger.selectedAddOnBundle === 'Premium Flex' ? null : 'Premium Flex')}
+                className={`border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer relative overflow-hidden ${passenger.selectedAddOnBundle === 'Premium Flex' ? 'border-pink-500 ring-2 ring-pink-500' : 'border-gray-200'}`}
+              >
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-pink-500"></div>
+                <div className="flex-1 pl-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <h5 className="font-semibold text-gray-900 text-sm sm:text-base">Premium Flex</h5>
+                    {passenger.selectedAddOnBundle === 'Premium Flex' && (
+                      <svg className="w-5 h-5 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  <p className="text-xs sm:text-sm text-pink-500 font-medium mb-2">Save up to 20%</p>
+                  <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                    </svg>
+                    <span>Each guest gets: 7kg carry-on baggage</span>
+                  </div>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-600 mt-1">{baggage.description}</p>
               </div>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Travel Insurance */}
-      <div className="bg-white rounded-xl border p-4 sm:p-6">
-        <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Travel Insurance</h4>
-        <label className="flex items-start space-x-2 sm:space-x-3 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={bookingData.insurance}
-            onChange={(e) => setBookingData(prev => ({ ...prev, insurance: e.target.checked }))}
-            className="mt-1 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
-          />
-          <div className="flex-1">
-            <div className="flex items-center justify-between">
-              <span className="font-medium text-gray-900 text-sm sm:text-base">Comprehensive Travel Insurance</span>
-              <span className="text-orange-500 font-semibold text-sm sm:text-base">Rs.1,200 per passenger</span>
             </div>
-            <p className="text-xs sm:text-sm text-gray-600 mt-1">
-              Covers trip cancellation, medical expenses, lost baggage, and flight delays
-            </p>
           </div>
-        </label>
-      </div>
+
+          {/* Baggage */}
+          <div className="bg-white rounded-xl border p-4 sm:p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start space-x-4 flex-1">
+                <div className="flex items-center space-x-2 mt-1">
+                  <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                    <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
+                  </svg>
+                  <svg className="w-6 h-6 text-amber-700" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
+                    <path fillRule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-1">Baggage</h4>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-3">Pre-book for the lowest price. Prices shown are for all flights in your trip.</p>
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-gray-900">Total: NPR {(passenger.selectedBaggage.length * 2000).toFixed(2)}</p>
+                    <p className="text-xs text-gray-600">Kathmandu - Tokyo - Narita</p>
+                    {passenger.selectedBaggage.length > 0 ? (
+                      passenger.selectedBaggage.map((bag, idx) => (
+                        <p key={idx} className="text-xs text-gray-600">{bag}</p>
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-600">1 x 7 kg Carry-on baggage (included)</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  // In a real app, this would open a baggage selection modal
+                  const baggageOptions = ['Extra 15kg Checked Baggage', 'Extra 20kg Checked Baggage', 'Sports Equipment'];
+                  const randomBaggage = baggageOptions[Math.floor(Math.random() * baggageOptions.length)];
+                  handlePassengerAddOnChange(passengerIndex, 'baggage', randomBaggage);
+                }}
+                className="text-orange-500 hover:text-orange-600 font-medium text-sm sm:text-base ml-4"
+              >
+                Modify
+              </button>
+            </div>
+          </div>
+
+          {/* Pick a Seat */}
+          <div className="bg-white rounded-xl border p-4 sm:p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start space-x-4 flex-1">
+                <svg className="w-6 h-6 text-gray-600 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3 1h10v8H5V6zm0 10h10v1H5v-1z" />
+                </svg>
+                <div className="flex-1">
+                  <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-1">Pick a seat</h4>
+                  <p className="text-xs sm:text-sm text-gray-600">Choose your seat or we'll assign one to you at random.</p>
+                  {passenger.selectedSeat && (
+                    <p className="text-xs text-orange-500 mt-1">Selected: {passenger.selectedSeat}</p>
+                  )}
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setSelectedPassengerForSeat(passengerIndex);
+                  setIsSeatSelectionOpen(true);
+                  // Trigger animation after a brief delay to ensure the panel is rendered
+                  requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                      setIsSeatPanelAnimating(true);
+                    });
+                  });
+                }}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium text-sm sm:text-base ml-4 transition-colors"
+              >
+                Pick a seat
+              </button>
+            </div>
+          </div>
+
+          {/* Santan Value Meal */}
+          <div className="bg-white rounded-xl border p-4 sm:p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start space-x-4 flex-1">
+                <svg className="w-6 h-6 text-gray-600 mt-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M3 1a1 1 0 011 1v1a1 1 0 001 1h12a1 1 0 001-1V2a1 1 0 011-1h2a1 1 0 011 1v2.576l-.64.533A4.486 4.486 0 0017 7.5V13a2 2 0 01-2 2h-2a2 2 0 01-2-2v-1h-2v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7.5c0-.648.225-1.277.64-1.891L3 5.576V2a1 1 0 011-1h2z" />
+                  <path d="M4 6.5a1 1 0 011-1h10a1 1 0 011 1v1a1 1 0 01-1 1H5a1 1 0 01-1-1v-1z" />
+                </svg>
+                <div className="flex-1">
+                  <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-1">Santan Value Meal</h4>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-2">Each guest can pre-book up to 2 meals per flight.</p>
+                  {passenger.selectedMeals.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {passenger.selectedMeals.map((meal, idx) => (
+                        <span key={idx} className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">{meal}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  // In a real app, this would open a meal selection modal
+                  const meals = ['Vegetarian Meal', 'Non-Vegetarian Meal', 'Kids Meal', 'Celebration Cake'];
+                  const randomMeal = meals[Math.floor(Math.random() * meals.length)];
+                  handlePassengerAddOnChange(passengerIndex, 'meal', randomMeal);
+                }}
+                className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium text-sm sm:text-base ml-4 transition-colors"
+              >
+                Add meal
+              </button>
+            </div>
+          </div>
+
+          {/* Insurance */}
+          <div className="bg-white rounded-xl border p-4 sm:p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start space-x-4 flex-1">
+                <div className="flex items-center space-x-1 mt-1">
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                  <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-1">Insurance</h4>
+                  <p className="text-xs sm:text-sm text-gray-600 mb-3">Protect your trip with one click, add travel insurance now.</p>
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={passenger.insurance}
+                      onChange={(e) => handlePassengerAddOnChange(passengerIndex, 'insurance', e.target.checked)}
+                      className="rounded border-gray-300 text-orange-500 focus:ring-orange-500"
+                    />
+                    <span className="text-sm text-gray-700">Flight Delay Cover</span>
+                    <span className="text-xs text-gray-500">Select to view benefits</span>
+                  </label>
+                </div>
+              </div>
+              <div className="text-right ml-4">
+                <p className="text-sm font-semibold text-gray-900">NPR 376.90</p>
+                <p className="text-xs text-gray-500">per guest</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Special Assistance */}
+          <div className="bg-white rounded-xl border p-4 sm:p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start space-x-4 flex-1">
+                <svg className="w-6 h-6 text-red-500 mt-1" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.5 6c-2.61.7-5.67 1-8.5 1s-5.89-.3-8.5-1L3 8c1.86.5 4 .83 6 1v13h2v-6h2v6h2V9c2-.17 4.14-.5 6-1l-.5-2zM12 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z"/>
+                </svg>
+                <div className="flex-1">
+                  <h4 className="text-base sm:text-lg font-medium text-gray-900 mb-1">Special assistance</h4>
+                  <p className="text-xs sm:text-sm text-gray-600">Additional support and for individuals with specific needs. <a href="#" className="text-orange-500 hover:underline">Read more</a></p>
+                </div>
+              </div>
+              <button 
+                onClick={() => handlePassengerAddOnChange(passengerIndex, 'specialAssistance', !passenger.specialAssistance)}
+                className={`px-4 py-2 rounded-lg font-medium text-sm sm:text-base ml-4 transition-colors ${
+                  passenger.specialAssistance 
+                    ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                }`}
+              >
+                {passenger.specialAssistance ? 'Requested' : 'Request'}
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 
@@ -673,6 +841,8 @@ const FlightBooking = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Main Content - gets blurred when slider opens */}
+      <div className={`transition-all duration-300 ${isSeatSelectionOpen ? 'blur-sm' : ''}`}>
       {/* Header */}
       <div className="relative bg-orange-500 overflow-hidden">
         {/* Background Image */}
@@ -706,10 +876,10 @@ const FlightBooking = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {renderStepIndicator()}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
             {renderCurrentStep()}
@@ -741,28 +911,34 @@ const FlightBooking = () => {
                   <span className="text-gray-600">Base Fare ({passengerCount} passengers)</span>
                   <span className="text-gray-900">Rs.{(flight.price * passengerCount).toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-gray-600">Seat Selection</span>
-                  <span className="text-gray-900">Rs.{bookingData.seats.length * 1500}</span>
-                </div>
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-gray-600">Meals</span>
-                  <span className="text-gray-900">Rs.{bookingData.meals.length * 800}</span>
-                </div>
-                <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-gray-600">Baggage</span>
-                  <span className="text-gray-900">Rs.{bookingData.baggage.length * 2000}</span>
-                </div>
-                {bookingData.insurance && (
+                {bookingData.passengers.some(p => p.selectedSeat) && (
+                  <div className="flex justify-between text-xs sm:text-sm">
+                    <span className="text-gray-600">Seat Selection</span>
+                    <span className="text-gray-900">Rs.{(bookingData.passengers.filter(p => p.selectedSeat).length * 1500).toLocaleString()}</span>
+                  </div>
+                )}
+                {bookingData.passengers.some(p => p.selectedMeals.length > 0) && (
+                  <div className="flex justify-between text-xs sm:text-sm">
+                    <span className="text-gray-600">Meals</span>
+                    <span className="text-gray-900">Rs.{(bookingData.passengers.reduce((sum, p) => sum + p.selectedMeals.length, 0) * 800).toLocaleString()}</span>
+                  </div>
+                )}
+                {bookingData.passengers.some(p => p.selectedBaggage.length > 0) && (
+                  <div className="flex justify-between text-xs sm:text-sm">
+                    <span className="text-gray-600">Baggage</span>
+                    <span className="text-gray-900">Rs.{(bookingData.passengers.reduce((sum, p) => sum + p.selectedBaggage.length, 0) * 2000).toLocaleString()}</span>
+                  </div>
+                )}
+                {bookingData.passengers.some(p => p.insurance) && (
                   <div className="flex justify-between text-xs sm:text-sm">
                     <span className="text-gray-600">Insurance</span>
-                    <span className="text-gray-900">Rs.{passengerCount * 1200}</span>
+                    <span className="text-gray-900">Rs.{(bookingData.passengers.filter(p => p.insurance).length * 376.90).toFixed(2)}</span>
                   </div>
                 )}
                 <div className="border-t border-gray-200 pt-2 sm:pt-3">
                   <div className="flex justify-between font-semibold text-base sm:text-lg">
                     <span>Total</span>
-                    <span className="text-orange-500">Rs.{totalPrice.toLocaleString()}</span>
+                    <span className="text-orange-500">Rs.{totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 </div>
               </div>
@@ -811,6 +987,377 @@ const FlightBooking = () => {
           </div>
         </div>
       </div>
+      </div>
+
+      {/* Seat Selection Slide-out Panel - not blurred */}
+      {isSeatSelectionOpen && selectedPassengerForSeat !== null && (
+        <>
+          {/* Invisible backdrop for closing */}
+          <div 
+            className="fixed inset-0 z-40"
+            onClick={() => {
+              setIsSeatPanelAnimating(false);
+              setTimeout(() => {
+                setIsSeatSelectionOpen(false);
+                setSelectedPassengerForSeat(null);
+              }, 300);
+            }}
+          ></div>
+          <div 
+            className={`fixed top-0 right-0 h-full w-full sm:w-[480px] lg:w-[520px] bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out overflow-y-auto translate-x-full ${
+              isSeatPanelAnimating ? '!translate-x-0' : ''
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {(() => {
+              const passenger = bookingData.passengers[selectedPassengerForSeat];
+              const selectedSeatPrice = passenger?.selectedSeat ? 2610 : 0;
+              
+              return (
+                <div className="flex flex-col h-full">
+                  {/* Header */}
+                  <div className="sticky top-0 bg-white border-b border-gray-200 z-10 p-3 sm:p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <button
+                        onClick={() => {
+                          setIsSeatPanelAnimating(false);
+                          setTimeout(() => {
+                            setIsSeatSelectionOpen(false);
+                            setSelectedPassengerForSeat(null);
+                          }, 300);
+                        }}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    {/* Flight Segments */}
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="flex items-center space-x-2">
+                        <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                        <span className="text-sm text-gray-400">KTM - DMK</span>
+                      </div>
+                      <div className="flex items-center space-x-2 border-b-2 border-green-500 pb-1">
+                        <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                        <span className="text-sm font-medium text-green-600">DMK - NRT</span>
+                      </div>
+                    </div>
+
+                    {/* Passenger Selector */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center space-x-3">
+                        <button className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium flex items-center space-x-2">
+                          <span>Adult {selectedPassengerForSeat + 1} (1)</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                        <h2 className="text-xl font-semibold text-gray-900">
+                          Select a seat for Adult {selectedPassengerForSeat + 1}
+                        </h2>
+                      </div>
+                    </div>
+
+                    {/* Legend */}
+                    <div className="flex items-center space-x-4 mb-4 flex-wrap">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 rounded border-2 border-gray-900 bg-white"></div>
+                        <span className="text-xs text-gray-600">Your selection</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 rounded bg-gray-400 relative">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </div>
+                        <span className="text-xs text-gray-600">Unavailable</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 rounded bg-gray-300"></div>
+                        <span className="text-xs text-gray-600">Blocked</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <svg className="w-6 h-6 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M3 1a1 1 0 011 1v1a1 1 0 001 1h12a1 1 0 001-1V2a1 1 0 011-1h2a1 1 0 011 1v2.576l-.64.533A4.486 4.486 0 0017 7.5V13a2 2 0 01-2 2h-2a2 2 0 01-2-2v-1h-2v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7.5c0-.648.225-1.277.64-1.891L3 5.576V2a1 1 0 011-1h2z" />
+                        </svg>
+                        <span className="text-xs text-gray-600">Baby bassinet</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Seat Map */}
+                  <div className="flex-1 p-4 sm:p-5">
+                    {/* Quiet Zone Banner */}
+                    <div className="mb-4 text-center">
+                      <div className="inline-block text-xs sm:text-sm font-medium text-gray-700 bg-yellow-50 px-3 py-1.5 rounded">
+                        Quiet zone - Minimal noise, less disturbance
+                      </div>
+                    </div>
+
+                    {/* Seat Map Grid */}
+                    <div className="space-y-3">
+                      {/* Row Numbers and Column Headers */}
+                      <div className="flex items-start">
+                        <div className="w-10 sm:w-12 flex-shrink-0"></div>
+                        {/* Left Section (A-B) */}
+                        <div className="flex flex-col items-center space-y-1 mr-1">
+                          <div className="flex items-center justify-center space-x-1 text-[10px] text-gray-600">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <span>← Exit</span>
+                          </div>
+                          <div className="flex gap-1.5">
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs font-semibold text-gray-500">A</div>
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs font-semibold text-gray-500">B</div>
+                          </div>
+                        </div>
+                        {/* Aisle Indicator */}
+                        <div className="flex flex-col items-center justify-center mx-1">
+                          <div className="text-[8px] text-gray-400 mb-1">Aisle</div>
+                          <div className="w-0.5 h-8 bg-gray-300 rounded"></div>
+                        </div>
+                        {/* Middle Section (D-G) */}
+                        <div className="flex flex-col items-center space-y-1">
+                          <div className="h-4"></div>
+                          <div className="flex gap-1.5">
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs font-semibold text-gray-500">D</div>
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs font-semibold text-gray-500">E</div>
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs font-semibold text-gray-500">F</div>
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs font-semibold text-gray-500">G</div>
+                          </div>
+                        </div>
+                        {/* Aisle Indicator */}
+                        <div className="flex flex-col items-center justify-center mx-1">
+                          <div className="text-[8px] text-gray-400 mb-1">Aisle</div>
+                          <div className="w-0.5 h-8 bg-gray-300 rounded"></div>
+                        </div>
+                        {/* Right Section (J-K) */}
+                        <div className="flex flex-col items-center space-y-1 ml-1">
+                          <div className="flex items-center justify-center space-x-1 text-[10px] text-gray-600">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <span>Exit →</span>
+                          </div>
+                          <div className="flex gap-1.5">
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs font-semibold text-gray-500">J</div>
+                            <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-xs font-semibold text-gray-500">K</div>
+                          </div>
+                        </div>
+                        <div className="w-10 sm:w-12 flex-shrink-0"></div>
+                      </div>
+
+                      {/* Generate seat rows (20-28) */}
+                      {[20, 21, 22, 23, 24, 25, 26, 27, 28].map((rowNum) => (
+                        <div key={rowNum} className="flex items-center">
+                          <div className="w-10 sm:w-12 flex-shrink-0 text-center text-xs sm:text-sm font-semibold text-gray-700 py-1">{rowNum}</div>
+                          
+                          {/* Left Section: A-B */}
+                          <div className="flex gap-1.5 mr-2">
+                            {['A', 'B'].map((col) => {
+                              const seatId = `${rowNum}${col}`;
+                              const isSelected = passenger?.selectedSeat === seatId;
+                              const isUnavailable = ['20A', '20B', '21A', '21B', '22A', '22B'].includes(seatId);
+                              
+                              return (
+                                <button
+                                  key={seatId}
+                                  onClick={() => !isUnavailable && handlePassengerAddOnChange(selectedPassengerForSeat, 'seat', isSelected ? null : seatId)}
+                                  disabled={isUnavailable}
+                                  className={`w-10 h-10 sm:w-11 sm:h-11 rounded-md text-xs font-semibold transition-all flex items-center justify-center border ${
+                                    isSelected
+                                      ? 'bg-green-500 text-white border-gray-900 shadow-lg scale-105'
+                                      : isUnavailable
+                                      ? 'bg-gray-400 text-white cursor-not-allowed border-gray-400'
+                                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:border-gray-400 border-gray-300 shadow-sm'
+                                  }`}
+                                  title={seatId}
+                                >
+                                  {isUnavailable ? (
+                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  ) : (
+                                    <span className="text-xs sm:text-sm">{col}</span>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          
+                          {/* Aisle Indicator */}
+                          <div className="w-4 flex items-center justify-center">
+                            <div className="w-1 h-10 bg-gray-400 rounded"></div>
+                          </div>
+                          
+                          {/* Middle Section: D-G */}
+                          <div className="flex gap-1.5">
+                            {['D', 'E', 'F', 'G'].map((col) => {
+                              const seatId = `${rowNum}${col}`;
+                              const isSelected = passenger?.selectedSeat === seatId;
+                              const isUnavailable = ['20D', '22D', '22E', '22F', '22G'].includes(seatId) && rowNum === 22;
+                              const isHotSeat = ['20D', '20E', '20F', '20G'].includes(seatId);
+                              const isBlocked = ['21D', '21E', '21F', '21G'].includes(seatId) && rowNum === 21;
+                              
+                              return (
+                                <button
+                                  key={seatId}
+                                  onClick={() => !isUnavailable && !isBlocked && handlePassengerAddOnChange(selectedPassengerForSeat, 'seat', isSelected ? null : seatId)}
+                                  disabled={isUnavailable || isBlocked}
+                                  className={`w-10 h-10 sm:w-11 sm:h-11 rounded-md text-xs font-semibold transition-all relative flex items-center justify-center border ${
+                                    isSelected
+                                      ? 'bg-green-500 text-white border-gray-900 shadow-lg scale-105'
+                                      : isUnavailable
+                                      ? 'bg-gray-400 text-white cursor-not-allowed border-gray-400'
+                                      : isBlocked
+                                      ? 'bg-gray-300 cursor-not-allowed border-gray-300'
+                                      : isHotSeat
+                                      ? 'bg-red-500 text-white hover:bg-red-600 border-red-600 shadow-md'
+                                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:border-gray-400 border-gray-300 shadow-sm'
+                                  }`}
+                                  title={seatId}
+                                >
+                                  {isUnavailable ? (
+                                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  ) : isSelected ? (
+                                    <span className="text-[10px] sm:text-xs font-bold">A{selectedPassengerForSeat + 1}</span>
+                                  ) : (
+                                    <span className="text-xs sm:text-sm">{col}</span>
+                                  )}
+                                  {isHotSeat && !isSelected && !isUnavailable && !isBlocked && (
+                                    <svg className="absolute -top-1 -right-1 w-4 h-4 text-red-700 bg-white rounded-full p-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" />
+                                    </svg>
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          
+                          {/* Aisle Indicator */}
+                          <div className="w-4 flex items-center justify-center">
+                            <div className="w-1 h-10 bg-gray-400 rounded"></div>
+                          </div>
+                          
+                          {/* Right Section: J-K */}
+                          <div className="flex gap-1.5 ml-2">
+                            {['J', 'K'].map((col) => {
+                              const seatId = `${rowNum}${col}`;
+                              const isSelected = passenger?.selectedSeat === seatId;
+                              const isUnavailable = ['20J', '20K', '21J', '21K', '22J', '22K'].includes(seatId);
+                              const isHotSeat = ['20J', '20K'].includes(seatId);
+                              
+                              return (
+                                <button
+                                  key={seatId}
+                                  onClick={() => !isUnavailable && handlePassengerAddOnChange(selectedPassengerForSeat, 'seat', isSelected ? null : seatId)}
+                                  disabled={isUnavailable}
+                                  className={`w-10 h-10 sm:w-11 sm:h-11 rounded-md text-xs font-semibold transition-all relative flex items-center justify-center border ${
+                                      isSelected
+                                      ? 'bg-green-500 text-white border-gray-900 shadow-lg scale-105'
+                                      : isUnavailable
+                                      ? 'bg-gray-400 text-white cursor-not-allowed border-gray-400'
+                                      : isHotSeat
+                                      ? 'bg-red-500 text-white hover:bg-red-600 border-red-600 shadow-md'
+                                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:border-gray-400 border-gray-300 shadow-sm'
+                                  }`}
+                                  title={seatId}
+                                >
+                                    {isUnavailable ? (
+                                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                      </svg>
+                                    ) : (
+                                      <span className="text-xs sm:text-sm">{col}</span>
+                                    )}
+                                    {isHotSeat && !isSelected && !isUnavailable && (
+                                      <svg className="absolute -top-1 -right-1 w-4 h-4 text-red-700 bg-white rounded-full p-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" />
+                                      </svg>
+                                    )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          
+                          <div className="w-10 sm:w-12 flex-shrink-0"></div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Price Legend */}
+                    <div className="mt-5 flex items-center justify-center space-x-3 flex-wrap gap-2">
+                      <div className="flex items-center space-x-2 bg-red-100 px-2.5 py-1 rounded-full">
+                        <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded"></div>
+                        <span className="text-[10px] sm:text-xs text-gray-700">NPR 2,486 - 7,550</span>
+                      </div>
+                      <div className="flex items-center space-x-2 bg-gray-100 px-2.5 py-1 rounded-full">
+                        <div className="w-3 h-3 sm:w-4 sm:h-4 bg-gray-400 rounded"></div>
+                        <span className="text-[10px] sm:text-xs text-gray-700">NPR 622 - 1,040</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
+                    {passenger?.selectedSeat && (
+                      <div className="flex items-start space-x-4 mb-4">
+                        <div className="flex flex-col items-center space-y-2">
+                          <div className="w-16 h-16 bg-red-500 rounded flex items-center justify-center">
+                            <div className="w-12 h-12 bg-white rounded flex flex-col items-center justify-center">
+                              <div className="w-8 h-8 border-2 border-red-500 rounded"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-gray-900">Adult {selectedPassengerForSeat + 1} - {passenger.selectedSeat}</p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Hot Seat at the front of the cabin. Priority boarding included.
+                          </p>
+                          <p className="text-lg font-bold text-gray-900 mt-2">
+                            NPR {['20D', '20E', '20F', '20G', '20J', '20K'].includes(passenger.selectedSeat) ? '7,550.00' : '2,610.00'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-2xl font-bold text-gray-900">NPR {totalPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {passenger?.selectedSeat ? '1 of 1 seats selected' : '0 of 1 seats selected'}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setIsSeatPanelAnimating(false);
+                          setTimeout(() => {
+                            setIsSeatSelectionOpen(false);
+                            setSelectedPassengerForSeat(null);
+                          }, 300);
+                        }}
+                        className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium text-base transition-colors"
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -191,3 +191,15 @@ body {
     transform: translateY(0);
   }
 }
+
+/* Blur Navbar and Footer when seat selection is open */
+body.seat-selection-open > * nav,
+body.seat-selection-open > * > nav,
+body.seat-selection-open nav,
+body.seat-selection-open > * footer,
+body.seat-selection-open > * > footer,
+body.seat-selection-open footer {
+  filter: blur(4px) !important;
+  transition: filter 0.3s ease;
+  pointer-events: none;
+}
