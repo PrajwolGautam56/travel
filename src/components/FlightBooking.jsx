@@ -39,10 +39,14 @@ const FlightBooking = () => {
   const [selectedPassengerForSeat, setSelectedPassengerForSeat] = useState(null);
   const [currentFlightSegment, setCurrentFlightSegment] = useState(0); // For multicity flights
   const [isSeatPanelAnimating, setIsSeatPanelAnimating] = useState(false);
+  const [isBaggageSelectionOpen, setIsBaggageSelectionOpen] = useState(false);
+  const [selectedPassengerForBaggage, setSelectedPassengerForBaggage] = useState(null);
+  const [isBaggagePanelAnimating, setIsBaggagePanelAnimating] = useState(false);
 
-  // Blur Navbar and Footer and prevent background scroll when seat selection is open
+  // Blur Navbar and Footer and prevent background scroll when seat or baggage selection is open
   useEffect(() => {
-    if (isSeatSelectionOpen) {
+    const isAnySliderOpen = isSeatSelectionOpen || isBaggageSelectionOpen;
+    if (isAnySliderOpen) {
       document.body.classList.add('seat-selection-open');
       // Prevent background scroll
       document.body.style.overflow = 'hidden';
@@ -57,7 +61,7 @@ const FlightBooking = () => {
       document.body.classList.remove('seat-selection-open');
       document.body.style.overflow = '';
     };
-  }, [isSeatSelectionOpen]);
+  }, [isSeatSelectionOpen, isBaggageSelectionOpen]);
 
   useEffect(() => {
     // Initialize passengers array with per-passenger data
@@ -86,6 +90,9 @@ const FlightBooking = () => {
       selectedSeat: null,
       selectedMeals: [],
       selectedBaggage: [],
+      carryOnBaggage: 'included', // 'included' or 'extra' for 7kg
+      checkedBaggage: 'none', // 'none', '20kg', '25kg', '30kg', '40kg', '50kg', '60kg'
+      sportsEquipment: 'none', // 'none', '20kg', '25kg', '30kg', '40kg'
       selectedAddOnBundle: null, // 'Value Pack' or 'Premium Flex'
       insurance: false,
       specialAssistance: false,
@@ -113,6 +120,34 @@ const FlightBooking = () => {
       extras += passenger.selectedMeals.length * 800;
 
       // Baggage costs
+      // Carry-on baggage (extra 7kg costs NPR 3,515)
+      if (passenger.carryOnBaggage === 'extra') {
+        extras += 3515;
+      }
+      
+      // Checked baggage pricing
+      const checkedBaggagePrices = {
+        'none': 0,
+        '20kg': 8655,
+        '25kg': 10442,
+        '30kg': 14199,
+        '40kg': 23180,
+        '50kg': 30160,
+        '60kg': 37567
+      };
+      extras += checkedBaggagePrices[passenger.checkedBaggage] || 0;
+      
+      // Sports equipment pricing
+      const sportsEquipmentPrices = {
+        'none': 0,
+        '20kg': 10811,
+        '25kg': 12862,
+        '30kg': 16863,
+        '40kg': 26745
+      };
+      extras += sportsEquipmentPrices[passenger.sportsEquipment] || 0;
+      
+      // Legacy baggage array (for backward compatibility)
       extras += passenger.selectedBaggage.length * 2000;
 
       // Add-on bundle (Value Pack or Premium Flex may reduce costs)
@@ -148,7 +183,7 @@ const FlightBooking = () => {
   };
 
   const handleNext = () => {
-    if (currentStep < 4) {
+    if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -168,9 +203,8 @@ const FlightBooking = () => {
 
   const steps = [
     { number: 1, title: 'Passenger Details', icon: UserIcon },
-    { number: 2, title: 'Seat Selection', icon: MapPinIcon },
-    { number: 3, title: 'Add Ons', icon: CheckCircleIcon },
-    { number: 4, title: 'Payment', icon: CreditCardIcon }
+    { number: 2, title: 'Add Ons', icon: CheckCircleIcon },
+    { number: 3, title: 'Payment', icon: CreditCardIcon }
   ];
 
   const renderStepIndicator = () => (
@@ -417,6 +451,15 @@ const FlightBooking = () => {
           updatedPassengers[passengerIndex].selectedBaggage.push(value);
         }
         break;
+      case 'carryOnBaggage':
+        updatedPassengers[passengerIndex].carryOnBaggage = value;
+        break;
+      case 'checkedBaggage':
+        updatedPassengers[passengerIndex].checkedBaggage = value;
+        break;
+      case 'sportsEquipment':
+        updatedPassengers[passengerIndex].sportsEquipment = value;
+        break;
       case 'insurance':
         updatedPassengers[passengerIndex].insurance = value;
         break;
@@ -528,10 +571,14 @@ const FlightBooking = () => {
               </div>
               <button 
                 onClick={() => {
-                  // In a real app, this would open a baggage selection modal
-                  const baggageOptions = ['Extra 15kg Checked Baggage', 'Extra 20kg Checked Baggage', 'Sports Equipment'];
-                  const randomBaggage = baggageOptions[Math.floor(Math.random() * baggageOptions.length)];
-                  handlePassengerAddOnChange(passengerIndex, 'baggage', randomBaggage);
+                  setSelectedPassengerForBaggage(passengerIndex);
+                  setIsBaggageSelectionOpen(true);
+                  // Trigger animation after a brief delay to ensure the panel is rendered
+                  requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                      setIsBaggagePanelAnimating(true);
+                    });
+                  });
                 }}
                 className="text-orange-500 hover:text-orange-600 font-medium text-sm sm:text-base ml-4"
               >
@@ -829,10 +876,8 @@ const FlightBooking = () => {
       case 1:
         return renderPassengerDetails();
       case 2:
-        return renderSeatSelection();
-      case 3:
         return renderExtras();
-      case 4:
+      case 3:
         return renderPayment();
       default:
         return renderPassengerDetails();
@@ -841,8 +886,8 @@ const FlightBooking = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Main Content - gets blurred when slider opens */}
-      <div className={`transition-all duration-300 ${isSeatSelectionOpen ? 'blur-sm' : ''}`}>
+      {/* Main Content */}
+      <div>
       {/* Header */}
       <div className="relative bg-orange-500 overflow-hidden">
         {/* Background Image */}
@@ -954,7 +999,7 @@ const FlightBooking = () => {
                   </button>
                 )}
 
-                {currentStep < 4 ? (
+                {currentStep < 3 ? (
                   <button
                     onClick={handleNext}
                     className="w-full bg-orange-500 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-orange-600 transition-colors text-sm sm:text-base font-medium"
@@ -989,12 +1034,13 @@ const FlightBooking = () => {
       </div>
       </div>
 
-      {/* Seat Selection Slide-out Panel - not blurred */}
+      {/* Seat Selection Slide-out Panel */}
       {isSeatSelectionOpen && selectedPassengerForSeat !== null && (
         <>
-          {/* Invisible backdrop for closing */}
+          {/* Transparent dark overlay backdrop */}
           <div 
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-[50] transition-opacity duration-300"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
             onClick={() => {
               setIsSeatPanelAnimating(false);
               setTimeout(() => {
@@ -1004,7 +1050,7 @@ const FlightBooking = () => {
             }}
           ></div>
           <div 
-            className={`fixed top-0 right-0 h-full w-full sm:w-[480px] lg:w-[520px] bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out overflow-y-auto translate-x-full ${
+            className={`fixed top-0 right-0 h-full w-full sm:w-[480px] lg:w-[520px] bg-white shadow-2xl z-[51] transform transition-transform duration-300 ease-out overflow-y-auto translate-x-full ${
               isSeatPanelAnimating ? '!translate-x-0' : ''
             }`}
             onClick={(e) => e.stopPropagation()}
@@ -1344,6 +1390,237 @@ const FlightBooking = () => {
                           setTimeout(() => {
                             setIsSeatSelectionOpen(false);
                             setSelectedPassengerForSeat(null);
+                          }, 300);
+                        }}
+                        className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium text-base transition-colors"
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </>
+      )}
+
+      {/* Baggage Selection Slide-out Panel */}
+      {isBaggageSelectionOpen && selectedPassengerForBaggage !== null && (
+        <>
+          {/* Transparent dark overlay backdrop */}
+          <div 
+            className="fixed inset-0 z-[50] transition-opacity duration-300"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
+            onClick={() => {
+              setIsBaggagePanelAnimating(false);
+              setTimeout(() => {
+                setIsBaggageSelectionOpen(false);
+                setSelectedPassengerForBaggage(null);
+              }, 300);
+            }}
+          ></div>
+          <div 
+            className={`fixed top-0 right-0 h-full w-full sm:w-[480px] lg:w-[520px] bg-white shadow-2xl z-[51] transform transition-transform duration-300 ease-out overflow-y-auto translate-x-full ${
+              isBaggagePanelAnimating ? '!translate-x-0' : ''
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {(() => {
+              const passenger = bookingData.passengers[selectedPassengerForBaggage];
+              
+              // Calculate total baggage fees
+              const checkedBaggagePrices = {
+                'none': 0,
+                '20kg': 8655,
+                '25kg': 10442,
+                '30kg': 14199,
+                '40kg': 23180,
+                '50kg': 30160,
+                '60kg': 37567
+              };
+              
+              const sportsEquipmentPrices = {
+                'none': 0,
+                '20kg': 10811,
+                '25kg': 12862,
+                '30kg': 16863,
+                '40kg': 26745
+              };
+              
+              const carryOnExtraPrice = passenger?.carryOnBaggage === 'extra' ? 3515 : 0;
+              const checkedBaggagePrice = checkedBaggagePrices[passenger?.checkedBaggage || 'none'] || 0;
+              const sportsEquipmentPrice = sportsEquipmentPrices[passenger?.sportsEquipment || 'none'] || 0;
+              const totalBaggageFees = carryOnExtraPrice + checkedBaggagePrice + sportsEquipmentPrice;
+              
+              return (
+                <div className="flex flex-col h-full">
+                  {/* Header */}
+                  <div className="sticky top-0 bg-white border-b border-gray-200 z-10 p-3 sm:p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 12L3.269 3.125A59.769 59.769 0 0121.485 12 59.768 59.768 0 013.27 20.875L5.999 12zm0 0h7.5" />
+                        </svg>
+                        <span className="text-sm font-medium text-gray-700">KTM - NRT</span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setIsBaggagePanelAnimating(false);
+                          setTimeout(() => {
+                            setIsBaggageSelectionOpen(false);
+                            setSelectedPassengerForBaggage(null);
+                          }, 300);
+                        }}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+                    
+                    {/* Passenger Selector */}
+                    <div className="mt-4">
+                      <button className="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2">
+                        <span>Adult {selectedPassengerForBaggage + 1}</span>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Main Content */}
+                  <div className="flex-1 p-4 sm:p-5">
+                    {/* Passenger Indicator */}
+                    <div className="flex items-center space-x-2 mb-6">
+                      <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                      <span className="text-sm font-medium text-gray-900">Adult {selectedPassengerForBaggage + 1}</span>
+                    </div>
+
+                    {/* Carry-on baggage section */}
+                    <div className="mb-6">
+                      <div className="flex items-center space-x-2 mb-2">
+                        <h3 className="text-base font-semibold text-gray-900">Carry-on baggage</h3>
+                        <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <p className="text-xs text-gray-600 mb-4">Baggage size must not exceed 56 x 36 x 23 cm per piece</p>
+                      <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => handlePassengerAddOnChange(selectedPassengerForBaggage, 'carryOnBaggage', 'included')}
+                          className={`flex-1 py-3 px-4 border-2 rounded-lg text-sm font-medium transition-all ${
+                            passenger?.carryOnBaggage === 'included'
+                              ? 'border-green-500 bg-green-50 text-green-700'
+                              : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                          }`}
+                        >
+                          <div className="font-semibold">7 kg</div>
+                          <div className="text-xs mt-1">Included</div>
+                        </button>
+                        <span className="text-gray-400 text-2xl">+</span>
+                        <button
+                          onClick={() => handlePassengerAddOnChange(selectedPassengerForBaggage, 'carryOnBaggage', 'extra')}
+                          className={`flex-1 py-3 px-4 border-2 rounded-lg text-sm font-medium transition-all ${
+                            passenger?.carryOnBaggage === 'extra'
+                              ? 'border-green-500 bg-green-50 text-green-700'
+                              : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                          }`}
+                        >
+                          <div className="font-semibold">7 kg</div>
+                          <div className="text-xs mt-1">NPR 3,515.00</div>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Checked baggage section */}
+                    <div className="mb-6">
+                      <div className="flex items-center space-x-2 mb-4">
+                        <h3 className="text-base font-semibold text-gray-900">Checked baggage</h3>
+                        <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {[
+                          { value: 'none', label: 'None', price: 0 },
+                          { value: '20kg', label: '20 kg', price: 8655 },
+                          { value: '25kg', label: '25 kg', price: 10442 },
+                          { value: '30kg', label: '30 kg', price: 14199 },
+                          { value: '40kg', label: '40 kg', price: 23180 },
+                          { value: '50kg', label: '50 kg', price: 30160 },
+                          { value: '60kg', label: '60 kg', price: 37567 }
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => handlePassengerAddOnChange(selectedPassengerForBaggage, 'checkedBaggage', option.value)}
+                            className={`py-3 px-4 border-2 rounded-lg text-sm font-medium transition-all ${
+                              passenger?.checkedBaggage === option.value
+                                ? 'border-green-500 bg-green-50 text-green-700'
+                                : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                            }`}
+                          >
+                            <div className="font-semibold">{option.label}</div>
+                            {option.price > 0 && (
+                              <div className="text-xs mt-1">NPR {option.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Sports equipment section */}
+                    <div className="mb-6">
+                      <div className="flex items-center space-x-2 mb-4">
+                        <h3 className="text-base font-semibold text-gray-900">Sports equipment</h3>
+                        <svg className="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        {[
+                          { value: 'none', label: 'None', price: 0 },
+                          { value: '20kg', label: '20 kg', price: 10811 },
+                          { value: '25kg', label: '25 kg', price: 12862 },
+                          { value: '30kg', label: '30 kg', price: 16863 },
+                          { value: '40kg', label: '40 kg', price: 26745 }
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => handlePassengerAddOnChange(selectedPassengerForBaggage, 'sportsEquipment', option.value)}
+                            className={`py-3 px-4 border-2 rounded-lg text-sm font-medium transition-all ${
+                              passenger?.sportsEquipment === option.value
+                                ? 'border-green-500 bg-green-50 text-green-700'
+                                : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                            }`}
+                          >
+                            <div className="font-semibold">{option.label}</div>
+                            {option.price > 0 && (
+                              <div className="text-xs mt-1">NPR {option.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-2xl font-bold text-gray-900">NPR {totalBaggageFees.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                        <p className="text-xs text-gray-600 mt-1">Total baggage fees</p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setIsBaggagePanelAnimating(false);
+                          setTimeout(() => {
+                            setIsBaggageSelectionOpen(false);
+                            setSelectedPassengerForBaggage(null);
                           }, 300);
                         }}
                         className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium text-base transition-colors"

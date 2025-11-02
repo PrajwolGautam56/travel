@@ -192,14 +192,12 @@ body {
   }
 }
 
-/* Blur Navbar and Footer when seat selection is open */
+/* Prevent interaction with Navbar and Footer when seat selection is open */
 body.seat-selection-open > * nav,
 body.seat-selection-open > * > nav,
 body.seat-selection-open nav,
 body.seat-selection-open > * footer,
 body.seat-selection-open > * > footer,
 body.seat-selection-open footer {
-  filter: blur(4px) !important;
-  transition: filter 0.3s ease;
-  pointer-events: none;
+  pointer-events: none; /* Disable interaction with elements */
 }
