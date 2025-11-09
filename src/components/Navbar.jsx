@@ -127,9 +127,6 @@ const Navbar = () => {
                   className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 flex items-center"
                 >
                   Services
-                  <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
                 </button>
 
                 {isServicesOpen && (
@@ -216,15 +213,23 @@ const Navbar = () => {
               <>
                 <button
                   onClick={() => navigate('/login')}
-                  className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                  className="flex items-center gap-2 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-300 ease-in-out hover:bg-orange-50 hover:text-orange-500 hover:border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-200 focus:ring-offset-2"
                 >
-                  Login
-                </button>
-                <button
-                  onClick={() => navigate('/signup')}
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl"
-                >
-                  Sign Up
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-orange-500">
+                    <svg
+                      className="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" />
+                      <path d="M4 20.5a8 8 0 0 1 16 0" />
+                    </svg>
+                  </span>
+                  <span>Sign In</span>
                 </button>
               </>
             )}
@@ -381,18 +386,23 @@ const Navbar = () => {
                       navigate('/login');
                       setIsMenuOpen(false);
                     }}
-                    className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 block px-3 py-2 rounded-md text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 w-full text-left"
+                    className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 px-4 py-2 text-base font-medium text-gray-700 transition-all duration-300 ease-in-out hover:bg-orange-50 hover:text-orange-500 hover:border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-200"
                   >
-                    Login
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate('/signup');
-                      setIsMenuOpen(false);
-                    }}
-                    className="bg-orange-500 hover:bg-orange-600 text-white block px-3 py-2 rounded-lg text-base font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl w-full text-center mt-2"
-                  >
-                    Sign Up
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-orange-500">
+                      <svg
+                        className="h-4 w-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" />
+                        <path d="M4 20.5a8 8 0 0 1 16 0" />
+                      </svg>
+                    </span>
+                    <span>Sign In</span>
                   </button>
                 </>
               )}

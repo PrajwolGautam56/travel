@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import BookTripTab from './BookTripTab';
 import ManageBookingTab from './ManageBookingTab';
 import FlightStatusTab from './FlightStatusTab';
-import FlightScheduleTab from './FlightScheduleTab';
 
 const SubNavigation = () => {
     const navigate = useNavigate();
@@ -109,10 +108,6 @@ const SubNavigation = () => {
                 // Handle flight status
                 console.log('Checking flight status...');
                 break;
-            case 'Flight Schedule':
-                // Handle flight schedule
-                console.log('Viewing flight schedule...');
-                break;
             default:
                 break;
         }
@@ -121,8 +116,7 @@ const SubNavigation = () => {
     const navigationItems = [
         'Book Trip',
         'Manage Booking',
-        'Flight Status',
-        'Flight Schedule'
+        'Flight Status'
     ];
 
     const renderContentSlim = () => {
@@ -133,8 +127,6 @@ const SubNavigation = () => {
                 return <ManageBookingTab formData={formData} onChange={handleInputChange} />;
             case 'Flight Status':
                 return <FlightStatusTab formData={formData} onChange={handleInputChange} />;
-            case 'Flight Schedule':
-                return <FlightScheduleTab formData={formData} onChange={handleInputChange} />;
             default:
                 return null;
         }
