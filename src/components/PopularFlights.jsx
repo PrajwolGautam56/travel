@@ -1,7 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { flightsAPI } from '../services/api';
 
 const PopularFlights = () => {
-  const popularFlights = [
+  const [popularFlights, setPopularFlights] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchPopularFlights = async () => {
+      try {
+        const response = await flightsAPI.getPopular();
+        // Transform backend data to match frontend format
+        const flights = (response.flights || []).slice(0, 4).map(flight => ({
+          id: flight._id || flight.id,
+          from: flight.origin || flight.from,
+          to: flight.destination || flight.to,
+          airline: flight.airline || 'Airline',
+          price: `Rs.${(flight.price || flight.pricing?.basePrice || 0).toLocaleString('en-IN')}`,
+          duration: flight.duration || 'N/A',
+          stops: flight.stops === 0 ? 'Direct' : `${flight.stops} Stop${flight.stops > 1 ? 's' : ''}`,
+          departure: flight.departureTime?.substring(0, 5) || 'N/A',
+          arrival: flight.arrivalTime?.substring(0, 5) || 'N/A',
+          date: new Date(flight.departureDate || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+        }));
+        setPopularFlights(flights);
+      } catch (error) {
+        console.error('Error fetching popular flights:', error);
+        // Keep empty array on error
+        setPopularFlights([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPopularFlights();
+  }, []);
+
+  const handleBookNow = (flight) => {
+    navigate('/flight-search', {
+      state: {
+        searchData: {
+          from: flight.from,
+          to: flight.to,
+          departureDate: new Date().toISOString().split('T')[0],
+          passengers: 1
+        }
+      }
+    });
+  };
+
+  // Fallback mock data if API fails or no data
+  const mockFlights = [
     {
       id: 1,
       from: 'Kathmandu',
@@ -64,25 +114,36 @@ const PopularFlights = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {popularFlights.map((flight) => (
-            <div key={flight.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+            <p className="text-gray-600">Loading popular flights...</p>
+          </div>
+        ) : popularFlights.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No popular flights available at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {popularFlights.map((flight) => (
+            <div key={flight.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-orange-200 transform hover:-translate-y-2">
               {/* Flight Header */}
-              <div className="bg-orange-500 p-3 sm:p-4 text-white">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-xs sm:text-sm font-medium">{flight.airline}</span>
-                  <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-3 sm:p-4 text-white relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative z-10 flex justify-between items-center mb-2">
+                  <span className="text-xs sm:text-sm font-semibold">{flight.airline}</span>
+                  <span className="text-xs bg-white/30 backdrop-blur-sm px-2 py-1 rounded-full font-medium">
                     {flight.stops}
                   </span>
                 </div>
-                <div className="text-center">
-                  <div className="text-xl sm:text-2xl font-bold">{flight.price}</div>
-                  <div className="text-xs opacity-90">Starting from</div>
+                <div className="relative z-10 text-center">
+                  <div className="text-xl sm:text-2xl font-bold drop-shadow-sm">{flight.price}</div>
+                  <div className="text-xs opacity-90 mt-1">Starting from</div>
                 </div>
               </div>
 
               {/* Flight Details */}
-              <div className="p-3 sm:p-4">
+              <div className="p-3 sm:p-4 bg-gradient-to-b from-white to-gray-50">
                 {/* Route */}
                 <div className="flex items-center justify-between mb-3 sm:mb-4">
                   <div className="text-center">
@@ -115,18 +176,24 @@ const PopularFlights = () => {
                 </div>
 
                 {/* Book Button */}
-                <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-colors duration-300 text-sm sm:text-base">
-                  Book Now
+                <button 
+                  onClick={() => handleBookNow(flight)}
+                  className="group/btn w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-2.5 px-3 sm:px-4 rounded-xl transition-all duration-300 text-sm sm:text-base shadow-md hover:shadow-lg transform hover:scale-[1.02] relative overflow-hidden"
+                >
+                  <span className="relative z-10">Book Now</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
                 </button>
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* View All Button */}
         <div className="text-center mt-8 sm:mt-12">
-          <button className="bg-transparent border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-lg transition-all duration-300 text-sm sm:text-base">
-            View All Flights
+          <button className="group relative bg-transparent border-2 border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-semibold py-2.5 sm:py-3 px-6 sm:px-8 rounded-xl transition-all duration-300 text-sm sm:text-base shadow-md hover:shadow-lg transform hover:scale-105 overflow-hidden">
+            <span className="relative z-10">View All Flights</span>
+            <div className="absolute inset-0 bg-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
           </button>
         </div>
       </div>

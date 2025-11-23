@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { hotelsAPI, bookingsAPI } from '../services/api';
 
 const HotelDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [hotel, setHotel] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [bookingData, setBookingData] = useState({
     checkIn: '',
@@ -13,8 +18,87 @@ const HotelDetail = () => {
     rooms: 1
   });
 
-  // Mock hotel data - in real app this would come from API
-  const hotel = {
+  // Fetch hotel data from backend
+  useEffect(() => {
+    const fetchHotel = async () => {
+      if (!id) return;
+      
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await hotelsAPI.getById(id);
+        // Handle different response formats
+        const hotelData = response?.hotel || response?.data?.hotel || response;
+        
+        if (!hotelData || (!hotelData.name && !hotelData._id)) {
+          throw new Error('Invalid hotel data received from server');
+        }
+        
+        // Transform backend data to match frontend format
+        const defaultImage = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+        const images = hotelData.images || (hotelData.image ? [hotelData.image] : [defaultImage]);
+        
+        const transformedHotel = {
+          id: hotelData.id || hotelData._id,
+          name: hotelData.name || 'Hotel',
+          location: hotelData.location || hotelData.city || 'Location not specified',
+          address: hotelData.address || 'Address not specified',
+          phone: hotelData.contact?.phone || hotelData.phone || 'N/A',
+          email: hotelData.contact?.email || hotelData.email || 'N/A',
+          website: hotelData.website || 'N/A',
+          description: hotelData.description || 'No description available.',
+          image: images[0] || defaultImage,
+          gallery: images.length > 0 ? images : [defaultImage],
+          rating: hotelData.rating || 0,
+          reviews: hotelData.reviews || 0,
+          stars: hotelData.stars || 0,
+          amenities: Array.isArray(hotelData.amenities) ? hotelData.amenities : [],
+          highlights: Array.isArray(hotelData.highlights) ? hotelData.highlights : [],
+          rooms: Array.isArray(hotelData.rooms) && hotelData.rooms.length > 0 
+            ? hotelData.rooms 
+            : [{
+                id: 1,
+                name: 'Standard Room',
+                description: 'Comfortable room with modern amenities',
+                size: '25 sqm',
+                occupancy: '2 Adults',
+                bedType: 'Double Bed',
+                price: `Rs.${(hotelData.pricing?.basePrice || hotelData.pricePerNight || 0).toLocaleString('en-IN')}`,
+                perNight: 'per night',
+                features: ['Free WiFi', 'TV', 'AC', 'Bathroom'],
+                images: images
+              }],
+          policies: hotelData.policies || {
+            checkIn: '3:00 PM',
+            checkOut: '12:00 PM',
+            cancellation: 'Free cancellation up to 24 hours before check-in',
+            children: 'Children of all ages are welcome',
+            pets: 'Pets allowed with prior arrangement',
+            smoking: 'Non-smoking property'
+          },
+          pricing: hotelData.pricing,
+          pricePerNight: hotelData.pricing?.basePrice || hotelData.pricePerNight || 0
+        };
+        
+        setHotel(transformedHotel);
+      } catch (err) {
+        console.error('Error fetching hotel:', err);
+        console.error('Error details:', {
+          message: err.message,
+          response: err.response?.data,
+          status: err.response?.status
+        });
+        setError(err.response?.data?.message || err.message || 'Failed to load hotel details. Please try again.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHotel();
+  }, [id]);
+
+  // Mock hotel data - fallback (will be replaced by API data)
+  const mockHotel = {
     id: 1,
     name: 'The Ritz London',
     location: 'London, UK',
@@ -115,15 +199,57 @@ const HotelDetail = () => {
     setSelectedRoom(room);
   };
 
-  const handleBooking = (e) => {
+  const handleBooking = async (e) => {
     e.preventDefault();
+    
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      alert('Please login to book a hotel');
+      navigate('/');
+      return;
+    }
+
     if (!selectedRoom) {
       alert('Please select a room first');
       return;
     }
-    console.log('Booking data:', { ...bookingData, room: selectedRoom });
-    // TODO: Integrate with booking API
-    alert('Booking submitted successfully!');
+
+    if (!bookingData.checkIn || !bookingData.checkOut) {
+      alert('Please select check-in and check-out dates');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const bookingPayload = {
+        hotelId: hotel.id,
+        checkIn: bookingData.checkIn,
+        checkOut: bookingData.checkOut,
+        guests: {
+          adults: bookingData.guests,
+          children: 0
+        },
+        rooms: [{
+          roomType: selectedRoom.name,
+          quantity: bookingData.rooms,
+          guests: bookingData.guests
+        }],
+        specialRequirements: ''
+      };
+
+      const response = await bookingsAPI.createHotelBooking(bookingPayload);
+      
+      alert(`Booking successful! Booking Reference: ${response.bookingReference || response.booking?.bookingReference || 'N/A'}`);
+      navigate('/profile');
+    } catch (err) {
+      console.error('Booking error:', err);
+      setError(err.message || 'Booking failed. Please try again.');
+      alert(`Booking failed: ${err.message || 'Please try again'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const calculateNights = () => {
@@ -137,12 +263,58 @@ const HotelDetail = () => {
   };
 
   const calculateTotalPrice = () => {
-    if (selectedRoom && calculateNights() > 0) {
-      const pricePerNight = parseInt(selectedRoom.price.replace(/[^\d]/g, ''));
+    if (selectedRoom && calculateNights() > 0 && hotel) {
+      // Get price from selected room or hotel base price
+      let pricePerNight = 0;
+      if (selectedRoom.price) {
+        // Handle both string (e.g., "Rs.25,000") and number formats
+        if (typeof selectedRoom.price === 'string') {
+          pricePerNight = parseInt(selectedRoom.price.replace(/[^\d]/g, '')) || 0;
+        } else if (typeof selectedRoom.price === 'number') {
+          pricePerNight = selectedRoom.price;
+        } else if (selectedRoom.pricing?.basePrice) {
+          pricePerNight = selectedRoom.pricing.basePrice;
+        }
+      } else if (selectedRoom.pricing?.basePrice) {
+        pricePerNight = selectedRoom.pricing.basePrice;
+      } else if (hotel.pricePerNight) {
+        pricePerNight = hotel.pricePerNight;
+      } else if (hotel.pricing?.basePrice) {
+        pricePerNight = hotel.pricing.basePrice;
+      }
       return pricePerNight * calculateNights() * bookingData.rooms;
     }
     return 0;
   };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+          <p className="text-gray-600">Loading hotel details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !hotel) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error || 'Hotel not found'}</p>
+          <button
+            onClick={() => navigate('/hotels')}
+            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+          >
+            Back to Hotels
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -196,17 +368,23 @@ const HotelDetail = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <img
-                    src={hotel.gallery[0]}
+                    src={hotel.gallery?.[0] || hotel.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}
                     alt={hotel.name}
                     className="w-full h-80 object-cover rounded-xl"
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                    }}
                   />
                 </div>
-                {hotel.gallery.slice(1, 4).map((image, index) => (
+                {(hotel.gallery || []).slice(1, 4).map((image, index) => (
                   <div key={index}>
                     <img
                       src={image}
                       alt={`${hotel.name} ${index + 2}`}
                       className="w-full h-40 object-cover rounded-xl"
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                      }}
                     />
                   </div>
                 ))}
@@ -221,30 +399,38 @@ const HotelDetail = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Highlights</h3>
-                  <ul className="space-y-2">
-                    {hotel.highlights.map((highlight, index) => (
-                      <li key={index} className="flex items-center text-gray-700">
-                        <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        {highlight}
-                      </li>
-                    ))}
-                  </ul>
+                  {hotel.highlights && hotel.highlights.length > 0 ? (
+                    <ul className="space-y-2">
+                      {hotel.highlights.map((highlight, index) => (
+                        <li key={index} className="flex items-center text-gray-700">
+                          <svg className="w-4 h-4 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          {highlight}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No highlights available</p>
+                  )}
                 </div>
 
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-3">Amenities</h3>
-                  <div className="grid grid-cols-2 gap-2">
-                    {hotel.amenities.map((amenity, index) => (
-                      <div key={index} className="flex items-center text-gray-700">
-                        <svg className="w-4 h-4 text-orange-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        {amenity}
-                      </div>
-                    ))}
-                  </div>
+                  {hotel.amenities && hotel.amenities.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      {hotel.amenities.map((amenity, index) => (
+                        <div key={index} className="flex items-center text-gray-700">
+                          <svg className="w-4 h-4 text-orange-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                          {amenity}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 text-sm">No amenities listed</p>
+                  )}
                 </div>
               </div>
             </div>
@@ -252,63 +438,80 @@ const HotelDetail = () => {
             {/* Room Selection */}
             <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Select Your Room</h2>
-              <div className="space-y-6">
-                {hotel.rooms.map((room) => (
-                  <div
-                    key={room.id}
-                    className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-200 ${selectedRoom?.id === room.id
-                      ? 'border-orange-500 bg-orange-50'
-                      : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    onClick={() => handleRoomSelection(room)}
-                  >
-                    <div className="flex flex-col lg:flex-row gap-6">
-                      <div className="lg:w-1/3">
-                        <img
-                          src={room.images[0]}
-                          alt={room.name}
-                          className="w-full h-48 object-cover rounded-lg"
-                        />
-                      </div>
-
-                      <div className="lg:w-2/3">
-                        <div className="flex justify-between items-start mb-3">
-                          <h3 className="text-xl font-bold text-gray-900">{room.name}</h3>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-orange-500">{room.price}</div>
-                            <div className="text-sm text-gray-500">{room.perNight}</div>
-                          </div>
+              {hotel.rooms && hotel.rooms.length > 0 ? (
+                <div className="space-y-6">
+                  {hotel.rooms.map((room) => (
+                    <div
+                      key={room.id || room._id || Math.random()}
+                      className={`border-2 rounded-xl p-6 cursor-pointer transition-all duration-200 ${selectedRoom?.id === room.id
+                        ? 'border-orange-500 bg-orange-50'
+                        : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      onClick={() => handleRoomSelection(room)}
+                    >
+                      <div className="flex flex-col lg:flex-row gap-6">
+                        <div className="lg:w-1/3">
+                          <img
+                            src={room.images?.[0] || room.image || hotel.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'}
+                            alt={room.name || 'Room'}
+                            className="w-full h-48 object-cover rounded-lg"
+                            onError={(e) => {
+                              e.target.src = 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                            }}
+                          />
                         </div>
 
-                        <p className="text-gray-700 mb-4">{room.description}</p>
+                        <div className="lg:w-2/3">
+                          <div className="flex justify-between items-start mb-3">
+                            <h3 className="text-xl font-bold text-gray-900">{room.name || room.roomType || 'Standard Room'}</h3>
+                            <div className="text-right">
+                              <div className="text-2xl font-bold text-orange-500">
+                                {room.price || `Rs.${(room.pricing?.basePrice || hotel.pricePerNight || 0).toLocaleString('en-IN')}`}
+                              </div>
+                              <div className="text-sm text-gray-500">{room.perNight || 'per night'}</div>
+                            </div>
+                          </div>
 
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <span className="text-sm font-medium text-gray-900">Size:</span>
-                            <span className="text-sm text-gray-600 ml-2">{room.size}</span>
-                          </div>
-                          <div>
-                            <span className="text-sm font-medium text-gray-900">Occupancy:</span>
-                            <span className="text-sm text-gray-600 ml-2">{room.occupancy}</span>
-                          </div>
-                          <div>
-                            <span className="text-sm font-medium text-gray-900">Bed Type:</span>
-                            <span className="text-sm text-gray-600 ml-2">{room.bedType}</span>
-                          </div>
-                        </div>
+                          <p className="text-gray-700 mb-4">{room.description || 'Comfortable room with modern amenities'}</p>
 
-                        <div className="flex flex-wrap gap-2">
-                          {room.features.map((feature, index) => (
-                            <span key={index} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
-                              {feature}
-                            </span>
-                          ))}
+                          <div className="grid grid-cols-2 gap-4 mb-4">
+                            {room.size && (
+                              <div>
+                                <span className="text-sm font-medium text-gray-900">Size:</span>
+                                <span className="text-sm text-gray-600 ml-2">{room.size}</span>
+                              </div>
+                            )}
+                            {room.occupancy && (
+                              <div>
+                                <span className="text-sm font-medium text-gray-900">Occupancy:</span>
+                                <span className="text-sm text-gray-600 ml-2">{room.occupancy}</span>
+                              </div>
+                            )}
+                            {room.bedType && (
+                              <div>
+                                <span className="text-sm font-medium text-gray-900">Bed Type:</span>
+                                <span className="text-sm text-gray-600 ml-2">{room.bedType}</span>
+                              </div>
+                            )}
+                          </div>
+
+                          {room.features && room.features.length > 0 && (
+                            <div className="flex flex-wrap gap-2">
+                              {room.features.map((feature, index) => (
+                                <span key={index} className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
+                                  {feature}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500">No rooms available at this time.</p>
+              )}
             </div>
 
             {/* Hotel Policies */}
@@ -402,8 +605,16 @@ const HotelDetail = () => {
                 {selectedRoom && (
                   <div className="bg-blue-50 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-900 mb-2">Selected Room</h4>
-                    <p className="text-sm text-gray-700 mb-2">{selectedRoom.name}</p>
-                    <p className="text-lg font-bold text-orange-500">{selectedRoom.price} per night</p>
+                    <p className="text-sm text-gray-700 mb-2">{selectedRoom.name || selectedRoom.roomType || 'Standard Room'}</p>
+                    <p className="text-lg font-bold text-orange-500">
+                      {typeof selectedRoom.price === 'string' 
+                        ? selectedRoom.price 
+                        : selectedRoom.pricing?.basePrice 
+                          ? `Rs.${selectedRoom.pricing.basePrice.toLocaleString('en-IN')}`
+                          : hotel.pricePerNight 
+                            ? `Rs.${hotel.pricePerNight.toLocaleString('en-IN')}`
+                            : 'Price not available'} per night
+                    </p>
                   </div>
                 )}
 
@@ -414,7 +625,15 @@ const HotelDetail = () => {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>Room rate per night:</span>
-                        <span>{selectedRoom.price}</span>
+                        <span>
+                          {typeof selectedRoom.price === 'string' 
+                            ? selectedRoom.price 
+                            : selectedRoom.pricing?.basePrice 
+                              ? `Rs.${selectedRoom.pricing.basePrice.toLocaleString('en-IN')}`
+                              : hotel.pricePerNight 
+                                ? `Rs.${hotel.pricePerNight.toLocaleString('en-IN')}`
+                                : 'N/A'}
+                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span>Number of nights:</span>
@@ -435,11 +654,37 @@ const HotelDetail = () => {
 
                 {/* Book Button */}
                 <button
-                  type="submit"
-                  disabled={!selectedRoom}
+                  type="button"
+                  onClick={() => {
+                    if (!selectedRoom) {
+                      alert('Please select a room first');
+                      return;
+                    }
+                    if (!bookingData.checkIn || !bookingData.checkOut) {
+                      alert('Please select check-in and check-out dates');
+                      return;
+                    }
+                    // Navigate to booking page with hotel and booking data
+                    navigate(`/hotel-booking/${id}`, {
+                      state: {
+                        hotel: hotel,
+                        bookingData: {
+                          checkIn: bookingData.checkIn,
+                          checkOut: bookingData.checkOut,
+                          guests: {
+                            adults: bookingData.guests,
+                            children: 0
+                          },
+                          rooms: bookingData.rooms,
+                          selectedRoom: selectedRoom
+                        }
+                      }
+                    });
+                  }}
+                  disabled={!selectedRoom || !bookingData.checkIn || !bookingData.checkOut}
                   className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 disabled:cursor-not-allowed"
                 >
-                  {selectedRoom ? 'Book Now' : 'Select a Room First'}
+                  {selectedRoom && bookingData.checkIn && bookingData.checkOut ? 'Continue to Booking' : 'Select Room & Dates First'}
                 </button>
               </form>
 

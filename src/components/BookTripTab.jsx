@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import AirportAutocomplete from './AirportAutocomplete';
 
 const BookTripTab = ({ formData, onChange }) => {
     const [tripType, setTripType] = useState('oneway');
@@ -44,6 +45,10 @@ const BookTripTab = ({ formData, onChange }) => {
         }
         if (!formData.returnDate && tripType === 'return') {
             onChange({ target: { name: 'returnDate', value: getReturnDate().toISOString().split('T')[0] } });
+        }
+        // Initialize passenger counts in formData
+        if (!formData.passengerCounts) {
+            onChange({ target: { name: 'passengerCounts', value: passengerCounts } });
         }
     }, [tripType]);
 
@@ -140,6 +145,8 @@ const BookTripTab = ({ formData, onChange }) => {
                     newCounts.infants -= 1;
                 }
             }
+            // Update formData with new passenger counts
+            onChange({ target: { name: 'passengerCounts', value: newCounts } });
             return newCounts;
         });
     };
@@ -178,6 +185,7 @@ const BookTripTab = ({ formData, onChange }) => {
 
     const handleTripTypeChange = (type) => {
         setTripType(type);
+        onChange({ target: { name: 'tripType', value: type } });
     };
 
     const handleSwapLocations = () => {
@@ -434,34 +442,15 @@ const BookTripTab = ({ formData, onChange }) => {
                 <div className="space-y-2 sm:space-y-3">
                     {/* Return Trip Form */}
                     {tripType === 'return' && (
-                        <div className="grid grid-cols-[1fr_auto_1fr_1fr_1fr] gap-3 sm:gap-2">
+                        <div className="grid grid-cols-[1fr_auto_1fr_1fr_1fr] gap-3 sm:gap-3 md:gap-4">
                             <div>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name="from"
-                                        value={formData.from}
-                                        onChange={onChange}
-                                        placeholder=" "
-                                        className="w-full px-3 sm:px-4 h-12 pt-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent form-input text-sm sm:text-base peer"
-                                    />
-                                    <label className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 pointer-events-none peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500">
-                                        From
-                                    </label>
-                                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
-                                        {formData.from && (
-                                            <button
-                                                type="button"
-                                                onClick={() => clearField('from')}
-                                                className="text-gray-400 hover:text-gray-600 transition-colors"
-                                            >
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
+                                <AirportAutocomplete
+                                    value={formData.from}
+                                    onChange={onChange}
+                                    placeholder="From"
+                                    id="from-return"
+                                    name="from"
+                                />
                             </div>
 
                             {/* Swap Button - Between From and To */}
@@ -479,32 +468,13 @@ const BookTripTab = ({ formData, onChange }) => {
                             </div>
 
                             <div>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name="to"
-                                        value={formData.to}
-                                        onChange={onChange}
-                                        placeholder=" "
-                                        className="w-full px-3 sm:px-4 h-12 pt-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent form-input text-sm sm:text-base peer"
-                                    />
-                                    <label className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 pointer-events-none peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500">
-                                        To
-                                    </label>
-                                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
-                                        {formData.to && (
-                                            <button
-                                                type="button"
-                                                onClick={() => clearField('to')}
-                                                className="text-gray-400 hover:text-gray-600 transition-colors"
-                                            >
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
+                                <AirportAutocomplete
+                                    value={formData.to}
+                                    onChange={onChange}
+                                    placeholder="To"
+                                    id="to-return"
+                                    name="to"
+                                />
                             </div>
 
                             <div>
@@ -559,34 +529,15 @@ const BookTripTab = ({ formData, onChange }) => {
 
                     {/* One Way Trip Form */}
                     {tripType === 'oneway' && (
-                        <div className="grid grid-cols-[1fr_auto_1fr_1fr] gap-3 sm:gap-2">
+                        <div className="grid grid-cols-[1fr_auto_1fr_1fr] gap-3 sm:gap-3 md:gap-4">
                             <div>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name="from"
-                                        value={formData.from}
-                                        onChange={onChange}
-                                        placeholder=" "
-                                        className="w-full px-3 sm:px-4 h-12 pt-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent form-input text-sm sm:text-base peer"
-                                    />
-                                    <label className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 pointer-events-none peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500">
-                                        From
-                                    </label>
-                                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
-                                        {formData.from && (
-                                            <button
-                                                type="button"
-                                                onClick={() => clearField('from')}
-                                                className="text-gray-400 hover:text-gray-600 transition-colors"
-                                            >
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-                                                </svg>
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
+                                <AirportAutocomplete
+                                    value={formData.from}
+                                    onChange={onChange}
+                                    placeholder="From"
+                                    id="from-oneway"
+                                    name="from"
+                                />
                             </div>
 
                             {/* Swap Button - Between From and To */}
@@ -604,27 +555,13 @@ const BookTripTab = ({ formData, onChange }) => {
                             </div>
 
                             <div>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name="to"
-                                        value={formData.to}
-                                        onChange={onChange}
-                                        placeholder=" "
-                                        className="w-full px-3 sm:px-4 h-12 pt-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent form-input text-sm sm:text-base peer"
-                                    />
-                                    <label className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm transition-all duration-200 pointer-events-none peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-500">
-                                        To
-                                    </label>
-                                    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex space-x-1">
-                                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                                        </svg>
-                                        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </div>
+                                <AirportAutocomplete
+                                    value={formData.to}
+                                    onChange={onChange}
+                                    placeholder="To"
+                                    id="to-oneway"
+                                    name="to"
+                                />
                             </div>
 
 
@@ -657,7 +594,7 @@ const BookTripTab = ({ formData, onChange }) => {
                     {tripType === 'multicity' && (
                         <div className="space-y-3">
                             {multicityFlights.map((flight, index) => (
-                                <div key={index} className="relative grid grid-cols-[1fr_auto_1fr_1fr] gap-3 sm:gap-2">
+                                <div key={index} className="relative grid grid-cols-[1fr_auto_1fr_1fr] gap-3 sm:gap-3 md:gap-4">
                                     <div>
                                         <div className="relative">
                                             <input
@@ -790,7 +727,7 @@ const BookTripTab = ({ formData, onChange }) => {
                         </div>
                     )}
 
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-2 sm:pt-3 gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-3 sm:pt-4 gap-3 sm:gap-4">
                         <div className="flex flex-col gap-3 sm:gap-4">
                             {/* Class and Passenger Boxes */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full sm:w-auto">
@@ -993,10 +930,10 @@ const BookTripTab = ({ formData, onChange }) => {
                             )}
                         </div>
 
-                        <div className="flex justify-center sm:justify-end">
+                        <div className="flex justify-center sm:justify-end w-full sm:w-auto">
                             <button
                                 type="submit"
-                                className="bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 transition-colors text-sm"
+                                className="bg-orange-500 text-white font-bold py-3 px-6 sm:px-8 rounded-lg hover:bg-orange-600 transition-all duration-200 text-sm sm:text-base shadow-md hover:shadow-lg w-full sm:w-auto"
                             >
                                 Search Flights
                             </button>
@@ -1009,7 +946,10 @@ const BookTripTab = ({ formData, onChange }) => {
                         <select
                             name="currency"
                             value={currency}
-                            onChange={(e) => setCurrency(e.target.value)}
+                            onChange={(e) => {
+                                setCurrency(e.target.value);
+                                onChange({ target: { name: 'currency', value: e.target.value } });
+                            }}
                             className="border border-blue-500 rounded px-2 py-1 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                             <option value="NPR">NPR</option>

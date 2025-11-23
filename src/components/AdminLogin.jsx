@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { authAPI } from '../services/api';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
-    username: '',
+    email: '',
     password: ''
   });
   const [error, setError] = useState('');
@@ -25,19 +26,23 @@ const AdminLogin = () => {
     setIsLoading(true);
     setError('');
 
-    if (formData.username === 'admin' && formData.password === 'admin123') {
-      localStorage.setItem('adminToken', 'mock-admin-token-123');
+    try {
+      const response = await authAPI.adminLogin(formData.email, formData.password);
+      
+      localStorage.setItem('adminToken', response.token);
       localStorage.setItem('adminUser', JSON.stringify({
-        username: formData.username,
-        role: 'admin',
-        name: 'Administrator'
+        email: response.admin.email,
+        role: response.admin.role,
+        name: response.admin.name || 'Administrator',
+        adminId: response.admin._id || response.admin.id
       }));
+      
       navigate('/admin/dashboard');
-    } else {
-      setError('Invalid admin credentials. Please try again.');
+    } catch (err) {
+      setError(err.message || 'Invalid admin credentials. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -86,10 +91,10 @@ const AdminLogin = () => {
             )}
 
             <div className="space-y-5">
-              {/* Username Field */}
+              {/* Email Field */}
               <div>
-                <label htmlFor="username" className="block text-sm font-semibold text-blue-100 mb-3">
-                  Admin Username
+                <label htmlFor="email" className="block text-sm font-semibold text-blue-100 mb-3">
+                  Admin Email
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -98,15 +103,15 @@ const AdminLogin = () => {
                     </svg>
                   </div>
                   <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    autoComplete="username"
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
                     required
-                    value={formData.username}
+                    value={formData.email}
                     onChange={handleInputChange}
                     className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl focus:ring-2 focus:ring-blue-400 focus:border-transparent text-white placeholder-blue-200 transition-all duration-300 backdrop-blur-sm"
-                    placeholder="Enter admin username"
+                    placeholder="Enter admin email"
                   />
                 </div>
               </div>
@@ -159,17 +164,18 @@ const AdminLogin = () => {
 
           {/* Demo Credentials */}
           <div className="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
-            <h3 className="text-sm font-semibold text-blue-200 mb-3 text-center">Demo Credentials</h3>
+            <h3 className="text-sm font-semibold text-blue-200 mb-3 text-center">Admin Credentials</h3>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div className="bg-white/10 rounded-xl p-3">
-                <p className="text-xs text-blue-300 mb-1">Username</p>
-                <p className="text-sm font-mono text-white font-semibold">admin</p>
+                <p className="text-xs text-blue-300 mb-1">Email</p>
+                <p className="text-sm font-mono text-white font-semibold">admin@demo.com</p>
               </div>
               <div className="bg-white/10 rounded-xl p-3">
                 <p className="text-xs text-blue-300 mb-1">Password</p>
                 <p className="text-sm font-mono text-white font-semibold">admin123</p>
               </div>
             </div>
+            <p className="text-xs text-blue-300/70 text-center mt-4">Use these credentials to access the admin dashboard</p>
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AirportAutocomplete from './AirportAutocomplete';
 
 const SearchForm = () => {
     const navigate = useNavigate();
@@ -22,9 +23,33 @@ const SearchForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Search form data:', formData);
+        // Extract airport code from input (format: "KTM - Kathmandu" or just "KTM")
+        const extractAirportCode = (input) => {
+            if (!input) return '';
+            // If input contains " - ", extract the code before it
+            if (input.includes(' - ')) {
+                return input.split(' - ')[0].trim().toUpperCase();
+            }
+            // Otherwise, assume it's already a code or extract first 3 uppercase letters
+            const match = input.match(/^([A-Z]{3})/);
+            return match ? match[1] : input.trim().toUpperCase();
+        };
+
+        // Prepare search data with proper format
+        const searchData = {
+            from: extractAirportCode(formData.from),
+            to: extractAirportCode(formData.to),
+            departureDate: formData.departureDate,
+            returnDate: formData.returnDate,
+            tripType: formData.returnDate ? 'return' : 'oneway',
+            passengers: { adults: formData.passengers || 1, children: 0, infants: 0 },
+            class: formData.cabinClass || 'economy',
+            currency: 'USD',
+            region: 'US'
+        };
         // Navigate to flight search results page
         navigate('/flight-search', {
-            state: { searchData: formData }
+            state: { searchData }
         });
     };
 
@@ -69,14 +94,12 @@ const SearchForm = () => {
                             {/* From */}
                             <div>
                                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">From</label>
-                                <input
-                                    type="text"
-                                    name="from"
+                                <AirportAutocomplete
                                     value={formData.from}
                                     onChange={handleInputChange}
                                     placeholder="Departure City"
-                                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
-                                    required
+                                    id="from"
+                                    name="from"
                                 />
                             </div>
 
@@ -96,14 +119,12 @@ const SearchForm = () => {
                             {/* To */}
                             <div>
                                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 sm:mb-2">To</label>
-                                <input
-                                    type="text"
-                                    name="to"
+                                <AirportAutocomplete
                                     value={formData.to}
                                     onChange={handleInputChange}
                                     placeholder="Destination City"
-                                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
-                                    required
+                                    id="to"
+                                    name="to"
                                 />
                             </div>
 

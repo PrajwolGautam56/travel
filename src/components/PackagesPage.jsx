@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { packagesAPI } from '../services/api';
 
 const PackagesPage = () => {
   const [filters, setFilters] = useState({
@@ -12,12 +13,59 @@ const PackagesPage = () => {
   });
 
   const [viewMode, setViewMode] = useState('grid');
+  const [packages, setPackages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const packageTypes = [
     'All Packages', 'Honeymoon', 'Adventure', 'Cultural', 'Beach', 'Mountain', 'City Break', 'Luxury'
   ];
 
-  const packages = [
+  useEffect(() => {
+    const fetchPackages = async () => {
+      setIsLoading(true);
+      try {
+        const response = await packagesAPI.getAll();
+        // Transform backend data to match frontend format
+        const packagesData = (response.packages || []).map(pkg => {
+          const finalPrice = pkg.pricing?.discountedPrice || pkg.pricing?.originalPrice || 0;
+          const originalPrice = pkg.pricing?.originalPrice;
+          const discount = pkg.pricing?.discountPercentage || 0;
+          const days = pkg.duration?.days || 0;
+          const nights = pkg.duration?.nights || 0;
+          const duration = days > 0 ? `${days} Day${days > 1 ? 's' : ''}${nights > 0 ? ` / ${nights} Night${nights > 1 ? 's' : ''}` : ''}` : 'N/A';
+          
+          return {
+            id: pkg._id || pkg.id,
+            title: pkg.title,
+            destination: pkg.destination,
+            description: pkg.description || '',
+            image: pkg.images?.[0] || pkg.image || 'https://images.unsplash.com/photo-1513634489774-f96762e6f3b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            duration: duration,
+            price: `Rs.${finalPrice.toLocaleString('en-IN')}`,
+            originalPrice: originalPrice && originalPrice > finalPrice ? `Rs.${originalPrice.toLocaleString('en-IN')}` : null,
+            discount: discount > 0 ? `${discount}% OFF` : null,
+            rating: pkg.rating || 4.5,
+            reviews: pkg.reviews || 0,
+            packageType: pkg.category || pkg.packageType || 'Cultural',
+            departureDate: pkg.departureDate ? new Date(pkg.departureDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'TBD',
+            includes: pkg.includes || pkg.included || [],
+            highlights: pkg.highlights || []
+          };
+        });
+        setPackages(packagesData);
+      } catch (error) {
+        console.error('Error fetching packages:', error);
+        setPackages([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPackages();
+  }, []);
+
+  // Fallback mock data
+  const mockPackages = [
     {
       id: 1,
       title: 'London & Paris Adventure',
@@ -425,11 +473,23 @@ const PackagesPage = () => {
           {/* Package Listings */}
           <div className="lg:w-3/4 order-1 lg:order-2">
             <div className="mb-4 sm:mb-6">
-              <p className="text-sm sm:text-base text-gray-600">Showing {packages.length} packages</p>
+              <p className="text-sm sm:text-base text-gray-600">
+                {isLoading ? 'Loading packages...' : `Showing ${packages.length} packages`}
+              </p>
             </div>
 
-            <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6' : 'space-y-4 sm:space-y-6'}>
-              {packages.map((pkg) => (
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+                <p className="text-gray-600">Loading packages...</p>
+              </div>
+            ) : packages.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600">No packages available at the moment.</p>
+              </div>
+            ) : (
+              <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6' : 'space-y-4 sm:space-y-6'}>
+                {packages.map((pkg) => (
                 <div key={pkg.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                   <div className={viewMode === 'grid' ? 'block' : 'flex flex-col sm:flex-row'}>
                     {/* Package Image */}
@@ -521,8 +581,9 @@ const PackagesPage = () => {
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

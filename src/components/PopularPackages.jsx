@@ -1,8 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { packagesAPI } from '../services/api';
 
 const PopularPackages = () => {
-  const packages = [
+  const [packages, setPackages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPopularPackages = async () => {
+      try {
+        const response = await packagesAPI.getPopular();
+        // Transform backend data to match frontend format
+        const packagesData = (response.packages || []).slice(0, 3).map(pkg => {
+          const finalPrice = pkg.pricing?.discountedPrice || pkg.pricing?.originalPrice || 0;
+          const originalPrice = pkg.pricing?.originalPrice;
+          const discount = pkg.pricing?.discountPercentage || 0;
+          const days = pkg.duration?.days || 0;
+          const nights = pkg.duration?.nights || 0;
+          const duration = days > 0 ? `${days} Day${days > 1 ? 's' : ''}${nights > 0 ? ` / ${nights} Night${nights > 1 ? 's' : ''}` : ''}` : 'N/A';
+          
+          return {
+            id: pkg._id || pkg.id,
+            title: pkg.title,
+            destination: pkg.destination,
+            image: pkg.images?.[0] || pkg.image || 'https://images.unsplash.com/photo-1513634489774-f96762e6f3b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+            price: `Rs.${finalPrice.toLocaleString('en-IN')}`,
+            originalPrice: originalPrice && originalPrice > finalPrice ? `Rs.${originalPrice.toLocaleString('en-IN')}` : null,
+            discount: discount > 0 ? `${discount}% OFF` : null,
+            duration: duration,
+            highlights: pkg.highlights || pkg.included || []
+          };
+        });
+        setPackages(packagesData);
+      } catch (error) {
+        console.error('Error fetching popular packages:', error);
+        setPackages([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPopularPackages();
+  }, []);
+
+  // Fallback mock data
+  const mockPackages = [
     {
       id: 1,
       title: 'London & Paris Adventure',
@@ -51,28 +93,38 @@ const PopularPackages = () => {
           </p>
         </div>
 
-        {/* Packages Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
-          {packages.map((pkg) => (
-            <div key={pkg.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+            <p className="text-gray-600">Loading popular packages...</p>
+          </div>
+        ) : packages.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No popular packages available at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
+            {packages.map((pkg) => (
+            <div key={pkg.id} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-orange-200 transform hover:-translate-y-2">
               {/* Package Image */}
-              <div className="relative h-40 sm:h-48">
+              <div className="relative h-40 sm:h-48 overflow-hidden">
                 <img
                   src={pkg.image}
                   alt={pkg.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
-                  <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  <span className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm">
                     {pkg.discount}
                   </span>
                 </div>
               </div>
 
               {/* Package Content */}
-              <div className="p-4 sm:p-6">
+              <div className="p-4 sm:p-6 bg-gradient-to-b from-white to-gray-50">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs sm:text-sm text-orange-500 font-medium">{pkg.destination}</span>
+                  <span className="text-xs sm:text-sm text-orange-500 font-semibold">{pkg.destination}</span>
                   <span className="text-xs sm:text-sm text-gray-500">{pkg.duration}</span>
                 </div>
 
@@ -82,7 +134,7 @@ const PopularPackages = () => {
                   <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mb-2">Highlights:</h4>
                   <div className="flex flex-wrap gap-1 sm:gap-2">
                     {pkg.highlights.map((highlight, index) => (
-                      <span key={index} className="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                      <span key={index} className="bg-gradient-to-r from-orange-100 to-orange-50 text-orange-800 text-xs px-2.5 py-1 rounded-full font-medium border border-orange-200">
                         {highlight}
                       </span>
                     ))}
@@ -91,31 +143,34 @@ const PopularPackages = () => {
 
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <div className="text-xl sm:text-2xl font-bold text-orange-500">{pkg.price}</div>
+                    <div className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">{pkg.price}</div>
                     <div className="text-xs sm:text-sm text-gray-500 line-through">{pkg.originalPrice}</div>
                   </div>
                   <Link
-                    to="/packages"
-                    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg transition-colors duration-300 cursor-pointer text-sm sm:text-base"
+                    to={`/packages/${pkg.id}`}
+                    className="group/btn bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold py-2 px-3 sm:px-4 rounded-xl transition-all duration-300 cursor-pointer text-sm sm:text-base shadow-md hover:shadow-lg transform hover:scale-105 relative overflow-hidden"
                   >
-                    Book Now
+                    <span className="relative z-10">Book Now</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
                   </Link>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* View All Button */}
         <div className="text-center">
           <Link
             to="/packages"
-            className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors duration-300 text-sm sm:text-base"
+            className="group inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-xl hover:shadow-lg transition-all duration-300 text-sm sm:text-base shadow-md transform hover:scale-105 relative overflow-hidden"
           >
-            View All Packages
-            <svg className="ml-2 w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="relative z-10">View All Packages</span>
+            <svg className="ml-2 w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
+            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
           </Link>
         </div>
       </div>

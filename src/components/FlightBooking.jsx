@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   UserIcon,
   CreditCardIcon,
   MapPinIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
+import { flightsAPI, bookingsAPI } from '../services/api';
 
 const FlightBooking = () => {
   const { id } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [bookingData, setBookingData] = useState({
@@ -16,26 +18,15 @@ const FlightBooking = () => {
     payment: {}
   });
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
-
-  // Mock flight data
-  const flight = {
-    id: id,
-    airline: 'Qatar Airways',
-    airlineCode: 'QR',
-    departure: 'DEL',
-    arrival: 'LHR',
-    departureTime: '02:30',
-    arrivalTime: '07:45',
-    duration: '8h 15m',
-    departureDate: '2024-01-15',
-    returnDate: '2024-01-22',
-    price: 55300,
-    cabin: 'Economy',
-    aircraft: 'Boeing 777'
-  };
+  const [flight, setFlight] = useState(null);
+  const [isLoadingFlight, setIsLoadingFlight] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [selectedClass, setSelectedClass] = useState('economy');
+  const [tripType, setTripType] = useState('oneway');
 
   const [passengerCount, setPassengerCount] = useState(1);
-  const [totalPrice, setTotalPrice] = useState(flight.price);
+  const [totalPrice, setTotalPrice] = useState(0);
   const [isSeatSelectionOpen, setIsSeatSelectionOpen] = useState(false);
   const [selectedPassengerForSeat, setSelectedPassengerForSeat] = useState(null);
   const [currentFlightSegment, setCurrentFlightSegment] = useState(0); // For multicity flights
@@ -49,6 +40,62 @@ const FlightBooking = () => {
   const [isSpecialAssistanceOpen, setIsSpecialAssistanceOpen] = useState(false);
   const [selectedPassengerForAssistance, setSelectedPassengerForAssistance] = useState(null);
   const [isSpecialAssistanceAnimating, setIsSpecialAssistanceAnimating] = useState(false);
+
+  // Fetch flight data from backend
+  useEffect(() => {
+    const fetchFlight = async () => {
+      if (!id) return;
+      
+      setIsLoadingFlight(true);
+      setError(null);
+      try {
+        // Check if flight data is passed from search results
+        const flightFromState = location.state?.flight;
+        if (flightFromState) {
+          setFlight(flightFromState);
+          setSelectedClass(flightFromState.class || 'economy');
+          setTripType(flightFromState.tripType || 'oneway');
+          setTotalPrice(flightFromState.price || 0);
+        } else {
+          // Fetch from backend
+          const response = await flightsAPI.getById(id);
+          const flightData = response.flight || response;
+          
+          // Transform backend data to match frontend format
+          const transformedFlight = {
+            id: flightData.id || flightData._id,
+            flightNumber: flightData.flightNumber,
+            airline: flightData.airline,
+            airlineCode: flightData.airline?.substring(0, 2).toUpperCase() || 'XX',
+            departure: flightData.from,
+            arrival: flightData.to,
+            departureTime: flightData.departureTime,
+            arrivalTime: flightData.arrivalTime,
+            duration: flightData.duration,
+            departureDate: flightData.departureDate,
+            arrivalDate: flightData.arrivalDate,
+            price: flightData.pricing?.economy || flightData.price || 0,
+            pricing: flightData.pricing,
+            cabin: selectedClass,
+            aircraft: flightData.aircraftType,
+            seats: flightData.seats,
+            stops: flightData.stops,
+            stopLocations: flightData.stopLocations || []
+          };
+          
+          setFlight(transformedFlight);
+          setTotalPrice(transformedFlight.pricing?.economy || transformedFlight.price || 0);
+        }
+      } catch (err) {
+        console.error('Error fetching flight:', err);
+        setError(err.message || 'Failed to load flight details');
+      } finally {
+        setIsLoadingFlight(false);
+      }
+    };
+
+    fetchFlight();
+  }, [id, location.state]);
 
   // Blur Navbar and Footer and prevent background scroll when seat, baggage, meal, or special assistance selection is open
   useEffect(() => {
@@ -115,7 +162,21 @@ const FlightBooking = () => {
   }, [passengerCount]);
 
   const calculateTotal = () => {
-    let basePrice = flight.price * passengerCount;
+    if (!flight) return;
+    
+    // Get price based on selected class
+    let basePrice = 0;
+    if (selectedClass === 'economy' && flight.pricing?.economy) {
+      basePrice = flight.pricing.economy;
+    } else if (selectedClass === 'business' && flight.pricing?.business) {
+      basePrice = flight.pricing.business;
+    } else if (selectedClass === 'first' && flight.pricing?.firstClass) {
+      basePrice = flight.pricing.firstClass;
+    } else {
+      basePrice = flight.price || 0;
+    }
+    
+    basePrice = basePrice * passengerCount;
     let extras = 0;
 
     // Calculate per-passenger add-ons
@@ -198,11 +259,106 @@ const FlightBooking = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Here you would typically send the booking data to your backend
-    console.log('Booking submitted:', bookingData);
-    alert('Booking submitted successfully!');
-    navigate('/');
+  const handleSubmit = async () => {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
+      alert('Please login to book a flight');
+      navigate('/');
+      return;
+    }
+
+    if (!flight) {
+      alert('Flight data not loaded. Please try again.');
+      return;
+    }
+
+    // Validate passenger data
+    const invalidPassengers = bookingData.passengers.filter(p => 
+      !p.firstName || !p.lastName || !p.email || !p.phone
+    );
+    
+    if (invalidPassengers.length > 0) {
+      alert('Please fill in all required passenger details');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // Prepare booking payload - match backend expectations
+      // Get departure date from flight or search params
+      const departureDate = flight.departureDate || 
+                           location.state?.departureDate || 
+                           new Date().toISOString();
+      
+      // Get price from flight data (from FlightAPI.io or database)
+      const flightPrice = flight.price || 
+                         flight.pricing?.economy || 
+                         flight.pricing?.business || 
+                         flight.pricing?.firstClass || 
+                         totalPrice / passengerCount;
+      
+      const bookingPayload = {
+        flightId: flight.id || flight._id,
+        returnFlightId: tripType === 'return' && flight.returnFlightId ? flight.returnFlightId : null,
+        tripType: tripType || 'oneway',
+        class: selectedClass || 'economy',
+        departureDate: departureDate,
+        basePrice: flightPrice, // Pass the base price from FlightAPI.io
+        passengers: bookingData.passengers.map(p => ({
+          title: p.title || 'Mr',
+          firstName: p.firstName,
+          lastName: p.lastName,
+          dateOfBirth: p.dateOfBirth ? new Date(p.dateOfBirth).toISOString() : null,
+          gender: p.gender || 'Male',
+          passportNumber: p.passportNumber || '',
+          passportExpiry: p.passportExpiry ? new Date(p.passportExpiry).toISOString() : null,
+          nationality: p.nationality || '',
+          email: p.email,
+          phone: p.phone,
+          baggage: {
+            carryOn: p.carryOnBaggage === 'extra' ? '14kg' : '7kg',
+            checked: p.checkedBaggage || 'none'
+          },
+          addOns: {
+            seatSelection: !!p.selectedSeat,
+            meals: p.selectedMeals || [],
+            extraBaggage: {
+              checked: p.checkedBaggage || 'none',
+              sportsEquipment: p.sportsEquipment || 'none'
+            }
+          },
+          seatNumber: p.selectedSeat || null,
+          mealPreference: p.selectedMeals?.[0] || null,
+          specialAssistance: p.specialAssistance || false
+        })),
+        addOns: {
+          seatSelection: bookingData.passengers.some(p => p.selectedSeat),
+          meals: bookingData.passengers.flatMap(p => p.selectedMeals || [])
+        },
+        specialRequirements: bookingData.passengers.some(p => p.specialAssistance) 
+          ? 'Special assistance requested' 
+          : null
+      };
+
+      const response = await bookingsAPI.createFlightBooking(bookingPayload);
+      
+      // Extract booking reference from response
+      const bookingRef = response.bookingReference || 
+                        response.booking?.bookingReference || 
+                        response.data?.booking?.bookingReference || 
+                        'N/A';
+      
+      alert(`Booking successful! Booking Reference: ${bookingRef}`);
+      navigate('/profile?tab=bookings');
+    } catch (err) {
+      console.error('Booking error:', err);
+      setError(err.message || 'Booking failed. Please try again.');
+      alert(`Booking failed: ${err.message || 'Please try again'}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handlePaymentMethodChange = (method) => {
@@ -1108,6 +1264,35 @@ const FlightBooking = () => {
     }
   };
 
+  // Loading state
+  if (isLoadingFlight) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+          <p className="text-gray-600">Loading flight details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !flight) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error || 'Flight not found'}</p>
+          <button
+            onClick={() => navigate('/flight-search')}
+            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+          >
+            Back to Search
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Main Content */}
@@ -1227,9 +1412,10 @@ const FlightBooking = () => {
                   ) : (
                     <button
                       onClick={handleSubmit}
-                      className="w-full bg-green-600 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium"
+                      disabled={isSubmitting}
+                      className="w-full bg-green-600 text-white px-3 sm:px-4 py-2 sm:py-3 rounded-lg hover:bg-green-700 transition-colors text-sm sm:text-base font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Confirm Booking
+                      {isSubmitting ? 'Processing...' : 'Confirm Booking'}
                     </button>
                   )}
                 </div>

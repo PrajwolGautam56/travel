@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AuthModalProvider } from './contexts/AuthModalContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PopularFlights from './components/PopularFlights';
@@ -9,9 +10,12 @@ import WhyChooseUs from './components/WhyChooseUs';
 import Footer from './components/Footer';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import LoginModal from './components/LoginModal';
+import SignupModal from './components/SignupModal';
 import HotelsPage from './components/HotelsPage';
 import PackagesPage from './components/PackagesPage';
 import HotelDetail from './components/HotelDetail';
+import HotelBooking from './components/HotelBooking';
 import PackageDetail from './components/PackageDetail';
 import AdminLogin from './components/AdminLogin';
 import AdminDashboard from './components/AdminDashboard';
@@ -29,9 +33,13 @@ import PageTransition from './components/PageTransition';
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <ScrollToTop />
+    <AuthModalProvider>
+      <Router>
+        <div className="App">
+          <ScrollToTop />
+          {/* Auth Modals */}
+          <LoginModal />
+          <SignupModal />
         <Routes>
           {/* Homepage Route */}
           <Route path="/" element={
@@ -76,6 +84,15 @@ function App() {
             <PageTransition>
               <Navbar />
               <HotelDetail />
+              <Footer />
+            </PageTransition>
+          } />
+
+          {/* Hotel Booking Route */}
+          <Route path="/hotel-booking/:id" element={
+            <PageTransition>
+              <Navbar />
+              <HotelBooking />
               <Footer />
             </PageTransition>
           } />
@@ -186,8 +203,9 @@ function App() {
             </PageTransition>
           } />
         </Routes>
-      </div>
-    </Router>
+        </div>
+      </Router>
+    </AuthModalProvider>
   );
 }
 

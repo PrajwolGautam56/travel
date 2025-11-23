@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +9,23 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check for return URL or pending booking
+  useEffect(() => {
+    const pendingBooking = localStorage.getItem('pendingHotelBooking');
+    if (pendingBooking) {
+      try {
+        const savedData = JSON.parse(pendingBooking);
+        if (savedData.returnUrl) {
+          // Show message that booking will be restored
+          console.log('Pending booking found, will restore after login');
+        }
+      } catch (e) {
+        console.error('Error parsing pending booking:', e);
+      }
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -35,8 +52,26 @@ const Login = () => {
       localStorage.setItem('userEmail', formData.email);
       localStorage.setItem('userName', 'Rhythm Tours');
 
-      // Redirect to profile page
-      navigate('/profile');
+      // Check if there's a pending booking or return URL
+      const pendingBooking = localStorage.getItem('pendingHotelBooking');
+      const returnTo = location.state?.returnTo;
+      let redirectUrl = '/profile';
+      
+      if (pendingBooking) {
+        try {
+          const savedData = JSON.parse(pendingBooking);
+          if (savedData.returnUrl) {
+            redirectUrl = savedData.returnUrl;
+          }
+        } catch (e) {
+          console.error('Error parsing pending booking:', e);
+        }
+      } else if (returnTo) {
+        redirectUrl = returnTo;
+      }
+
+      // Redirect to appropriate page
+      navigate(redirectUrl);
     } else {
       alert('Invalid credentials. Use: rhythmtours@gmail.com / password123');
     }

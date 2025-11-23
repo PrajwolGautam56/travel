@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.1.12",
     "clsx": "^2.1.1",
+    "jspdf": "^3.0.3",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.8.2",
@@ -29,5 +30,17 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "vite": "^7.1.2"
-  }
+  },
+  "description": "A modern, responsive flight booking website built with React and Tailwind CSS, inspired by Qatar Airways design.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PrajwolGautam56/travel.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PrajwolGautam56/travel/issues"
+  },
+  "homepage": "https://github.com/PrajwolGautam56/travel#readme"
 }

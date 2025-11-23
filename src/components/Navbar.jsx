@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuthModal } from '../contexts/AuthModalContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,6 +12,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
   const navigate = useNavigate();
+  const { openLogin, openSignup } = useAuthModal();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -101,20 +103,20 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link to="/" className="flex items-center space-x-2" onClick={handleLogoClick}>
+          <div className="flex-shrink-0 flex items-center">
+            <Link to="/" className="flex items-center" onClick={handleLogoClick}>
               <img
                 src="images/Logo_Transparent .png"
                 alt="Recent and Rhythm Tours and Travels Logo"
-                className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 object-contain cursor-pointer"
+                className="h-12 sm:h-14 md:h-16 w-auto object-contain cursor-pointer"
               />
               {/* <span className="text-xl font-bold text-gray-900">Recent and Rhythm Tours and Travels</span> */}
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+          <div className="hidden md:flex flex-1 justify-center">
+            <div className="flex items-center space-x-6 lg:space-x-8">
               <Link to="/" className="text-gray-700 hover:text-orange-500 hover:bg-orange-50 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95">
                 Home
               </Link>
@@ -176,7 +178,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-3 flex-shrink-0">
             {isLoggedIn ? (
               <>
                 {/* Profile Dropdown */}
@@ -212,7 +214,7 @@ const Navbar = () => {
             ) : (
               <>
                 <button
-                  onClick={() => navigate('/login')}
+                  onClick={openLogin}
                   className="flex items-center gap-2 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-300 ease-in-out hover:bg-orange-50 hover:text-orange-500 hover:border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-200 focus:ring-offset-2"
                 >
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-100 text-orange-500">
@@ -383,7 +385,7 @@ const Navbar = () => {
                 <>
                   <button
                     onClick={() => {
-                      navigate('/login');
+                      openLogin();
                       setIsMenuOpen(false);
                     }}
                     className="flex w-full items-center justify-center gap-3 rounded-md border border-gray-300 px-4 py-2 text-base font-medium text-gray-700 transition-all duration-300 ease-in-out hover:bg-orange-50 hover:text-orange-500 hover:border-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-200"

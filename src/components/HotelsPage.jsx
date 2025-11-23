@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { hotelsAPI } from '../services/api';
 
 const HotelsPage = () => {
   const [filters, setFilters] = useState({
@@ -14,13 +15,49 @@ const HotelsPage = () => {
   });
 
   const [viewMode, setViewMode] = useState('grid'); // grid or list
+  const [hotels, setHotels] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const amenities = [
     'Free WiFi', 'Pool', 'Spa', 'Gym', 'Restaurant', 'Bar', 'Room Service',
     'Airport Shuttle', 'Parking', 'Pet Friendly', 'Business Center', 'Concierge'
   ];
 
-  const hotels = [
+  useEffect(() => {
+    const fetchHotels = async () => {
+      setIsLoading(true);
+      try {
+        const response = await hotelsAPI.getAll();
+        // Transform backend data to match frontend format
+        const hotelsData = (response.hotels || []).map(hotel => ({
+          id: hotel._id || hotel.id,
+          name: hotel.name,
+          location: hotel.location || hotel.city,
+          image: hotel.images?.[0] || hotel.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          price: `Rs.${(hotel.pricePerNight || hotel.pricing?.basePrice || 0).toLocaleString('en-IN')}`,
+          perNight: 'per night',
+          rating: hotel.rating || 4.5,
+          reviews: hotel.reviews || 0,
+          amenities: hotel.amenities || [],
+          stars: hotel.stars || 5,
+          discount: hotel.discount ? `${hotel.discount}% OFF` : null,
+          description: hotel.description || '',
+          highlights: hotel.highlights || []
+        }));
+        setHotels(hotelsData);
+      } catch (error) {
+        console.error('Error fetching hotels:', error);
+        setHotels([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHotels();
+  }, []);
+
+  // Fallback mock data
+  const mockHotels = [
     {
       id: 1,
       name: 'The Ritz London',
@@ -301,11 +338,23 @@ const HotelsPage = () => {
           {/* Hotel Listings */}
           <div className="lg:w-3/4 order-1 lg:order-2">
             <div className="mb-4 sm:mb-6">
-              <p className="text-sm sm:text-base text-gray-600">Showing {hotels.length} hotels</p>
+              <p className="text-sm sm:text-base text-gray-600">
+                {isLoading ? 'Loading hotels...' : `Showing ${hotels.length} hotels`}
+              </p>
             </div>
 
-            <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6' : 'space-y-4 sm:space-y-6'}>
-              {hotels.map((hotel) => (
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+                <p className="text-gray-600">Loading hotels...</p>
+              </div>
+            ) : hotels.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600">No hotels available at the moment.</p>
+              </div>
+            ) : (
+              <div className={viewMode === 'grid' ? 'grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6' : 'space-y-4 sm:space-y-6'}>
+                {hotels.map((hotel) => (
                 <div key={hotel.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                   <div className={viewMode === 'grid' ? 'block' : 'flex flex-col sm:flex-row'}>
                     {/* Hotel Image */}
@@ -373,18 +422,19 @@ const HotelsPage = () => {
                         </div>
                       </div>
 
-                      {/* Book Button */}
+                      {/* View Details Button */}
                       <Link
                         to={`/hotels/${hotel.id}`}
                         className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 sm:py-3 px-4 sm:px-6 rounded-lg transition-colors duration-300 inline-block text-center text-sm sm:text-base"
                       >
-                        Book Now
+                        View Details
                       </Link>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

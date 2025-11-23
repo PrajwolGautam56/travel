@@ -1,8 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { hotelsAPI } from '../services/api';
 
 const Hotels = () => {
-  const hotels = [
+  const [hotels, setHotels] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const response = await hotelsAPI.getAll();
+        // Transform backend data to match frontend format
+        const hotelsData = (response.hotels || []).slice(0, 3).map(hotel => ({
+          id: hotel._id || hotel.id,
+          name: hotel.name,
+          location: hotel.location || `${hotel.city}, ${hotel.country}`,
+          image: hotel.images?.[0] || hotel.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+          price: `Rs.${(hotel.pricing?.basePricePerNight || hotel.pricePerNight || hotel.pricing?.basePrice || 0).toLocaleString('en-IN')}`,
+          perNight: 'per night',
+          rating: hotel.rating || 4.5,
+          reviews: hotel.reviews || 0,
+          amenities: hotel.amenities || []
+        }));
+        setHotels(hotelsData);
+      } catch (error) {
+        console.error('Error fetching hotels:', error);
+        setHotels([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchHotels();
+  }, []);
+
+  // Fallback mock data
+  const mockHotels = [
     {
       id: 1,
       name: 'The Ritz London',
@@ -51,9 +84,18 @@ const Hotels = () => {
           </p>
         </div>
 
-        {/* Hotels Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {hotels.map((hotel) => (
+        {isLoading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+            <p className="text-gray-600">Loading hotels...</p>
+          </div>
+        ) : hotels.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No hotels available at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {hotels.map((hotel) => (
             <div key={hotel.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-100">
               {/* Hotel Image */}
               <div className="relative h-48">
@@ -115,7 +157,7 @@ const Hotels = () => {
                     <div className="text-sm text-gray-500">{hotel.perNight}</div>
                   </div>
                   <Link
-                    to="/hotels"
+                    to={`/hotels/${hotel.id}`}
                     className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300 cursor-pointer"
                   >
                     Book Now
@@ -123,8 +165,9 @@ const Hotels = () => {
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* View All Button */}
         <div className="text-center">

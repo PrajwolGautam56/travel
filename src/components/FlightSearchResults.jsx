@@ -6,17 +6,35 @@ import {
   CalendarIcon,
   UserGroupIcon
 } from '@heroicons/react/24/outline';
+import { flightsAPI } from '../services/api';
 
 const FlightSearchResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const searchData = location.state?.searchData || {
+  
+  // Get search data from location state, with fallback defaults
+  const getSearchData = () => {
+    if (location.state?.searchData) {
+      return location.state.searchData;
+    }
+    // Fallback to defaults if no state
+    return {
     from: 'DEL',
     to: 'LHR',
-    departureDate: '2024-01-15',
-    returnDate: '2024-01-22',
-    passengers: 1
+      departureDate: new Date().toISOString().split('T')[0],
+      returnDate: null,
+      passengers: { adults: 1, children: 0, infants: 0 }
+    };
   };
+  
+  const [searchData, setSearchData] = useState(getSearchData());
+  
+  // Update searchData when location state changes
+  useEffect(() => {
+    if (location.state?.searchData) {
+      setSearchData(location.state.searchData);
+    }
+  }, [location.state]);
 
   const [expandedFlight, setExpandedFlight] = useState(null);
   const [hoveredFlight, setHoveredFlight] = useState(null);
@@ -26,9 +44,166 @@ const FlightSearchResults = () => {
   const [filterTime, setFilterTime] = useState('all');
   const [filterPrice, setFilterPrice] = useState('all');
   const [viewMode, setViewMode] = useState('grid');
+  const [flights, setFlights] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock flight data with detailed segments and stopovers
-  const flights = [
+  // Helper function to format duration (moved before useEffect)
+  const formatDuration = (minutes) => {
+    if (!minutes) return 'N/A';
+    if (typeof minutes === 'string' && minutes.includes('h')) {
+      return minutes; // Already formatted
+    }
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours}h ${mins}m`;
+  };
+
+  // Fetch flights from backend
+  useEffect(() => {
+    // Skip if searchData is not ready
+    if (!searchData || !searchData.from || !searchData.to || !searchData.departureDate) {
+      setIsLoading(false);
+      setError('Please provide valid search parameters');
+      return;
+    }
+
+    const fetchFlights = async () => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        // Extract airport code if needed (handle "KTM - Kathmandu" format)
+        const extractCode = (input) => {
+          if (!input) return '';
+          if (typeof input === 'string' && input.includes(' - ')) {
+            return input.split(' - ')[0].trim().toUpperCase();
+          }
+          return input.toString().toUpperCase().trim();
+        };
+
+        // Map frontend params to backend API format
+        const searchParams = {
+          from: extractCode(searchData.from),
+          to: extractCode(searchData.to),
+          departureDate: searchData.departureDate,
+          returnDate: searchData.returnDate || null,
+          tripType: searchData.tripType || (searchData.returnDate ? 'return' : 'oneway'),
+          passengers: typeof searchData.passengers === 'object' 
+            ? searchData.passengers 
+            : { adults: searchData.passengers || 1, children: 0, infants: 0 },
+          class: (searchData.class || 'economy').toLowerCase(),
+          currency: searchData.currency || 'USD',
+          region: searchData.region || 'US'
+        };
+
+        console.log('Searching flights with params:', searchParams);
+        const response = await flightsAPI.search(searchParams);
+        console.log('Flight search response:', response);
+        console.log('Response type:', typeof response);
+        console.log('Response keys:', Object.keys(response || {}));
+        
+        // Handle different response structures
+        let flightsData = [];
+        if (Array.isArray(response)) {
+          flightsData = response;
+        } else if (response?.flights && Array.isArray(response.flights)) {
+          flightsData = response.flights;
+        } else if (response?.data?.flights && Array.isArray(response.data.flights)) {
+          flightsData = response.data.flights;
+        } else if (response?.data && Array.isArray(response.data)) {
+          flightsData = response.data;
+        }
+        
+        console.log('Extracted flightsData:', flightsData);
+        console.log('Number of flights:', flightsData.length);
+        
+        // Transform backend flight data to match frontend format
+        if (!Array.isArray(flightsData)) {
+          console.warn('flightsData is not an array:', flightsData);
+          setFlights([]);
+          setIsLoading(false);
+          return;
+        }
+
+        if (flightsData.length === 0) {
+          console.warn('No flights found in response');
+          setFlights([]);
+          setIsLoading(false);
+          return;
+        }
+
+        const transformedFlights = flightsData.map((flight, index) => {
+          try {
+            // Extract time from ISO string if needed
+            const getTimeFromISO = (isoString) => {
+              if (!isoString) return '00:00';
+              if (typeof isoString === 'string' && isoString.includes('T')) {
+                const date = new Date(isoString);
+                return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+              }
+              return isoString;
+            };
+
+            // Handle duration - could be string or number
+            let duration = flight.duration;
+            if (!duration && flight.durationMinutes) {
+              duration = formatDuration(flight.durationMinutes);
+            }
+
+            const transformed = {
+              id: flight.id || flight._id || `flight-${index}-${Date.now()}`,
+              airline: flight.airline || 'Unknown Airline',
+              airlineCode: flight.airline?.substring(0, 2).toUpperCase() || 'XX',
+              departure: flight.from || flight.departure || 'N/A',
+              arrival: flight.to || flight.arrival || 'N/A',
+              departureTime: getTimeFromISO(flight.departureTime),
+              arrivalTime: getTimeFromISO(flight.arrivalTime),
+              duration: duration || 'N/A',
+              stops: flight.stops || 0,
+              price: flight.price || flight.pricing?.economy || flight.pricing?.base || 0,
+              originalPrice: flight.originalPrice || null,
+              cabin: flight.class || searchData.class || 'Economy',
+              aircraft: flight.aircraftType || flight.aircraft || 'Unknown',
+              departureDate: flight.departureDate || searchData.departureDate,
+              arrivalDate: flight.arrivalDate,
+              fareType: 'Basic',
+              baggage: '23kg',
+              refundable: false,
+              changeable: false,
+              rating: 4.5,
+              reviews: 0,
+              stopLocations: flight.stopLocations || [],
+              segments: flight.segments || [],
+              flightNumber: flight.flightNumber,
+              pricing: flight.pricing,
+              seats: flight.seats,
+              status: flight.status,
+              ...flight // Include all other fields
+            };
+            return transformed;
+          } catch (err) {
+            console.error(`Error transforming flight ${index}:`, err, flight);
+            return null;
+          }
+        }).filter(flight => flight !== null); // Remove any failed transformations
+        
+        console.log('Transformed flights count:', transformedFlights.length);
+        console.log('First transformed flight:', transformedFlights[0]);
+        setFlights(transformedFlights);
+      } catch (err) {
+        console.error('Error fetching flights:', err);
+        setError(err.message || 'Failed to fetch flights. Please try again.');
+        setFlights([]); // Set empty array on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFlights();
+  }, [searchData?.from, searchData?.to, searchData?.departureDate, searchData?.returnDate, searchData?.tripType, searchData?.class]);
+
+  // Fallback mock data (for development/testing)
+  const mockFlights = [
     {
       id: 1,
       airline: 'Singapore Airlines',
@@ -479,17 +654,82 @@ const FlightSearchResults = () => {
     }
   ];
 
-  // Fare calendar data for flexible dates
-  const fareCalendar = [
-    { date: '2024-01-15', price: 55300, available: true, bestPrice: false },
-    { date: '2024-01-16', price: 48500, available: true, bestPrice: true },
-    { date: '2024-01-17', price: 62300, available: true, bestPrice: false },
-    { date: '2024-01-18', price: 41200, available: true, bestPrice: false },
-    { date: '2024-01-19', price: 58900, available: true, bestPrice: false },
-    { date: '2024-01-20', price: 45600, available: true, bestPrice: false },
-    { date: '2024-01-21', price: 67800, available: true, bestPrice: false },
-    { date: '2024-01-22', price: 52300, available: true, bestPrice: false }
-  ];
+  // Generate fare calendar data for flexible dates (7 days around the search date)
+  const generateFareCalendar = () => {
+    if (!searchData.departureDate) return [];
+    
+    const baseDate = new Date(searchData.departureDate);
+    const calendar = [];
+    
+    // Generate dates: 3 days before, current date, 4 days after
+    for (let i = -3; i <= 4; i++) {
+      const date = new Date(baseDate);
+      date.setDate(baseDate.getDate() + i);
+      
+      // Find the lowest price from available flights for this date
+      const flightsForDate = flights.filter(f => {
+        const flightDate = new Date(f.departureDate || searchData.departureDate);
+        return flightDate.toDateString() === date.toDateString();
+      });
+      
+      let price = 0;
+      let available = flightsForDate.length > 0;
+      
+      if (available && flightsForDate.length > 0) {
+        price = Math.min(...flightsForDate.map(f => f.price || 0));
+      } else {
+        // Generate a random price for demo purposes
+        price = Math.floor(Math.random() * 50000) + 30000;
+      }
+      
+      // Mark the current search date
+      const isCurrentDate = date.toDateString() === baseDate.toDateString();
+      
+      calendar.push({
+        date: date.toISOString().split('T')[0],
+        price: price,
+        available: available,
+        bestPrice: false, // Will be calculated below
+        isCurrentDate: isCurrentDate
+      });
+    }
+    
+    // Find the best price (lowest)
+    if (calendar.length > 0) {
+      const prices = calendar.filter(d => d.available).map(d => d.price);
+      if (prices.length > 0) {
+        const bestPrice = Math.min(...prices);
+        calendar.forEach(day => {
+          if (day.price === bestPrice && day.available) {
+            day.bestPrice = true;
+          }
+        });
+      }
+    }
+    
+    return calendar;
+  };
+
+  const fareCalendar = generateFareCalendar();
+  
+  // Handle date selection from calendar
+  const handleDateSelect = (selectedDate) => {
+    if (!selectedDate) return;
+    
+    const newSearchData = {
+      ...searchData,
+      departureDate: selectedDate
+    };
+    
+    // Update local state immediately
+    setSearchData(newSearchData);
+    
+    // Navigate to update the search (this will trigger useEffect)
+    navigate('/flight-search', {
+      state: { searchData: newSearchData },
+      replace: true
+    });
+  };
 
   const formatPrice = (price) => {
     return `Rs.${price.toLocaleString('en-IN')}`;
@@ -514,7 +754,12 @@ const FlightSearchResults = () => {
 
   const handleFlightSelect = (flight) => {
     // Navigate directly to flight booking page
-    navigate(`/flight-booking/${flight.id}`);
+    navigate(`/flight-booking/${flight.id}`, {
+      state: { 
+        flight: flight,
+        departureDate: searchData.departureDate || flight.departureDate
+      }
+    });
   };
 
   const handleFlightExpand = (flightId) => {
@@ -576,6 +821,23 @@ const FlightSearchResults = () => {
 
   const filteredFlights = getFilteredFlights();
 
+  // Early return for missing search data
+  if (!searchData || !searchData.from || !searchData.to || !searchData.departureDate) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600 text-lg mb-4">Missing search parameters</p>
+          <Link
+            to="/flights"
+            className="text-orange-500 hover:text-orange-600 font-medium"
+          >
+            Go back to search
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -606,7 +868,14 @@ const FlightSearchResults = () => {
                 <span className="hidden sm:inline">•</span>
                 <div className="flex items-center space-x-2">
                   <UserGroupIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>{searchData.passengers} Passenger{searchData.passengers > 1 ? 's' : ''}</span>
+                  <span>
+                    {typeof searchData.passengers === 'object' 
+                      ? (searchData.passengers.adults || 1) + (searchData.passengers.children || 0) + (searchData.passengers.infants || 0)
+                      : searchData.passengers || 1
+                    } Passenger{(typeof searchData.passengers === 'object' 
+                      ? (searchData.passengers.adults || 1) + (searchData.passengers.children || 0) + (searchData.passengers.infants || 0)
+                      : searchData.passengers || 1) > 1 ? 's' : ''}
+                  </span>
                 </div>
               </div>
             </div>
@@ -755,33 +1024,64 @@ const FlightSearchResults = () => {
             {/* Fare Calendar */}
             <div className="bg-white rounded-xl shadow-sm border p-4 sm:p-6 mb-4 sm:mb-6">
               <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Flexible Dates - Fare Calendar</h3>
+              {fareCalendar.length > 0 ? (
               <div className="grid grid-cols-4 sm:grid-cols-8 gap-1 sm:gap-2">
                 {fareCalendar.map((day, index) => (
                   <div
                     key={index}
-                    className={`text-center p-2 sm:p-3 rounded-lg border cursor-pointer transition-all ${day.bestPrice
+                      onClick={() => day.available && handleDateSelect(day.date)}
+                      className={`text-center p-2 sm:p-3 rounded-lg border transition-all ${
+                        day.isCurrentDate
+                          ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200'
+                          : day.bestPrice
                       ? 'border-green-500 bg-green-50'
                       : day.available
-                        ? 'border-gray-200 hover:border-blue-300 hover:bg-blue-50'
-                        : 'border-gray-100 bg-gray-50 text-gray-400'
+                          ? 'border-gray-200 hover:border-blue-300 hover:bg-blue-50 cursor-pointer'
+                          : 'border-gray-100 bg-gray-50 text-gray-400 cursor-not-allowed'
                       }`}
-                  >
-                    <div className="text-xs text-gray-500 mb-1">{formatDate(day.date)}</div>
-                    <div className={`font-semibold text-xs sm:text-sm ${day.bestPrice ? 'text-green-600' : day.available ? 'text-gray-900' : 'text-gray-400'
+                    >
+                      <div className={`text-xs mb-1 ${day.isCurrentDate ? 'text-orange-600 font-semibold' : 'text-gray-500'}`}>
+                        {formatDate(day.date)}
+                      </div>
+                      <div className={`font-semibold text-xs sm:text-sm ${
+                        day.isCurrentDate 
+                          ? 'text-orange-600' 
+                          : day.bestPrice 
+                          ? 'text-green-600' 
+                          : day.available 
+                          ? 'text-gray-900' 
+                          : 'text-gray-400'
                       }`}>
-                      Rs.{day.price.toLocaleString()}
+                        {day.available ? `Rs.${day.price.toLocaleString()}` : 'N/A'}
                     </div>
-                    {day.bestPrice && (
+                      {day.isCurrentDate && (
+                        <div className="text-xs text-orange-600 font-medium mt-1">Selected</div>
+                      )}
+                      {day.bestPrice && !day.isCurrentDate && (
                       <div className="text-xs text-green-600 font-medium mt-1">Best</div>
                     )}
                   </div>
                 ))}
               </div>
+              ) : (
+                <div className="text-center py-4 text-gray-500 text-sm">
+                  Select a departure date to see flexible date options
+                </div>
+              )}
             </div>
 
             {/* Sort and Results Count */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
-              <p className="text-sm sm:text-base text-gray-600">{filteredFlights.length} flights found</p>
+              <div>
+                <p className="text-sm sm:text-base text-gray-600">
+                  {filteredFlights.length} {filteredFlights.length === 1 ? 'flight' : 'flights'} found
+                  {flights.length !== filteredFlights.length && (
+                    <span className="text-gray-400 ml-2">
+                      (showing {filteredFlights.length} of {flights.length})
+                    </span>
+                  )}
+                </p>
+              </div>
               <div className="flex items-center space-x-4">
                 <select
                   value={sortBy}
@@ -796,9 +1096,37 @@ const FlightSearchResults = () => {
               </div>
             </div>
 
+            {/* Loading State */}
+            {isLoading && (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mb-4"></div>
+                <p className="text-gray-600">Searching for flights...</p>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && !isLoading && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+                <p className="text-red-600 mb-2">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="text-orange-500 hover:text-orange-600 font-medium"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+
             {/* Flight Results */}
+            {!isLoading && !error && (
             <div className="space-y-8">
-              {filteredFlights.map((flight) => (
+                {filteredFlights.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-gray-600 text-lg mb-2">No flights found</p>
+                    <p className="text-gray-500">Try adjusting your search criteria</p>
+                  </div>
+                ) : (
+                  filteredFlights.map((flight) => (
                 <div
                   key={flight.id}
                   className={`bg-white rounded-2xl shadow-sm border transition-all duration-300 ${hoveredFlight === flight.id
@@ -813,11 +1141,13 @@ const FlightSearchResults = () => {
                     {/* Header with Airline and Price */}
                     <div className="flex items-center justify-between mb-8">
                       <div className="flex items-center space-x-4">
+                        {flight.logo && (
                         <img src={flight.logo} alt={flight.airline} className="w-20 h-10 object-contain" />
+                        )}
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900">{flight.airline}</h3>
+                          <h3 className="text-lg font-semibold text-gray-900">{flight.airline || 'Unknown Airline'}</h3>
                           <div className="text-sm text-gray-500">
-                            <span>{flight.aircraft}</span>
+                            <span>{flight.aircraft || 'Unknown Aircraft'}</span>
                           </div>
                         </div>
                       </div>
@@ -831,10 +1161,14 @@ const FlightSearchResults = () => {
                     <div className="flex items-center justify-between mb-8">
                       {/* Departure */}
                       <div className="text-center flex-1">
-                        <div className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">{flight.departureTime}</div>
-                        <div className="text-base font-medium text-gray-700 mb-1">{flight.departure}</div>
+                        <div className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">{flight.departureTime || 'N/A'}</div>
+                        <div className="text-base font-medium text-gray-700 mb-1">{flight.departure || 'N/A'}</div>
+                        {flight.departureTerminal && (
                         <div className="text-sm text-gray-500">{flight.departureTerminal}</div>
+                        )}
+                        {flight.departureAirport && (
                         <div className="text-xs text-gray-400 mt-1">{flight.departureAirport}</div>
+                        )}
                       </div>
 
                       {/* Flight Path with Stopovers */}
@@ -882,10 +1216,14 @@ const FlightSearchResults = () => {
 
                       {/* Arrival */}
                       <div className="text-center flex-1">
-                        <div className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">{flight.arrivalTime}</div>
-                        <div className="text-base font-medium text-gray-700 mb-1">{flight.arrival}</div>
+                        <div className="text-xl sm:text-2xl font-semibold text-gray-900 mb-2">{flight.arrivalTime || 'N/A'}</div>
+                        <div className="text-base font-medium text-gray-700 mb-1">{flight.arrival || 'N/A'}</div>
+                        {flight.arrivalTerminal && (
                         <div className="text-sm text-gray-500">{flight.arrivalTerminal}</div>
+                        )}
+                        {flight.arrivalAirport && (
                         <div className="text-xs text-gray-400 mt-1">{flight.arrivalAirport}</div>
+                        )}
                       </div>
                     </div>
 
@@ -1058,8 +1396,10 @@ const FlightSearchResults = () => {
                     </div>
                   )}
                 </div>
-              ))}
+                  ))
+                )}
             </div>
+            )}
 
           </div>
         </div>
